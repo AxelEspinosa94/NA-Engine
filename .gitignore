@@ -6,6 +6,10 @@ __pycache__/
 # C extensions
 *.so
 
+# Custom Ignore
+*.ps1
+badges-for-README.txt
+
 # Distribution / packaging
 .Python
 build/
