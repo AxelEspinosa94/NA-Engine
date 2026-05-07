@@ -9,6 +9,8 @@ __pycache__/
 # Custom Ignore
 *.ps1
 badges-for-README.txt
+app_deuteros.py
+app_deuteros_contents.py
 
 # Distribution / packaging
 .Python
