@@ -1,0 +1,15 @@
+/* LIGHT THEME */
+:root {
+  --color-bg: #f5faff; /* Azul cielo suave */
+  --color-bg-alt: #ffffff;
+  --color-text: #1a1a1a;
+  --color-accent: #4aa8ff; /* Azul cielo */
+  --color-accent-dark: #1f7ed0;
+  --color-border: #d0d0d0;
+}
+
+/* Home hero background */
+#hero-section {
+  background: linear-gradient(135deg, #e8f4ff, #cfe8ff);
+  border-radius: 12px;
+}
