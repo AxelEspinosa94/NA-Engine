@@ -120,7 +120,10 @@ Open it in your browser to use NA‑Engine.
 Below are previews of the NA‑Engine interface in both **light** and **dark** themes.
 
 ### 🌞 Light Theme
-![alt text](app/assets/main-light-1.png)
+
+<p align="center">
+  <img src="app/assets/main-light-1.png" width="800">
+</p>
 
 ![alt text](image-1.png)
 
