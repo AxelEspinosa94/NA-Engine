@@ -1,3 +1,14 @@
+<p align="center">
+
+  <img src="https://img.shields.io/badge/Python-3.12-blue?logo=python&logoColor=white" />
+  <img src="https://img.shields.io/badge/Framework-Dash-0099ff?logo=plotly&logoColor=white" />
+  <img src="https://img.shields.io/badge/License-MIT-green.svg" />
+  <img src="https://img.shields.io/badge/Status-Active-success" />
+  <img src="https://img.shields.io/badge/Assets-AI%20Generated-ff69b4?logo=openai&logoColor=white" />
+  <img src="https://img.shields.io/badge/Tests-pytest-blueviolet" />
+  <img src="https://img.shields.io/badge/Domain-Numerical%20Analysis-orange" />
+
+</p>
 
 ---
 
