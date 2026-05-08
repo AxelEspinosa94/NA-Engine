@@ -1,0 +1,33 @@
+/* ============================
+   RESET + VARIABLES
+============================ */
+:root {
+  --color-bg: #f5f7fa;
+  --color-bg-alt: #ffffff;
+  --color-text: #1a1a1a;
+  --color-accent: #2484f0;
+  --color-accent-dark: #082952;
+  --color-border: #d0d0d0;
+
+  --radius: 8px;
+  --shadow: 0 2px 6px rgba(0,0,0,0.1);
+
+  --spacing-s: 8px;
+  --spacing-m: 16px;
+  --spacing-l: 24px;
+  --spacing-xl: 32px;
+
+  --transition: 0.25s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Inter", Arial, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
