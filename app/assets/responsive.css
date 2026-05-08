@@ -1,0 +1,48 @@
+/* ============================
+   RESPONSIVE DESIGN
+============================ */
+
+@media (max-width: 1024px) {
+  #hero-section {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  #hero-text {
+    max-width: 100%;
+  }
+
+  #module-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  #module-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .header-logo {
+    width: 80px;
+  }
+
+  .nav-btn {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  #navbar {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .nav-btn {
+    width: 100%;
+  }
+
+  .header-logo {
+    width: 60px;
+  }
+}
