@@ -1,0 +1,59 @@
+/* DARK THEME */
+#app-container.dark {
+  --color-bg: #0d1117;
+  --color-bg-alt: #161b22;
+  --color-text: #e5c07b; /* Amarillo VSCode */
+  --color-accent: #c678dd; /* Morado OneNote/VSCode */
+  --color-accent-dark: #9d4bb7;
+  --color-border: #30363d;
+}
+
+#app-container.dark header{
+  color: #fff; /* Amarillo VSCode */
+}
+
+#app-container.dark #hero-section {
+  background: linear-gradient(135deg, #dec6e5, #d6b7eb);
+}
+
+/* Ajustes visuales */
+#app-container.dark .module-card {
+  background-color: #1e222a;
+  border: 1px solid #30363d;
+  color: #fff;
+}
+
+#app-container.dark .primary-btn {
+  background-color: var(--color-accent);
+  color: #fff;
+}
+
+#app-container.dark .primary-btn:hover {
+  background-color: var(--color-accent-dark);
+}
+
+#app-container.dark .secondary-btn {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+#app-container.dark .secondary-btn:hover {
+  background-color: var(--color-accent);
+  color: #fff;
+}
+
+#app-container.dark #main-content {
+  background-color: var(--color-bg);
+}
+
+#app-container.dark #home-container {
+  background-color: var(--color-bg);
+}
+
+#app-container.dark #docs-section {
+  color: #fff;
+}
+
+#app-container.dark .section{
+  color: #fff;
+}
