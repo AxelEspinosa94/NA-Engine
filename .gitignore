@@ -11,6 +11,14 @@ __pycache__/
 badges-for-README.txt
 app_deuteros.py
 app_deuteros_contents.py
+app/assets/styles.css
+app/assets/hero.png
+app/assets/MAC.png
+app/assets/MN.png
+app/assets/puma1.png
+app/assets/puma2.png
+app/assets/UNAM.png
+app/assets/UNAM1.png
 
 # Distribution / packaging
 .Python
