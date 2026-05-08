@@ -1,7 +1,7 @@
 
 ---
 
-# 📘 **README v1.1 — NA‑Engine (Python 3.12, MIT License)**
+# 📘 **README v1.2 — NA‑Engine (Python 3.12, MIT License)**
 
 # NA‑Engine
 NA‑Engine is a modular, extensible, and interactive engine for solving Numerical Methods, Numerical Analysis, and Differential Equations problems.  
@@ -120,7 +120,7 @@ Open it in your browser to use NA‑Engine.
 Below are previews of the NA‑Engine interface in both **light** and **dark** themes.
 
 ### 🌞 Light Theme
-![alt text](image.png)
+![alt text](app/assets/main-light-1.png)
 
 ![alt text](image-1.png)
 
@@ -137,8 +137,8 @@ Below are previews of the NA‑Engine interface in both **light** and **dark** t
 ---
 
 ### 📌 Notes
-- Replace `screenshot_light.png` and `screenshot_dark.png` with the actual filenames you upload.
-- Images are centered and scaled for readability in GitHub’s Markdown renderer.
+
+
 
 ---
 
@@ -164,6 +164,7 @@ Each numerical method is implemented as a class inheriting from `NumericalMethod
 
 ## 🛣️ Roadmap
 
+- [X] Improve UI/UX with custom CSS and components
 - [ ] Add Hermite and Barycentric interpolation
 - [ ] Add advanced ODE solvers (RK45, Adams–Bashforth)
 - [ ] Add PDE solvers (Heat, Wave, Laplace)
@@ -171,7 +172,7 @@ Each numerical method is implemented as a class inheriting from `NumericalMethod
 - [ ] Add CI/CD pipeline (GitLab or GitHub Actions)
 - [ ] Add Docker support
 - [ ] Add Django backend integration
-- [X] Improve UI/UX with custom CSS and components
+
 
 ---
 
