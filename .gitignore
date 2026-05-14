@@ -20,6 +20,7 @@ app/assets/puma2.png
 app/assets/UNAM.png
 app/assets/UNAM1.png
 NA-venv/
+core/base_method_legacy.py
 
 # Distribution / packaging
 .Python
