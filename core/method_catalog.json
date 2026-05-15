@@ -1,0 +1,12 @@
+{
+  "lagrange": {
+    "classConstructor": "core.interpolation.lagrange.LagrangeMethod",
+    "classInputValidator": "strategies.validators.interpolation_validators.InterpolationValidator",
+    "classExecutor": "strategies.executors.lagrange_executors.LagrangeExecutor"
+  },
+  "newton": {
+    "classConstructor": "core.interpolation.newton.NewtonMethod",
+    "classInputValidator": "strategies.validators.interpolation_validators.InterpolationValidator",
+    "classExecutor": "strategies.executors.newton_executors.NewtonExecutor"
+  }
+}
