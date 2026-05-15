@@ -1,7 +1,17 @@
+# --- Core App ---
 dash==2.17.1
+dash-bootstrap-components==1.6.0
 plotly==5.22.0
-pandas==2.2.2
-numpy==1.26.4
-sympy==1.12
-openpyxl==3.1.2     # Para leer Excel
 gunicorn==22.0.0    # Si algún día lo subes a un server
+
+# --- Numerical Engine ---
+numpy==1.26.4
+pandas==2.2.2
+openpyxl==3.1.2     # Para leer Excel
+sympy==1.12
+
+# --- Testing ---
+pytest==8.2.0
+
+# --- Optional (if you want notebooks for demos) ---
+jupyter==1.0.0
