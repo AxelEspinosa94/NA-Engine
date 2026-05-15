@@ -94,15 +94,16 @@ NA-Engine/
 │   ├── __init__.py
 │   ├── validators/
 │   │   ├── __init__.py
-│   │   ├── interpolation_validators.py
+│   │   ├── interpolation_validators.py # This file will encapsulate the validation for all interpolation methods unless there are specific conditions to split
 │   │   ├── integration_validators.py
 │   │   └── ode_validators.py
 │   │
 │   ├── executors/
 │   │   ├── __init__.py
-│   │   ├── interpolation_executors.py
-│   │   ├── integration_executors.py
-│   │   └── ode_executors.py
+│   │   ├── lagrange_executors.py
+│   │   ├── newton_executors.py
+│   │   ├── integration_executors.py # TBD
+│   │   └── ode_executors.py # TBD
 │   │
 │   └── formatters/
 │       ├── __init__.py
@@ -222,6 +223,38 @@ classDiagram
 
     NewtonInputValidator ..|> BaseValidator
     NewtonExecutor ..|> BaseExecutor
+```
+
+---
+
+## Unit Testing
+
+```
+python -m pytest -q
+```
+
+Will execute all scripts inside the tests folder that matches the following conventions:
+
+- Filename like `test_*.py` or `*_test.py`
+- Functions inside are named `test_*`
+- Classes inside are named `Test*` and must not have `__init__` function
+
+If we only want to execute a single file we perform
+
+```
+python tests\test_<method-name>.py -q
+```
+
+And furthermore, if we want only to execute a single test we perform
+
+```
+python tests\test_<method-name>.py::test_<test-name> -q
+```
+
+If we want to skip one file, either we change the name of the file or write the following code at the beginning
+
+```python
+pytestmark = pytest.mark.skip("Work in progress")
 ```
 
 ---
