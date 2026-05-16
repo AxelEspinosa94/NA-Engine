@@ -3,7 +3,7 @@ from typing import Any, Dict
 
 class NewtonExecutor:
     """
-    Executes Newton interpolation using divided differences.
+    Executes Newton interpolation using standard divided differences.
     """
 
     def run(self, instance):
@@ -12,20 +12,29 @@ class NewtonExecutor:
         y = df.iloc[:, 1].values
         xk = instance.xk
 
-        # Compute divided differences
+        # -----------------------------------------
+        # 1. Compute divided differences (in-place)
+        # -----------------------------------------
         coef = y.copy()
         n = len(x)
+
         for j in range(1, n):
             for i in range(n - 1, j - 1, -1):
                 coef[i] = (coef[i] - coef[i - 1]) / (x[i] - x[i - j])
 
-        # Evaluate Newton polynomial
-        result = coef[-1]
-        for i in range(n - 2, -1, -1):
-            result = result * (xk - x[i]) + coef[i]
+        # -----------------------------------------
+        # 2. Evaluate Newton polynomial
+        # P(x) = c0 + c1(x-x0) + c2(x-x0)(x-x1) + ...
+        # -----------------------------------------
+        result = coef[0]
+        prod = 1.0
+
+        for i in range(1, n):
+            prod *= (xk - x[i - 1])
+            result += coef[i] * prod
 
         return {
-            "value": result,
+            "value": float(result),
             "coefficients": coef,
             "table": df
         }
