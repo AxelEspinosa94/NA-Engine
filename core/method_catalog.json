@@ -8,5 +8,15 @@
     "classConstructor": "core.interpolation.newton.NewtonMethod",
     "classInputValidator": "strategies.validators.interpolation_validators.InterpolationValidator",
     "classExecutor": "strategies.executors.newton_executors.NewtonExecutor"
-  }
+  },
+  "spline_cubic": {
+    "classConstructor": "core.interpolation.splines.SplineConstructor",
+    "classInputValidator": "strategies.validators.spline_validator.SplineValidator",
+    "classExecutor": "strategies.executors.spline_executor.SplineExecutor"
+  },
+  "hermite": {
+    "classConstructor": "core.interpolation.hermite.HermiteMethod",
+      "classInputValidator": "strategies.validators.hermite_validator.HermiteValidator",
+      "classExecutor": "strategies.executors.hermite_executors.HermiteExecutor"
+    }
 }
