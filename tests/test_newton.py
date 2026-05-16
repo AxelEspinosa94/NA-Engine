@@ -15,7 +15,7 @@ from core.exceptions import (
 def test_newton_full_pipeline_table_mode():
     df = pd.DataFrame({
         "x": [0, 1, 2],
-        "f(x)": [1, 3, 7]   # f(x) = x^2 + 1
+        "f(x)": [1, 2, 5]   # f(x) = x^2 + 1
     })
 
     method = NumericalMethod(
