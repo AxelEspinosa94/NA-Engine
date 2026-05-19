@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import sympy as sp
 from typing import Dict, List, Any
+from core.exceptions import ValidationError
 
 
 class HermiteMethod:
@@ -21,7 +22,7 @@ class HermiteMethod:
         elif self.mode == "table":
             self.df, self.xk = self._build_from_table()
         else:
-            raise ValueError("Hermite only supports 'function' or 'table' modes.")
+            raise ValidationError("Hermite only supports 'function' or 'table' modes.")
 
     # ---------------------------------------------------------
     # MODE FUNCTION
@@ -33,20 +34,20 @@ class HermiteMethod:
         xk = self.input_data.get("xk")
 
         if func_str is None or interval is None or step is None:
-            raise ValueError("Function mode requires 'function', 'interval', and 'step'.")
+            raise ValidationError("Function mode requires 'function', 'interval', and 'step'.")
 
         x = sp.symbols("x")
 
         try:
             f = sp.sympify(func_str)
         except Exception:
-            raise ValueError("Invalid function expression.")
+            raise ValidationError("Invalid function expression.")
 
         # Try to compute derivative
         try:
             fprime = sp.diff(f, x)
         except Exception:
-            raise ValueError("Could not compute derivative of the function.")
+            raise ValidationError("Could not compute derivative of the function.")
 
         # Build table
         xs = np.arange(interval[0], interval[1] + step, step)
@@ -69,10 +70,10 @@ class HermiteMethod:
         xk = self.input_data.get("xk")
 
         if not isinstance(df, pd.DataFrame):
-            raise ValueError("Data must be a pandas DataFrame.")
+            raise ValidationError("Data must be a pandas DataFrame.")
 
         if df.shape[1] != 3:
-            raise ValueError("Hermite table must have 3 columns: x, f(x), f'(x).")
+            raise ValidationError("Hermite table must have 3 columns: x, f(x), f'(x).")
 
         df = df.sort_values(by=df.columns[0]).reset_index(drop=True)
 
