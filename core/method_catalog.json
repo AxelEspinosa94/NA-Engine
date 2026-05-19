@@ -16,7 +16,12 @@
   },
   "hermite": {
     "classConstructor": "core.interpolation.hermite.HermiteMethod",
-      "classInputValidator": "strategies.validators.hermite_validator.HermiteValidator",
-      "classExecutor": "strategies.executors.hermite_executors.HermiteExecutor"
-    }
+    "classInputValidator": "strategies.validators.hermite_validator.HermiteValidator",
+    "classExecutor": "strategies.executors.hermite_executors.HermiteExecutor"
+  },
+  "integration": {
+    "classConstructor": "core.integration.integral.Integral",
+    "classInputValidator": "strategies.validators.integration_validators.IntegrationValidator",
+    "classExecutor": "strategies.executors.integration_executors.IntegrationExecutor"
+  }
 }
