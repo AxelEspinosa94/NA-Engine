@@ -23,5 +23,10 @@
     "classConstructor": "core.integration.integral.Integral",
     "classInputValidator": "strategies.validators.integration_validators.IntegrationValidator",
     "classExecutor": "strategies.executors.integration_executors.IntegrationExecutor"
+  },
+  "nonlinear": {
+    "classConstructor": "core.nonlinear.Non-linear-base.NonLinearEquation",
+    "classInputValidator": "strategies.validators.Non-linear-validators.NonLinearValidator",
+    "classExecutor": "strategies.executors.Non-linear-executors.NonLinearExecutor"
   }
 }
