@@ -26,6 +26,7 @@ Built with Python **3.12** and powered by Dash, it provides automated computatio
 - Numerical Methods:
   - Interpolation (Newton, Lagrange, Splines)
   - Numerical Integration (Simpson, Trapezoidal)
+  - Non-linear Systems (Fixed Point, Bisection, Secant, Newton-Raphson, False Position)
   - Differential Equations (Euler, Runge–Kutta, Systems)
 - Markdown‑based mathematical output
 - Modular OOP architecture for numerical algorithms
@@ -82,9 +83,11 @@ NA-Engine/
 │   │   └── splines.py
 │   │
 │   ├── integration/
-│   │   ├── simpson.py
-│   │   └── trapezoidal.py
+│   │   └── integral.py
 │   │
+│   ├── nonlinear/
+│   │   └── Non-linear-base.py
+|   |
 │   └── ode/
 │       ├── euler.py
 │       ├── runge_kutta.py
@@ -102,7 +105,7 @@ NA-Engine/
 │   │   ├── __init__.py
 │   │   ├── lagrange_executors.py
 │   │   ├── newton_executors.py
-│   │   ├── integration_executors.py # TBD
+│   │   ├── integration_executors.py
 │   │   └── ode_executors.py # TBD
 │   │
 │   └── formatters/
@@ -110,9 +113,14 @@ NA-Engine/
 │       └── table_formatter.py
 │
 ├── tests/                       
-│   ├── test_interpolation.py
-│   ├── test_integration.py
-│   └── test_ode.py
+│   ├── test_gauss.py
+│   ├── test_hermite.py
+│   ├── test_lagrange.py
+│   ├── test_newton.py
+│   ├── test_ode.py
+│   ├── test_romberg.py
+│   ├── test_test_simpson_trapezoid.py
+│   └── test_spline_cubic.py
 │
 ├── examples/                    
 │
@@ -223,6 +231,66 @@ classDiagram
 
     NewtonInputValidator ..|> BaseValidator
     NewtonExecutor ..|> BaseExecutor
+```
+---
+
+## 🟦 **Execution Flow in NA‑Engine**
+
+```mermaid
+flowchart TD
+
+    %% User
+    A[User\nProvides input_data] --> B[Create NumericalMethod instance]
+
+    %% NumericalMethod
+    B --> C{Select method\n(method='integration', 'nonlinear', etc.)}
+
+    %% Specific constructor
+    C -->|integration| D[Constructor: Integral]
+    C -->|nonlinear| E[Constructor: NonLinearEquation]
+    C -->|interpolation| F[Constructor: Interpolation]
+    C -->|others| G[Corresponding constructor]
+
+    %% method_instance created
+    D --> H[method_instance created]
+    E --> H
+    F --> H
+    G --> H
+
+    %% Validation
+    H --> I[User calls\nvalidate_input()]
+    I -->|OK| J[Validation successful]
+    I -->|Error| X[ValidationError]
+
+    %% Execution
+    J --> K[User calls\nexecute()]
+
+    %% Executor
+    K --> L{Select executor\nbased on calculation_mode}
+
+    %% Executor examples
+    L -->|simpson| M[IntegrationExecutor\n_simpson()]
+    L -->|trapezoid| N[IntegrationExecutor\n_trapezoid()]
+    L -->|newton| O[NonLinearExecutor\n_newton()]
+    L -->|secant| P[NonLinearExecutor\n_secant()]
+    L -->|bisection| Q[NonLinearExecutor\n_bisection()]
+    L -->|others| R[Corresponding executor]
+
+    %% Result or error
+    M --> S[Final result]
+    N --> S
+    O --> S
+    P --> S
+    Q --> S
+    R --> S
+
+    %% ExecutionError
+    M --> Y[ExecutionError]
+    N --> Y
+    O --> Y
+    P --> Y
+    Q --> Y
+    R --> Y
 ```
 
 ---
