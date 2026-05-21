@@ -240,16 +240,16 @@ classDiagram
 flowchart TD
 
     %% User
-    A[User\nProvides input_data] --> B[Create NumericalMethod instance]
+    A[User provides input_data] --> B[Create NumericalMethod instance]
 
     %% NumericalMethod
-    B --> C{Select method\n(method='integration', 'nonlinear', etc.)}
+    B --> C{Select method type}
 
     %% Specific constructor
     C -->|integration| D[Constructor: Integral]
     C -->|nonlinear| E[Constructor: NonLinearEquation]
     C -->|interpolation| F[Constructor: Interpolation]
-    C -->|others| G[Corresponding constructor]
+    C -->|others| G[Other constructor]
 
     %% method_instance created
     D --> H[method_instance created]
@@ -258,23 +258,23 @@ flowchart TD
     G --> H
 
     %% Validation
-    H --> I[User calls\nvalidate_input()]
-    I -->|OK| J[Validation successful]
-    I -->|Error| X[ValidationError]
+    H --> I[User calls validate_input]
+    I -->|valid| J[Validation successful]
+    I -->|invalid| X[ValidationError]
 
     %% Execution
-    J --> K[User calls\nexecute()]
+    J --> K[User calls execute]
 
-    %% Executor
-    K --> L{Select executor\nbased on calculation_mode}
+    %% Executor selection
+    K --> L{Select executor based on calculation_mode}
 
     %% Executor examples
-    L -->|simpson| M[IntegrationExecutor\n_simpson()]
-    L -->|trapezoid| N[IntegrationExecutor\n_trapezoid()]
-    L -->|newton| O[NonLinearExecutor\n_newton()]
-    L -->|secant| P[NonLinearExecutor\n_secant()]
-    L -->|bisection| Q[NonLinearExecutor\n_bisection()]
-    L -->|others| R[Corresponding executor]
+    L -->|simpson| M[IntegrationExecutor simpson]
+    L -->|trapezoid| N[IntegrationExecutor trapezoid]
+    L -->|newton| O[NonLinearExecutor newton]
+    L -->|secant| P[NonLinearExecutor secant]
+    L -->|bisection| Q[NonLinearExecutor bisection]
+    L -->|others| R[Other executor]
 
     %% Result or error
     M --> S[Final result]
