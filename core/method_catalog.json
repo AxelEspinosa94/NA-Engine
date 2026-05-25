@@ -28,5 +28,10 @@
     "classConstructor": "core.nonlinear.Non-linear-base.NonLinearEquation",
     "classInputValidator": "strategies.validators.Non-linear-validators.NonLinearValidator",
     "classExecutor": "strategies.executors.Non-linear-executors.NonLinearExecutor"
+  },
+  "linear_algebra": {
+    "classConstructor": "core.linearAlgebra.linear-algebra.LinearAlgebra",
+    "classInputValidator": "strategies.validators.linear-algebra-validators.LinearAlgebraValidator",
+    "classExecutor": "strategies.executors.linear-algebra-executors.LinearAlgebraExecutor"
   }
 }
