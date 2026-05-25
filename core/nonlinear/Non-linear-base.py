@@ -12,7 +12,7 @@ class NonLinearEquation:
     def __init__(self, input_data):
         self.input_data = input_data
         self.mode = input_data.get("mode")
-        self.method = input_data.get("calculation_mode")
+        self.calculation_mode = input_data.get("calculation_mode")
 
         if self.mode != "function":
             raise ValidationError("Nonlinear solvers only support mode='function'.")
@@ -27,7 +27,7 @@ class NonLinearEquation:
         self.f = sp.lambdify(x, f_sym, "numpy")
         self.f_sym = f_sym
 
-        if self.method == "fixed_point":
+        if self.calculation_mode == "fixed_point":
             g_str = input_data.get("g")
             if not isinstance(g_str, str):
                 raise ValidationError("Fixed point method requires g(x).")
@@ -41,7 +41,7 @@ class NonLinearEquation:
 
         # Derivative (only used by Newton)
         self.fprime = None
-        if self.method == "newton":
+        if self.calculation_mode == "newton":
             fprime_sym = sp.diff(f_sym, x)
             self.fprime = sp.lambdify(x, fprime_sym, "numpy")
 
