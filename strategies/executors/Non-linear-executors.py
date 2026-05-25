@@ -4,7 +4,7 @@ from core.exceptions import ValidationError
 class NonLinearExecutor:
 
     def run(self, instance):
-        method = instance.method
+        calculation_mode = instance.calculation_mode
 
         dispatch = {
             "fixed_point": lambda: self._fixed_point(instance),
@@ -14,15 +14,15 @@ class NonLinearExecutor:
             "false_position": lambda: self._false_position(instance),
         }
 
-        if method not in dispatch:
-            raise ValidationError(f"Executor not implemented for method '{method}'.")
+        if calculation_mode not in dispatch:
+            raise ValidationError(f"Executor not implemented for calculation_mode '{calculation_mode}'.")
 
-        value, iterations = dispatch[method]()
+        value, iterations = dispatch[calculation_mode]()
 
         return {
             "root": float(value),
             "iterations": iterations,
-            "method": method,
+            "calculation_mode": calculation_mode,
             "tol": instance.tol,
         }
 
