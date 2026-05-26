@@ -33,5 +33,10 @@
     "classConstructor": "core.linearAlgebra.linear-algebra.LinearAlgebra",
     "classInputValidator": "strategies.validators.linear-algebra-validators.LinearAlgebraValidator",
     "classExecutor": "strategies.executors.linear-algebra-executors.LinearAlgebraExecutor"
+  },
+  "numerical_derivative": {
+    "classConstructor": "core.derivative.numerical_derivative.NumericalDerivative",
+    "classInputValidator": "strategies.validators.numerical_derivative_validators.NumericalDerivativeValidator",
+    "classExecutor": "strategies.executors.numerical_derivative_executors.NumericalDerivativeExecutor"
   }
 }
