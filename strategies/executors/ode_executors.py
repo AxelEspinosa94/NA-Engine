@@ -2,7 +2,7 @@ import numpy as np
 from core.exceptions import ExecutionError
 
 
-class ODEExecutors:
+class ODEExecutor:
     """
     Executors for Ordinary Differential Equations (ODEs).
     Includes IVP, systems, BVP (shooting, finite differences),
@@ -148,10 +148,11 @@ class ODEExecutors:
 
         n = len(system)
 
-        def eval_system(expr, x, y_vec):
-            # expr is a string like "y2" or "-y1"
-            # we expose y1, y2, ..., yn
+        def eval_system(expr, x, y_vec, idx):
             local = {"x": x, "np": np}
+            # componente actual como 'y'
+            local["y"] = y_vec[idx]
+            # todo el vector como y1, y2, ...
             for i in range(n):
                 local[f"y{i+1}"] = y_vec[i]
             return float(eval(expr, {"__builtins__": {}}, local))
@@ -160,10 +161,10 @@ class ODEExecutors:
         x = x0
 
         while x < x_end:
-            k1 = np.array([eval_system(system[i], x, y) for i in range(n)])
-            k2 = np.array([eval_system(system[i], x + h/2, y + h*k1/2) for i in range(n)])
-            k3 = np.array([eval_system(system[i], x + h/2, y + h*k2/2) for i in range(n)])
-            k4 = np.array([eval_system(system[i], x + h, y + h*k3) for i in range(n)])
+            k1 = np.array([eval_system(system[i], x, y, i) for i in range(n)])
+            k2 = np.array([eval_system(system[i], x + h/2, y + h*k1/2, i) for i in range(n)])
+            k3 = np.array([eval_system(system[i], x + h/2, y + h*k2/2, i) for i in range(n)])
+            k4 = np.array([eval_system(system[i], x + h, y + h*k3, i) for i in range(n)])
 
             y = y + (h/6)*(k1 + 2*k2 + 2*k3 + k4)
             x = x + h
@@ -172,6 +173,7 @@ class ODEExecutors:
             ys.append(y.copy())
 
         return {"x": xs, "y": ys}
+
 
     # ============================================================
     # Shooting method (CORREGIDO con Newton)
@@ -240,13 +242,13 @@ class ODEExecutors:
 
         for i in range(1, n):
             xi = x0 + i*h
-
-            A[i-1, i-1] = -2 - h**2 * self._eval(f, xi, 0)
-
+            A[i-1, i-1] = -2
             if i > 1:
                 A[i-1, i-2] = 1
             if i < n-1:
                 A[i-1, i] = 1
+
+            b[i-1] = h**2 * self._eval(f, xi, 0)
 
         b[0] -= alpha
         b[-1] -= beta
