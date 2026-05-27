@@ -38,5 +38,10 @@
     "classConstructor": "core.derivative.numerical_derivative.NumericalDerivative",
     "classInputValidator": "strategies.validators.numerical_derivative_validators.NumericalDerivativeValidator",
     "classExecutor": "strategies.executors.numerical_derivative_executors.NumericalDerivativeExecutor"
+  },
+  "ode": {
+    "classConstructor": "core.ode.ODE.ODE",
+    "classInputValidator": "strategies.validators.ode_validators.ODEValidator",
+    "classExecutor": "strategies.executors.ode_executors.ODEExecutor"
   }
 }
