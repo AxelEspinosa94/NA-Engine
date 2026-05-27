@@ -2,7 +2,7 @@ import numpy as np
 from core.exceptions import ExecutionError
 
 
-class ODEExecutor:
+class ODEExecutors:
     """
     Executors for Ordinary Differential Equations (ODEs).
     Includes IVP, systems, BVP (shooting, finite differences),
@@ -137,7 +137,7 @@ class ODEExecutor:
         return {"x": xs, "y": ys}
 
     # ============================================================
-    # RK4 for systems
+    # RK4 for systems (CORREGIDO)
     # ============================================================
     def rk4_system(self, instance):
         system = instance.input_data["system"]
@@ -146,14 +146,24 @@ class ODEExecutor:
         x_end = float(instance.input_data["x_end"])
         h = float(instance.input_data["h"])
 
+        n = len(system)
+
+        def eval_system(expr, x, y_vec):
+            # expr is a string like "y2" or "-y1"
+            # we expose y1, y2, ..., yn
+            local = {"x": x, "np": np}
+            for i in range(n):
+                local[f"y{i+1}"] = y_vec[i]
+            return float(eval(expr, {"__builtins__": {}}, local))
+
         xs, ys = [x0], [y.copy()]
         x = x0
 
         while x < x_end:
-            k1 = np.array([self._eval(f, x, y[i]) for i, f in enumerate(system)])
-            k2 = np.array([self._eval(f, x + h/2, y[i] + h*k1[i]/2) for i, f in enumerate(system)])
-            k3 = np.array([self._eval(f, x + h/2, y[i] + h*k2[i]/2) for i, f in enumerate(system)])
-            k4 = np.array([self._eval(f, x + h, y[i] + h*k3[i]) for i, f in enumerate(system)])
+            k1 = np.array([eval_system(system[i], x, y) for i in range(n)])
+            k2 = np.array([eval_system(system[i], x + h/2, y + h*k1/2) for i in range(n)])
+            k3 = np.array([eval_system(system[i], x + h/2, y + h*k2/2) for i in range(n)])
+            k4 = np.array([eval_system(system[i], x + h, y + h*k3) for i in range(n)])
 
             y = y + (h/6)*(k1 + 2*k2 + 2*k3 + k4)
             x = x + h
@@ -164,7 +174,7 @@ class ODEExecutor:
         return {"x": xs, "y": ys}
 
     # ============================================================
-    # Shooting method (BVP)
+    # Shooting method (CORREGIDO con Newton)
     # ============================================================
     def shooting(self, instance):
         f = instance.input_data["function"]
@@ -172,34 +182,48 @@ class ODEExecutor:
         x_end = float(instance.input_data["x_end"])
         alpha = float(instance.input_data["alpha"])
         beta = float(instance.input_data["beta"])
-        s0 = float(instance.input_data["s0"])
+        s = float(instance.input_data["s0"])
         h = float(instance.input_data["h"])
 
-        x = x0
-        y = alpha
-        s = s0
+        def solve_ivp_with_slope(slope):
+            x = x0
+            y = alpha
+            dy = slope
 
-        while x < x_end:
-            k1y = s
-            k1s = self._eval(f, x, y)
+            while x < x_end:
+                k1y = dy
+                k1s = self._eval(f, x, y)
 
-            k2y = s + h*k1s/2
-            k2s = self._eval(f, x + h/2, y + h*k1y/2)
+                k2y = dy + h*k1s/2
+                k2s = self._eval(f, x + h/2, y + h*k1y/2)
 
-            k3y = s + h*k2s/2
-            k3s = self._eval(f, x + h/2, y + h*k2y/2)
+                k3y = dy + h*k2s/2
+                k3s = self._eval(f, x + h/2, y + h*k2y/2)
 
-            k4y = s + h*k3s
-            k4s = self._eval(f, x + h, y + h*k3y)
+                k4y = dy + h*k3s
+                k4s = self._eval(f, x + h, y + h*k3y)
 
-            y = y + (h/6)*(k1y + 2*k2y + 2*k3y + k4y)
-            s = s + (h/6)*(k1s + 2*k2s + 2*k3s + k4s)
-            x = x + h
+                y = y + (h/6)*(k1y + 2*k2y + 2*k3y + k4y)
+                dy = dy + (h/6)*(k1s + 2*k2s + 2*k3s + k4s)
+                x = x + h
 
-        return {"y_end": y, "target": beta}
+            return y
+
+        # Newton iterations
+        for _ in range(6):
+            y_s = solve_ivp_with_slope(s)
+            y_s_eps = solve_ivp_with_slope(s + 1e-6)
+
+            derivative = (y_s_eps - y_s) / 1e-6
+            if abs(derivative) < 1e-12:
+                break
+
+            s = s - (y_s - beta) / derivative
+
+        return {"y_end": solve_ivp_with_slope(s), "target": beta}
 
     # ============================================================
-    # Finite differences (BVP)
+    # Finite differences (CORREGIDO para y'' = g(x, y))
     # ============================================================
     def finite_differences(self, instance):
         f = instance.input_data["function"]
@@ -216,13 +240,13 @@ class ODEExecutor:
 
         for i in range(1, n):
             xi = x0 + i*h
-            A[i-1, i-1] = -2
+
+            A[i-1, i-1] = -2 - h**2 * self._eval(f, xi, 0)
+
             if i > 1:
                 A[i-1, i-2] = 1
             if i < n-1:
                 A[i-1, i] = 1
-
-            b[i-1] = h**2 * self._eval(f, xi, 0)
 
         b[0] -= alpha
         b[-1] -= beta
@@ -244,7 +268,6 @@ class ODEExecutor:
 
         xs, ys = [x0], [y0]
 
-        # Bootstrap with RK2
         k1 = self._eval(f, x0, y0)
         k2 = self._eval(f, x0 + h/2, y0 + h*k1/2)
         y1 = y0 + h*k2
@@ -283,7 +306,6 @@ class ODEExecutor:
 
         xs, ys = [x0], [y0]
 
-        # Bootstrap with RK4 for 2 steps
         def rk4_step(x, y):
             k1 = self._eval(f, x, y)
             k2 = self._eval(f, x + h/2, y + h*k1/2)
@@ -331,7 +353,6 @@ class ODEExecutor:
 
         xs, ys = [x0], [y0]
 
-        # Bootstrap with RK2
         k1 = self._eval(f, x0, y0)
         k2 = self._eval(f, x0 + h/2, y0 + h*k1/2)
         y1 = y0 + h*k2
@@ -344,14 +365,13 @@ class ODEExecutor:
         y = y1
 
         while x < x_end:
-            # Predictor (Adams–Bashforth 2)
             f_prev = self._eval(f, x - h, y_prev)
             f_curr = self._eval(f, x, y)
+
             y_pred = y + h*(3*f_curr - f_prev)/2
 
-            # Corrector (implicit)
             y_next = y_pred
-            for _ in range(5):  # fixed-point iteration
+            for _ in range(5):
                 f_next = self._eval(f, x + h, y_next)
                 y_next = y + h*(5*f_next + 8*f_curr - f_prev)/12
 
