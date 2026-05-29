@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 
 from core.base_method import NumericalMethod
-from core.exceptions import ValidationError
+from core.exceptions import ValidationError, ConstructionError
 
 
 # ---------------------------------------------------------
@@ -28,7 +28,7 @@ def test_hermite_exact_quadratic():
 
     assert method.validate_input() is True
 
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     # f(1.5) = 2.25
     assert abs(result["value"] - 2.25) < 1e-6
@@ -56,7 +56,7 @@ def test_hermite_general_case():
 
     assert method.validate_input() is True
 
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     # Valor esperado calculado manualmente
     expected = 1.75
@@ -81,7 +81,7 @@ def test_hermite_function_mode():
 
     assert method.validate_input() is True
 
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     # f(1.5) = 3.375
     assert abs(result["value"] - 3.375) < 1e-3
@@ -145,7 +145,8 @@ def test_hermite_missing_derivative_column():
         "f(x)": [1, 3]
     })
 
-    method = NumericalMethod(
+    with pytest.raises(ConstructionError):
+        NumericalMethod(
         method="hermite",
         input_data={
             "mode": "table",
@@ -153,9 +154,6 @@ def test_hermite_missing_derivative_column():
             "xk": 0.5
         }
     )
-
-    with pytest.raises(ValidationError):
-        method.validate_input()
 
 
 # ---------------------------------------------------------
@@ -169,15 +167,12 @@ def test_hermite_invalid_mode():
         "f'(x)": [0, 2]
     })
 
-    method = NumericalMethod(
-        method="hermite",
-        input_data={
-            "mode": "invalid",
-            "data": df,
-            "xk": 0.5
-        }
-    )
-
-    with pytest.raises(ValidationError):
-        method.validate_input()
-
+    with pytest.raises(ConstructionError):
+        NumericalMethod(
+            method="hermite",
+            input_data={
+                "mode": "invalid",
+                "data": df,
+                "xk": 0.5
+            }
+        )
