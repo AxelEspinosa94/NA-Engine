@@ -3,6 +3,7 @@ import pytest
 
 from core.base_method import NumericalMethod
 from core.exceptions import (
+    ConstructionError,
     ValidationError,
     MethodNotFoundError,
 )
@@ -29,7 +30,7 @@ def test_newton_full_pipeline_table_mode():
 
     assert method.validate_input() is True
 
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     # Expected: f(1.5) = 1.5^2 + 1 = 3.25
     assert abs(result["value"] - 3.25) < 1e-6
@@ -55,7 +56,7 @@ def test_newton_full_pipeline_function_mode():
 
     assert method.validate_input() is True
 
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     # Expected: f(1.5) = 3.25
     assert abs(result["value"] - 3.25) < 1e-6
@@ -87,17 +88,15 @@ def test_newton_missing_xk():
 def test_newton_invalid_mode():
     df = pd.DataFrame({"x": [0, 1], "f(x)": [1, 3]})
 
-    method = NumericalMethod(
-        method="newton",
-        input_data={
-            "mode": "invalid",
-            "data": df,
-            "xk": 1
-        }
-    )
-
-    with pytest.raises(ValidationError):
-        method.validate_input()
+    with pytest.raises(ConstructionError):
+        NumericalMethod(
+            method="newton",
+            input_data={
+                "mode": "invalid",
+                "data": df,
+                "xk": 1
+            }
+        )
 
 
 # ---------------------------------------------------------
