@@ -20,7 +20,7 @@ def test_gauss_basic_x2():
         },
     )
 
-    result = method.execute()
+    result = method.execute().get("result", {})
     assert abs(result["value"] - 1/3) < 1e-12
 
 
@@ -40,7 +40,7 @@ def test_gauss_exp():
         },
     )
 
-    result = method.execute()
+    result = method.execute().get("result", {})
     exact = np.e - 1
     assert abs(result["value"] - exact) < 1e-12
 
@@ -61,7 +61,7 @@ def test_gauss_sin():
         },
     )
 
-    result = method.execute()
+    result = method.execute().get("result", {})
     assert abs(result["value"] - 2) < 1e-9
 
 
@@ -84,7 +84,7 @@ def test_gauss_stress():
             },
         )
 
-        result = method.execute()
+        result = method.execute().get("result", {})
         assert abs(result["value"] - exact) < 1e-3
 
 
