@@ -10,6 +10,7 @@ from core.exceptions import (
     ValidationError,
     ExecutionError,
 )
+from core.error_normalizer import ErrorNormalizer
 from core.registry import MethodRegistry
 
 
@@ -97,10 +98,18 @@ class NumericalMethod(ABC):
             logger.info("Executing method '%s'.", self.method)
             result = self.executor.run(self.method_instance)
             logger.debug("Execution completed for method '%s'.", self.method)
-            return result
+            return {
+                "status": "success",
+                "result": result
+            }
         except Exception as e:
             logger.exception("Execution failed for method '%s'.", self.method)
-            raise ExecutionError(f"Execution failed for method '{self.method}'.") from e
+            # Normalize and return the error instead of raising it
+            return ErrorNormalizer.normalize(
+                exception=e,
+                method_name=self.method,
+                input_data=self.input
+            )
 
     def format_output(self, result: Any) -> Dict[str, Any]:
         """
