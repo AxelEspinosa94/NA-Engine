@@ -1,6 +1,6 @@
 import pandas as pd
 from typing import Dict, Any, Optional
-from core.exceptions import ValidationError
+from core.exceptions import ConstructionError
 
 class LagrangeMethod:
     """
@@ -22,7 +22,7 @@ class LagrangeMethod:
         self.mode: str = input_data.get("mode")
         self.xk: float = input_data.get("xk")
         if self.mode not in ("table", "function"):
-            raise ValidationError(
+            raise ConstructionError(
                 "Invalid mode. Must be 'table' or 'function'."
             )
         
@@ -47,4 +47,4 @@ class LagrangeMethod:
             self.df = pd.DataFrame({"x": xs, "f(x)": ys})
 
         else:
-            raise ValueError("Invalid mode for Lagrange interpolation.")
+            raise ConstructionError("Invalid mode for Lagrange interpolation.")
