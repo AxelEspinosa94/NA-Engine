@@ -28,7 +28,7 @@ def test_spline_cubic_exact_function():
 
     assert method.validate_input() is True
 
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     # f(1.5) = 3.375
     assert abs(result["value"] - 3.15) < 1e-6
@@ -55,7 +55,7 @@ def test_spline_cubic_general_case():
 
     assert method.validate_input() is True
 
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     # Valor esperado aproximado (calculado con spline cúbico natural)
     expected = 2.28125
