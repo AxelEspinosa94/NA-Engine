@@ -2,7 +2,7 @@ import pandas as pd
 from typing import Dict, Any
 import numpy as np
 from sympy import sympify, symbols
-from core.exceptions import ValidationError
+from core.exceptions import ConstructionError
 
 class NewtonMethod:
     """
@@ -14,7 +14,7 @@ class NewtonMethod:
         self.mode = input_data.get("mode")
         self.xk = input_data.get("xk")
         if self.mode not in ("table", "function"):
-            raise ValidationError(
+            raise ConstructionError(
                 "Invalid mode. Must be 'table' or 'function'."
             )
         
@@ -35,4 +35,4 @@ class NewtonMethod:
             self.df = pd.DataFrame({"x": xs, "f(x)": ys})
 
         else:
-            raise ValueError("Invalid mode for Newton interpolation.")
+            raise ConstructionError("Invalid mode for Newton interpolation.")
