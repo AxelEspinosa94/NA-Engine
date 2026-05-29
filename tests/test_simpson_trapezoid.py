@@ -23,7 +23,7 @@ def test_trapezoid_simple_x2():
         },
     )
 
-    result = method.execute()
+    result = method.execute().get("result", {})
     assert abs(result["value"] - 0.5) < 1e-12
 
 
@@ -63,7 +63,7 @@ def test_trapezoid_composite_x2():
         },
     )
 
-    result = method.execute()
+    result = method.execute().get("result", {})
     assert abs(result["value"] - 1/3) < 1.7e-3  # trapecio compuesto es O(h^2)
 
 
@@ -87,7 +87,7 @@ def test_simpson_1_3_x2():
         },
     )
 
-    result = method.execute()
+    result = method.execute().get("result", {})
     assert abs(result["value"] - 1/3) < 1e-12
 
 
@@ -128,7 +128,7 @@ def test_simpson_3_8_x2():
         },
     )
 
-    result = method.execute()
+    result = method.execute().get("result", {})
     assert abs(result["value"] - 1/3) < 1e-12
 
 
