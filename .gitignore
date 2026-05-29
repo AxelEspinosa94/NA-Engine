@@ -21,6 +21,7 @@ app/assets/UNAM.png
 app/assets/UNAM1.png
 NA-venv/
 core/base_method_legacy.py
+docs/docs-structure.md
 
 # Distribution / packaging
 .Python
