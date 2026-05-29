@@ -127,7 +127,7 @@ def test_determinant():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     assert pytest.approx(result["determinant"], rel=1e-10) == -2.0
 
@@ -144,7 +144,7 @@ def test_inverse():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     expected = np.linalg.inv(np.array(A))
     assert np.allclose(result["inverse"], expected)
@@ -161,7 +161,7 @@ def test_gauss_solver():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     assert np.allclose(result["solution"], [0, 2.5])
 
@@ -177,7 +177,7 @@ def test_gauss_jordan_solver():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     assert np.allclose(result["solution"], [7.11111111, -3.22222222], atol=1e-6)
 
@@ -196,7 +196,7 @@ def test_cholesky_solver():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     expected = np.linalg.solve(np.array(A), np.array(b))
     assert np.allclose(result["solution"], expected)
@@ -213,7 +213,7 @@ def test_qr_solver():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     assert np.allclose(result["solution"], [1, 1])
 
@@ -232,7 +232,7 @@ def test_jacobi_solver():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     expected = np.linalg.solve(np.array(A), np.array(b))
     assert np.allclose(result["solution"], expected, atol=1e-6)
@@ -252,7 +252,7 @@ def test_gauss_seidel_solver():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     expected = np.linalg.solve(np.array(A), np.array(b))
     assert np.allclose(result["solution"], expected, atol=1e-6)
@@ -277,7 +277,7 @@ def test_lu_decomposition_partial_pivoting():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     P = result["P"]
     L = result["L"]
