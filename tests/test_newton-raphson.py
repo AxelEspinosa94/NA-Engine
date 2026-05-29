@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 from core.base_method import NumericalMethod
-from core.exceptions import ValidationError, ExecutionError
+from core.exceptions import ConstructionError,ValidationError, ExecutionError
 
 
 # ============================================================
@@ -25,7 +25,7 @@ def test_newton_converges_basic():
     method.validate_input()
 
     # Luego ejecutamos
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     assert abs(result["root"] - np.sqrt(2)) < 1e-8
 
@@ -48,7 +48,7 @@ def test_newton_multiple_root():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     assert abs(result["root"] - 1) < 1.8e-6
 
@@ -70,11 +70,10 @@ def test_newton_derivative_zero():
 
     # Validación pasa (x0 existe, function existe)
     method.validate_input()
-
+    response = method.execute()
     # La falla ocurre en ejecución
-    with pytest.raises(ExecutionError):
-        method.execute()
-
+    assert response["status"] == "error"
+    assert response["error_type"] == "ExecutionError"
 
 # ============================================================
 # Divergencia → debe fallar en ejecución
@@ -95,8 +94,10 @@ def test_newton_diverges():
 
     method.validate_input()
 
-    with pytest.raises(ExecutionError):
-        method.execute()
+    response = method.execute()
+    # La falla ocurre en ejecución
+    assert response["status"] == "error"
+    assert response["error_type"] == "ExecutionError"
 
 
 # ============================================================
@@ -117,9 +118,10 @@ def test_newton_max_iter_exceeded():
     )
 
     method.validate_input()
-
-    with pytest.raises(ExecutionError):
-        method.execute()
+    response = method.execute()
+    # La falla ocurre en ejecución
+    assert response["status"] == "error"
+    assert response["error_type"] == "ExecutionError"
 
 
 # ============================================================
@@ -136,11 +138,11 @@ def test_newton_nan():
             "calculation_mode": "newton",
         },
     )
-
     method.validate_input()
-
-    with pytest.raises(ExecutionError):
-        method.execute()
+    response = method.execute()
+    # La falla ocurre en ejecución
+    assert response["status"] == "error"
+    assert response["error_type"] == "ExecutionError"
 
 
 # ============================================================
