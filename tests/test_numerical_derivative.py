@@ -130,7 +130,7 @@ def test_forward_derivative():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     expected = 2 * 2.0  # derivative of x^2 at x=2
     assert np.allclose(result["derivative"], expected, atol=1e-4)
@@ -148,7 +148,7 @@ def test_backward_derivative():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     expected = 3 * 1.0**2
     assert np.allclose(result["derivative"], expected, atol=5e-4)
@@ -166,7 +166,7 @@ def test_central_derivative():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     expected = np.cos(np.pi / 4)
     assert np.allclose(result["derivative"], expected, atol=1e-6)
@@ -185,7 +185,7 @@ def test_richardson_derivative():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     expected = np.exp(1.0)
     assert np.allclose(result["derivative"], expected, atol=1e-6)
@@ -203,7 +203,7 @@ def test_second_forward():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     expected = 6 * 2.0  # second derivative of x^3
     assert np.allclose(result["second_derivative"], expected, atol=1e-3)
@@ -221,7 +221,7 @@ def test_second_central():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     expected = -np.sin(np.pi / 3)
     assert np.allclose(result["second_derivative"], expected, atol=1e-4)
@@ -239,7 +239,7 @@ def test_third_forward():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     expected = 24 * 1.0  # third derivative of x^4
     assert np.allclose(result["third_derivative"], expected, atol=1e-2)
@@ -258,7 +258,7 @@ def test_partial_x():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     expected = 4.0  # ∂/∂x (x*y) = y
     assert np.allclose(result["partial_x"], expected, atol=1e-6)
@@ -277,7 +277,7 @@ def test_partial_y():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     expected = 3.0  # ∂/∂y (x*y) = x
     assert np.allclose(result["partial_y"], expected, atol=1e-6)
