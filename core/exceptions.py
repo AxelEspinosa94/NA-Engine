@@ -14,3 +14,6 @@ class ValidationError(Exception):
 
 class ExecutionError(Exception):
     pass
+
+class ConstructionError(Exception):
+    pass
