@@ -21,7 +21,7 @@ def test_romberg_x2():
         },
     )
 
-    result = method.execute()
+    result = method.execute().get("result", {})
     assert abs(result["value"] - 1/3) < 1e-10
 
 
@@ -40,7 +40,7 @@ def test_romberg_sin():
         },
     )
 
-    result = method.execute()
+    result = method.execute().get("result", {})
     assert abs(result["value"] - 2) < 1e-10
 
 
@@ -59,7 +59,7 @@ def test_romberg_exp():
         },
     )
 
-    result = method.execute()
+    result = method.execute().get("result", {})
     exact = np.e - 1
     assert abs(result["value"] - exact) < 1e-10
 
@@ -79,7 +79,7 @@ def test_romberg_higher_n_stable():
         },
     )
 
-    result = method.execute()
+    result = method.execute().get("result", {})
     assert abs(result["value"] - 1/3) < 1e-12
 
 
