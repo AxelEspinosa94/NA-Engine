@@ -27,7 +27,7 @@ def test_fixed_point_converges():
         },
     )
 
-    result = method.execute()
+    result = method.execute().get("result", {})
     assert abs(result["root"] - 1.6180339887) < 1e-6
 
 
@@ -39,17 +39,23 @@ def test_fixed_point_derivative_ge_1():
     """
     g(x) = 2x → g'(x) = 2 → diverge
     """
-    with pytest.raises(ValidationError):
-        NumericalMethod(
-            method="nonlinear",
-            input_data={
-                "mode": "function",
-                "function": "x",
-                "g": "2*x",
-                "x0": 1.0,
-                "calculation_mode": "fixed_point",
-            },
-        ).execute()
+    method = NumericalMethod(
+        method="nonlinear",
+        input_data={
+            "mode": "function",
+            "function": "x",
+            "g": "2*x",
+            "x0": 1.0,
+            "calculation_mode": "fixed_point",
+        },
+    )
+    
+    method.validate_input()
+
+    response = method.execute()
+
+    assert response["status"] == "error"
+    assert response["error_type"] == "ExecutionError"
 
 
 # ============================================================
@@ -60,19 +66,22 @@ def test_fixed_point_max_iter_exceeded():
     """
     g(x) = cos(x) converge, pero con max_iter muy pequeño debe fallar.
     """
-    with pytest.raises(ValidationError):
-        NumericalMethod(
-            method="nonlinear",
-            input_data={
-                "mode": "function",
-                "function": "cos(x) - x",
+    method = NumericalMethod(
+        method="nonlinear",
+        input_data={
+            "mode": "function",
+            "function": "cos(x) - x",
                 "g": "cos(x)",
                 "x0": 1.0,
                 "tol": 1e-12,
                 "max_iter": 2,
                 "calculation_mode": "fixed_point",
             },
-        ).execute()
+        )
+    method.validate_input()
+    response = method.execute()
+    assert response["status"] == "error"
+    assert response["error_type"] == "ExecutionError"
 
 
 # ============================================================
@@ -117,14 +126,17 @@ def test_fixed_point_nan():
     """
     g(x) = 1/(x-1) produce infinito en x0=1
     """
-    with pytest.raises(ValidationError):
-        NumericalMethod(
-            method="nonlinear",
-            input_data={
-                "mode": "function",
-                "function": "x - 1",
-                "g": "1/(x - 1)",
-                "x0": 1.0,
-                "calculation_mode": "fixed_point",
-            },
-        ).execute()
+    method = NumericalMethod(
+        method="nonlinear",
+        input_data={
+            "mode": "function",
+            "function": "x - 1",
+            "g": "1/(x - 1)",
+            "x0": 1.0,
+            "calculation_mode": "fixed_point",
+        },
+    )
+    method.validate_input()
+    response = method.execute()
+    assert response["status"] == "error"
+    assert response["error_type"] == "ExecutionError"
