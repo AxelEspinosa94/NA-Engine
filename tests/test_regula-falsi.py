@@ -22,7 +22,7 @@ def test_false_position_basic():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     assert abs(result["root"] - np.sqrt(2)) < 1e-6
 
@@ -43,9 +43,9 @@ def test_false_position_no_sign_change():
     )
 
     method.validate_input()
-
-    with pytest.raises(ExecutionError):
-        method.execute()
+    response = method.execute()
+    assert response["status"] == "error"
+    assert response["error_type"] == "ExecutionError"
 
 
 # ============================================================
@@ -85,9 +85,9 @@ def test_false_position_max_iter_exceeded():
     )
 
     method.validate_input()
-
-    with pytest.raises(ExecutionError):
-        method.execute()
+    response = method.execute()
+    assert response["status"] == "error"
+    assert response["error_type"] == "ExecutionError"
 
 
 # ============================================================
@@ -108,7 +108,7 @@ def test_false_position_oscillatory():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     assert abs(result["root"] - np.pi) < 1e-6
 
@@ -129,6 +129,6 @@ def test_false_position_always_positive():
     )
 
     method.validate_input()
-
-    with pytest.raises(ExecutionError):
-        method.execute()
+    response = method.execute()
+    assert response["status"] == "error"
+    assert response["error_type"] == "ExecutionError"
