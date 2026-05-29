@@ -138,7 +138,7 @@ def test_euler_simple():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     y_num = result["y"][-1]
     y_exact = np.e
@@ -159,7 +159,7 @@ def test_heun_simple():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     y_num = result["y"][-1]
     y_exact = np.e
@@ -180,7 +180,7 @@ def test_rk2_simple():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     y_num = result["y"][-1]
     y_exact = np.e
@@ -201,7 +201,7 @@ def test_rk4_simple():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     y_num = result["y"][-1]
     y_exact = np.e
@@ -225,7 +225,7 @@ def test_rk4_system():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     y1_num = result["y"][-1][0]
     y2_num = result["y"][-1][1]
@@ -252,7 +252,7 @@ def test_shooting_method():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     assert abs(result["y_end"] - 1) < 0.05
 
@@ -273,7 +273,7 @@ def test_finite_differences():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     y = result["y"]
     x = result["x"]
@@ -295,7 +295,7 @@ def test_adams_bashforth_2():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     y_num = result["y"][-1]
     assert abs(y_num - np.e) < 0.05
@@ -315,7 +315,7 @@ def test_adams_bashforth_3():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     y_num = result["y"][-1]
     assert abs(y_num - np.e) < 0.02
@@ -335,7 +335,7 @@ def test_adams_moulton_2():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     y_num = result["y"][-1]
     assert abs(y_num - np.e) < 0.02
