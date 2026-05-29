@@ -24,7 +24,7 @@ def test_euler_large_step_unstable():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     # Euler diverge brutalmente, solo verificamos que no truene
     assert np.isfinite(result["y"][-1])
@@ -45,7 +45,7 @@ def test_rk4_large_step_still_reasonable():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     y_num = result["y"][-1]
     y_exact = np.exp(5)
@@ -72,7 +72,7 @@ def test_rk4_tiny_step_precision():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     y_num = result["y"][-1]
     y_exact = np.e
@@ -100,7 +100,7 @@ def test_stiff_equation_rk4():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     y_num = result["y"][-1]
     y_exact = 3 - 0.002*np.exp(-1000) - 2*np.exp(-1)
@@ -130,7 +130,7 @@ def test_rk4_system_large():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     y1 = result["y"][-1][0]
     y_exact = np.cos(20)
@@ -158,7 +158,7 @@ def test_finite_differences_nontrivial():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     x = result["x"]
     y = result["y"]
@@ -185,7 +185,7 @@ def test_adams_bashforth_3_large_step():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     y_num = result["y"][-1]
     y_exact = np.exp(2)
@@ -212,7 +212,7 @@ def test_discontinuous_rhs():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     y_num = result["y"][-1]
     y_exact = 1  # y crece hasta x=1 y luego se queda constante
@@ -242,6 +242,6 @@ def test_shooting_nonlinear():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     assert abs(result["y_end"]) < 0.1
