@@ -1,5 +1,5 @@
 import numpy as np
-from core.exceptions import ValidationError
+from core.exceptions import ValidationError, ExecutionError
 
 class NonLinearExecutor:
 
@@ -40,17 +40,17 @@ class NonLinearExecutor:
         # Validación de convergencia local
         try:
             if abs(gprime(x)) >= 1:
-                raise ValidationError(
+                raise ExecutionError(
                     f"Fixed point method may diverge: |g'(x0)| = {abs(gprime(x))} ≥ 1"
                 )
         except Exception:
-            raise ValidationError("Could not evaluate g'(x0).")
+            raise ExecutionError("Could not evaluate g'(x0).")
 
         for i in range(1, max_iter + 1):
             x_next = g(x)
 
             if not np.isfinite(x_next):
-                raise ValidationError("g(x) produced NaN or infinity.")
+                raise ExecutionError("g(x) produced NaN or infinity.")
 
             # Criterio de paro
             if abs(x_next - x) < tol:
@@ -58,7 +58,7 @@ class NonLinearExecutor:
 
             x = x_next
 
-        raise ValidationError("Fixed point method did not converge within max_iter.")
+        raise ExecutionError("Fixed point method did not converge within max_iter.")
 
     def _bisection(self, instance):
         f = instance.f
@@ -71,7 +71,7 @@ class NonLinearExecutor:
 
         # Validación de cambio de signo
         if fa * fb > 0:
-            raise ValidationError(
+            raise ExecutionError(
                 f"Bisection requires f(a) and f(b) to have opposite signs. "
                 f"f(a)={fa}, f(b)={fb}"
             )
@@ -92,7 +92,7 @@ class NonLinearExecutor:
                 a = c
                 fa = fc
 
-        raise ValidationError("Bisection did not converge within max_iter.")
+        raise ExecutionError("Bisection did not converge within max_iter.")
 
     def _newton(self, instance):
         f = instance.f
@@ -102,22 +102,30 @@ class NonLinearExecutor:
         max_iter = instance.max_iter
 
         if x is None:
-            raise ValidationError("Newton method requires x0.")
+            raise ExecutionError("Newton method requires x0.")
 
         for i in range(1, max_iter + 1):
-            fx = f(x)
-            fpx = fprime(x)
+
+            try:
+                fx = f(x)
+            except Exception as e:
+                raise ExecutionError(f"Newton method failed while evaluating f(x): {e}")
+
+            try:
+                fpx = fprime(x)
+            except Exception as e:
+                raise ExecutionError(f"Newton method failed while evaluating f'(x): {e}")
 
             # Derivada inválida o cero
             if (not np.isfinite(fpx)) or np.isnan(fpx) or abs(fpx) < 1e-14:
-                raise ValidationError("Newton method failed: derivative is zero or invalid.")
+                raise ExecutionError("Newton method failed: derivative is zero or invalid.")
 
             # Siguiente iteración
             x_next = x - fx / fpx
 
             # Validación: NaN o infinito
             if (not np.isfinite(x_next)) or np.isnan(x_next):
-                raise ValidationError("Newton method produced NaN or infinity.")
+                raise ExecutionError("Newton method produced NaN or infinity.")
 
             # Criterio de paro
             if abs(x_next - x) < tol:
@@ -125,7 +133,7 @@ class NonLinearExecutor:
 
             x = x_next
 
-        raise ValidationError("Newton method did not converge within max_iter.")
+        raise ExecutionError("Newton method did not converge within max_iter.")
 
     def _secant(self, instance):
         f = instance.f
@@ -135,7 +143,7 @@ class NonLinearExecutor:
         max_iter = instance.max_iter
 
         if x0 is None or x1 is None:
-            raise ValidationError("Secant method requires x0 and x1.")
+            raise ExecutionError("Secant method requires x0 and x1.")
 
         for i in range(1, max_iter + 1):
             f0 = f(x0)
@@ -144,14 +152,14 @@ class NonLinearExecutor:
             # Validación: denominador no puede ser cero
             denom = f1 - f0
             if denom == 0 or not np.isfinite(denom):
-                raise ValidationError("Secant method failed: zero or invalid denominator.")
+                raise ExecutionError("Secant method failed: zero or invalid denominator.")
 
             # Fórmula de la secante
             x2 = x1 - f1 * (x1 - x0) / denom
 
             # Validación: NaN o infinito
             if not np.isfinite(x2):
-                raise ValidationError("Secant method produced NaN or infinity.")
+                raise ExecutionError("Secant method produced NaN or infinity.")
 
             # Criterio de paro
             if abs(x2 - x1) < tol:
@@ -160,7 +168,7 @@ class NonLinearExecutor:
             # Avanzar iteración
             x0, x1 = x1, x2
 
-        raise ValidationError("Secant method did not converge within max_iter.")
+        raise ExecutionError("Secant method did not converge within max_iter.")
 
 
     def _false_position(self, instance):
@@ -174,7 +182,7 @@ class NonLinearExecutor:
 
         # Validación: debe haber cambio de signo
         if fa * fb > 0:
-            raise ValidationError(
+            raise ExecutionError(
                 f"False Position requires f(a) and f(b) to have opposite signs. "
                 f"f(a)={fa}, f(b)={fb}"
             )
@@ -186,7 +194,7 @@ class NonLinearExecutor:
 
             # Validación: NaN o infinito
             if not np.isfinite(c) or not np.isfinite(fc):
-                raise ValidationError("False Position produced NaN or infinity.")
+                raise ExecutionError("False Position produced NaN or infinity.")
 
             # Criterio de paro
             if abs(fc) < tol:
@@ -200,5 +208,5 @@ class NonLinearExecutor:
                 a = c
                 fa = fc
 
-        raise ValidationError("False Position did not converge within max_iter.")
+        raise ExecutionError("False Position did not converge within max_iter.")
 
