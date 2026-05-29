@@ -6,6 +6,7 @@ from core.exceptions import (
     ValidationError,
     MethodNotFoundError,
     ExecutionError,
+    ConstructionError
 )
 
 
@@ -30,7 +31,7 @@ def test_lagrange_full_pipeline_table_mode():
 
     assert method.validate_input() is True
 
-    result = method.execute()
+    result = method.execute().get("result", {})
     assert abs(result["value"] - 2.0) < 1e-6
     assert "expression" in result
     assert "table" in result
@@ -54,7 +55,7 @@ def test_lagrange_full_pipeline_function_mode():
 
     assert method.validate_input() is True
 
-    result = method.execute()
+    result = method.execute().get("result", {})
     assert isinstance(result["value"], float)
 
 
@@ -84,18 +85,15 @@ def test_lagrange_missing_xk():
 def test_lagrange_invalid_mode():
     df = pd.DataFrame({"x": [0, 1], "f(x)": [1, 3]})
 
-    method = NumericalMethod(
-        method="lagrange",
-        input_data={
-            "mode": "invalid",
-            "data": df,
-            "xk": 1
-        }
-    )
-
-    with pytest.raises(ValidationError):
-        method.validate_input()
-
+    with pytest.raises(ConstructionError):
+        NumericalMethod(
+            method="lagrange",
+            input_data={
+                "mode": "invalid",
+                "data": df,
+                "xk": 1
+            }
+        )
 
 # ---------------------------
 # 5. Test: Method not found in catalog
