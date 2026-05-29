@@ -23,7 +23,7 @@ def test_secant_basic():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     assert abs(result["root"] - np.sqrt(2)) < 1e-6
 
@@ -45,9 +45,9 @@ def test_secant_zero_denominator():
     )
 
     method.validate_input()
-
-    with pytest.raises(ExecutionError):
-        method.execute()
+    response = method.execute()
+    assert response["status"] == "error"
+    assert response["error_type"] == "ExecutionError"
 
 
 # ============================================================
@@ -69,9 +69,9 @@ def test_secant_diverges():
     )
 
     method.validate_input()
-
-    with pytest.raises(ExecutionError):
-        method.execute()
+    response = method.execute()
+    assert response["status"] == "error"
+    assert response["error_type"] == "ExecutionError"
 
 
 # ============================================================
@@ -93,9 +93,9 @@ def test_secant_max_iter_exceeded():
     )
 
     method.validate_input()
-
-    with pytest.raises(ExecutionError):
-        method.execute()
+    response = method.execute()
+    assert response["status"] == "error"
+    assert response["error_type"] == "ExecutionError"
 
 
 # ============================================================
