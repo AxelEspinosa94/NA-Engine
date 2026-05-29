@@ -22,7 +22,7 @@ def test_bisection_basic():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     assert abs(result["root"] - np.sqrt(2)) < 1e-6
 
@@ -44,8 +44,11 @@ def test_bisection_no_sign_change():
 
     method.validate_input()
 
-    with pytest.raises(ExecutionError):
-        method.execute()
+    response = method.execute()
+
+    assert response["status"] == "error"
+    assert response["error_type"] == "ExecutionError"
+
 
 
 # ============================================================
@@ -65,8 +68,10 @@ def test_bisection_reversed_interval():
 
     method.validate_input()
 
-    with pytest.raises(ExecutionError):
-        method.execute()
+    response = method.execute()
+
+    assert response["status"] == "error"
+    assert response["error_type"] == "ExecutionError"
 
 
 # ============================================================
@@ -107,8 +112,10 @@ def test_bisection_max_iter():
 
     method.validate_input()
 
-    with pytest.raises(ExecutionError):
-        method.execute()
+    response = method.execute()
+
+    assert response["status"] == "error"
+    assert response["error_type"] == "ExecutionError"
 
 
 # ============================================================
@@ -129,7 +136,7 @@ def test_bisection_strict_tolerance():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     assert abs(result["root"] - 1.3247179572447458) < 1e-10
 
@@ -153,8 +160,10 @@ def test_bisection_root_at_boundary():
 
     method.validate_input()
 
-    with pytest.raises(ExecutionError):
-        method.execute()
+    response = method.execute()
+
+    assert response["status"] == "error"
+    assert response["error_type"] == "ExecutionError"
 
 
 # ============================================================
@@ -175,7 +184,7 @@ def test_bisection_oscillatory():
     )
 
     method.validate_input()
-    result = method.execute()
+    result = method.execute().get("result", {})
 
     assert abs(result["root"] - np.pi) < 1e-6
 
@@ -197,5 +206,6 @@ def test_bisection_always_positive():
 
     method.validate_input()
 
-    with pytest.raises(ExecutionError):
-        method.execute()
+    response = method.execute()
+    assert response["status"] == "error"
+    assert response["error_type"] == "ExecutionError"
