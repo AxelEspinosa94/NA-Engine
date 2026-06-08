@@ -1,23 +1,8 @@
 {
-  "lagrange": {
-    "classConstructor": "core.interpolation.lagrange.LagrangeMethod",
+  "interpolation": {
+    "classConstructor": "core.interpolation.interpolation.Interpolation",
     "classInputValidator": "strategies.validators.interpolation_validators.InterpolationValidator",
-    "classExecutor": "strategies.executors.lagrange_executors.LagrangeExecutor"
-  },
-  "newton": {
-    "classConstructor": "core.interpolation.newton.NewtonMethod",
-    "classInputValidator": "strategies.validators.interpolation_validators.InterpolationValidator",
-    "classExecutor": "strategies.executors.newton_executors.NewtonExecutor"
-  },
-  "spline_cubic": {
-    "classConstructor": "core.interpolation.splines.SplineConstructor",
-    "classInputValidator": "strategies.validators.spline_validator.SplineValidator",
-    "classExecutor": "strategies.executors.spline_executor.SplineExecutor"
-  },
-  "hermite": {
-    "classConstructor": "core.interpolation.hermite.HermiteMethod",
-    "classInputValidator": "strategies.validators.hermite_validator.HermiteValidator",
-    "classExecutor": "strategies.executors.hermite_executors.HermiteExecutor"
+    "classExecutor": "strategies.executors.interpolation_executors.InterpolationExecutor"
   },
   "integration": {
     "classConstructor": "core.integration.integral.Integral",
