@@ -1,9 +1,8 @@
 # core/contract.py
-from typing import Any, Dict
-from core.renderer import Renderer
+from typing import Dict, Any, Optional
 from app.components.result_view import build_result_view
+from core.renderer import Renderer
 from dash import html, dcc
-
 
 class UIContract:
     def __init__(self, renderer: Renderer | None = None) -> None:
@@ -20,90 +19,85 @@ class UIContract:
             })
             return build_result_view(payload)
 
-        result  = outcome.get("result", {})
-        message = outcome.get("message", "")
-        payload = self.renderer.render(calculation_mode, result)
+        result = outcome.get("result", {})
 
-        explanation = self._build_explanation(
-            method=calculation_mode,
-            input_data=outcome.get("context", {}),
-            result=result,
-            payload=payload,
-        )
+        # resultado compuesto: construir bloques independientes
+        blocks = self._build_blocks(calculation_mode, result)
 
-        children = []
-        if explanation:
-            children.append(dcc.Markdown(
-                explanation,
-                className="result-explanation",
-                mathjax=True,
-            ))
-        if message:
-            children.append(dcc.Markdown(message, className="result-message"))
-
-        children.append(html.Hr())
-        children.append(build_result_view(payload))
-
-        return html.Div(children, className="result-container")
+        return html.Div(blocks, className="result-container")
 
     # ------------------------------------------------------------------
-    # Explicaciones por tipo
+    # Bloques
     # ------------------------------------------------------------------
 
-    def _build_explanation(self, method, input_data, result, payload) -> str:
-        builders = {
-            "scalar":       self._explain_scalar,
-            "vector":       self._explain_vector,
-            "matrix":       self._explain_matrix,
-            "matrix_group": self._explain_matrix_group,
-            "table":        self._explain_table,
-            "plot":         self._explain_plot,
-        }
-        fn = builders.get(payload["type"], self._explain_generic)
-        return fn(method, input_data, result, payload)
+    def _build_blocks(self, calculation_mode: str, result: Dict[str, Any]) -> list:
+        """
+        Inspecciona result y construye una lista ordenada de componentes Dash.
+        Cada clave conocida genera su propio bloque.
+        """
+        blocks = []
 
-    def _explain_scalar(self, method, input_data, result, payload) -> str:
-        return (
-            f"### Resultado: `{payload['label']}`\n\n"
-            f"Usando el método **{method}**, se obtuvo:\n\n"
-            f"$$\\boxed{{{payload['value']:.6g}}}$$"
+        # 1. Valor numérico principal
+        if "value" in result:
+            blocks.append(self._block_value(calculation_mode, result))
+
+        # 2. Expresión simbólica / polinomio
+        if "expression" in result:
+            blocks.append(self._block_expression(result["expression"]))
+
+        # 3. Tabla
+        if "table" in result:
+            blocks.append(self._block_table(result["table"]))
+
+        # 4. Plot (si el executor devuelve x, y)
+        if "x" in result and "y" in result:
+            payload = self.renderer.render(calculation_mode, result)
+            blocks.append(build_result_view(payload))
+
+        # 5. Solución vectorial
+        if "solution" in result and "value" not in result:
+            payload = self.renderer.render(calculation_mode, result)
+            blocks.append(build_result_view(payload))
+
+        # fallback
+        if not blocks:
+            payload = self.renderer.render(calculation_mode, result)
+            blocks.append(build_result_view(payload))
+
+        return blocks
+
+    # ------------------------------------------------------------------
+    # Builders de bloques individuales
+    # ------------------------------------------------------------------
+
+    def _block_value(self, method: str, result: Dict[str, Any]) -> html.Div:
+        value = result["value"]
+        md = (
+            f"### Resultado\n\n"
+            f"$$f(x_k) = \\boxed{{{float(value):.6g}}}$$\n\n"
+            f"Método: **{method}**"
         )
+        return html.Div([
+            dcc.Markdown(md, className="result-explanation", mathjax=True),
+        ])
 
-    def _explain_vector(self, method, input_data, result, payload) -> str:
-        values = ",\\ ".join(f"{v:.4g}" for v in payload["values"])
-        return (
-            f"### Solución vectorial\n\n"
-            f"El método **{method}** retornó:\n\n"
-            f"$$x = [{values}]$$"
-        )
+    def _block_expression(self, expression: str) -> html.Div:
+        md = f"### Polinomio\n\n```\n{expression}\n```"
+        return html.Div([
+            dcc.Markdown(md, className="result-expression"),
+        ])
 
-    def _explain_matrix(self, method, input_data, result, payload) -> str:
-        return (
-            f"### Matriz: `{payload['label']}`\n\n"
-            f"Resultado del método **{method}**."
-        )
+    def _block_table(self, table: Any) -> html.Div:
+        # table puede llegar como DataFrame o como dict {columns, rows}
+        if hasattr(table, "to_dict"):  # es DataFrame
+            columns = list(table.columns)
+            rows    = table.values.tolist()
+        else:
+            columns = table.get("columns", [])
+            rows    = table.get("rows", [])
 
-    def _explain_matrix_group(self, method, input_data, result, payload) -> str:
-        keys = [k for k in ["L", "U", "P"] if k in payload]
-        return (
-            f"### Descomposición **{method.upper()}**\n\n"
-            f"Matrices obtenidas: {', '.join(f'**{k}**' for k in keys)}."
-        )
-
-    def _explain_table(self, method, input_data, result, payload) -> str:
-        n = len(payload.get("rows", []))
-        return (
-            f"### Tabla de resultados\n\n"
-            f"El método **{method}** generó **{n} filas**."
-        )
-
-    def _explain_plot(self, method, input_data, result, payload) -> str:
-        x = payload["x"]
-        return (
-            f"### Curva generada\n\n"
-            f"Intervalo $[{x[0]:.4g},\\ {x[-1]:.4g}]$ "
-            f"con **{len(x)} puntos**."
-        )
-
-    def _explain_generic(self, method, input_data, result, payload) -> str:
-        return f"### Resultado\n\nMétodo: **{method}**."
+        payload = {"type": "table", "columns": columns, "rows": rows}
+        return html.Div([
+            dcc.Markdown("### Tabla de nodos", className="result-explanation"),
+            build_result_view(payload),
+        ])
