@@ -23,7 +23,7 @@ def make_outcome(method, df, xk):
 # ── Volumen ─────────────────────────────────────────────────────────────────
 
 @pytest.mark.parametrize("n", [10, 50, 100])
-@pytest.mark.parametrize("method", ["lagrange", "newton", "splines"])
+@pytest.mark.parametrize("method", ["lagrange", "newton", "spline_cubic"])
 def test_volumen_muchos_nodos(n, method):
     """El método no debe explotar con n nodos equidistantes."""
     x = np.linspace(0, 10, n)
@@ -46,7 +46,7 @@ def test_volumen_hermite(n):
 
 # ── Precisión ────────────────────────────────────────────────────────────────
 
-@pytest.mark.parametrize("method", ["lagrange", "newton", "splines", "hermite"])
+@pytest.mark.parametrize("method", ["lagrange", "newton", "spline_cubic", "hermite"])
 def test_precision_polinomio_grado_2(method):
     """Interpolar x² con nodos exactos debe dar resultado exacto."""
     x = np.array([0.0, 1.0, 2.0, 3.0])
@@ -64,7 +64,7 @@ def test_precision_polinomio_grado_2(method):
     assert abs(outcome["result"]["value"] - expected) < 1e-6
 
 
-@pytest.mark.parametrize("method", ["lagrange", "newton", "splines", "hermite"])
+@pytest.mark.parametrize("method", ["lagrange", "newton", "spline_cubic", "hermite"])
 def test_precision_funcion_lineal(method):
     """Interpolar f(x) = 2x + 1 debe ser exacto para cualquier xk."""
     x = np.array([0.0, 1.0, 2.0, 3.0])
@@ -99,7 +99,7 @@ def test_runge_grado_alto(method):
     assert outcome["status"] in ("success", "error")
 
 
-@pytest.mark.parametrize("method", ["lagrange", "newton", "splines", "hermite"])
+@pytest.mark.parametrize("method", ["lagrange", "newton", "spline_cubic", "hermite"])
 def test_determinismo(method):
     """El mismo input siempre produce el mismo output."""
     x = np.array([0.0, 1.0, 2.0, 3.0])
@@ -118,7 +118,7 @@ def test_determinismo(method):
 
 # ── UIContract ───────────────────────────────────────────────────────────────
 
-@pytest.mark.parametrize("method", ["lagrange", "newton", "splines", "hermite"])
+@pytest.mark.parametrize("method", ["lagrange", "newton", "spline_cubic", "hermite"])
 def test_contract_devuelve_div(method):
     """El full process hasta html.Div no debe explotar."""
     x = np.array([0.0, 1.0, 2.0, 3.0])
@@ -135,7 +135,7 @@ def test_contract_devuelve_div(method):
     assert result.children  # no debe ser un Div vacío
 
 
-@pytest.mark.parametrize("method", ["lagrange", "newton", "splines", "hermite"])
+@pytest.mark.parametrize("method", ["lagrange", "newton", "spline_cubic", "hermite"])
 def test_contract_error_devuelve_div(method):
     """Un outcome de error también debe producir un html.Div limpio."""
     outcome = {
