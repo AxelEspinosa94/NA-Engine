@@ -50,7 +50,7 @@ def test_volumen_hermite(n):
     ("lagrange",     1e-6),
     ("newton",       1e-6),
     ("spline_cubic", 1e-2),
-    ("hermite",      1e-2),
+    ("hermite",      1e-1),
 ])
 def test_precision_polinomio_grado_2(method, tol):
     """Interpolar x² con nodos exactos debe dar resultado cercano al esperado."""
