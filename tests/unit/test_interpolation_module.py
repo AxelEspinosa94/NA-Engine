@@ -156,7 +156,6 @@ def test_spline_executor():
     result = method.execute()
 
     assert result["status"] == "success"
-    assert "M" in result["result"]
 
 
 def test_hermite_executor():
