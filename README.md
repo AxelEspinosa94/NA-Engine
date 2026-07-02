@@ -1,382 +1,229 @@
-<p align="center">
 
+---
+
+# 📘 **NA‑Engine — Numerical Analysis Engine (Python 3.12, MIT License)**
+
+<p align="center">
   <img src="https://img.shields.io/badge/Python-3.12-blue?logo=python&logoColor=white" />
   <img src="https://img.shields.io/badge/Framework-Dash-0099ff?logo=plotly&logoColor=white" />
   <img src="https://img.shields.io/badge/License-MIT-green.svg" />
   <img src="https://img.shields.io/badge/Status-Active-success" />
-  <img src="https://img.shields.io/badge/Assets-AI%20Generated-ff69b4?logo=openai&logoColor=white" />
   <img src="https://img.shields.io/badge/Tests-pytest-blueviolet" />
   <img src="https://img.shields.io/badge/Domain-Numerical%20Analysis-orange" />
-
+  <img src="https://img.shields.io/github/actions/workflow/status/AxelEspinosa94/NA-Engine/tests.yml?branch=main&label=CI%20Tests&color=brightgreen&style=flat" />
 </p>
 
 ---
 
-# 📘 **README v1.2 — NA‑Engine (Python 3.12, MIT License)**
+# 🧩 Overview
 
-# NA‑Engine
-NA‑Engine is a modular, extensible, and interactive engine for solving Numerical Methods, Numerical Analysis, and Differential Equations problems.  
-Built with Python **3.12** and powered by Dash, it provides automated computations, mathematical rendering, and structured outputs for academic, scientific, and engineering use.
+**NA‑Engine** is a modular, extensible, and interactive engine for solving **Numerical Methods**, **Numerical Analysis**, and **Differential Equations** problems.  
+Built with **Python 3.12** and powered by **Dash**, it provides automated computations, mathematical rendering, plotting, and structured outputs for academic, scientific, and engineering use.
 
----
+Its architecture is fully layered, separating:
 
-## 🚀 Features
+- Construction  
+- Validation  
+- Execution  
+- Rendering  
+- UI Contract  
+- Dash UI  
 
-- Interactive Dash web application
-- Numerical Methods:
-  - Interpolation (Newton, Lagrange, Splines)
-  - Numerical Integration (Simpson, Trapezoidal)
-  - Non-linear Systems (Fixed Point, Bisection, Secant, Newton-Raphson, False Position)
-  - Differential Equations (Euler, Runge–Kutta, Systems)
-- Markdown‑based mathematical output
-- Modular OOP architecture for numerical algorithms
-- Ready for unit testing with `pytest`
-- Clean separation between UI, callbacks, and computation logic
-- Expandable structure for new numerical methods and solvers
+This makes the engine highly testable, maintainable, and easy to extend.
 
 ---
 
-## 📁 Repository Structure
+# 🚀 Features
+
+### 🔧 Core Capabilities
+- Interactive Dash web application  
+- Hybrid input modes:
+  - Editable tables  
+  - Function‑generated nodes  
+  - File uploads (CSV, TXT, Excel, JSON)
+
+### 📐 Numerical Methods
+- **Interpolation**: Newton, Lagrange, Cubic Splines, Hermite  
+- **Numerical Integration**: Simpson, Trapezoidal  
+- **Non‑linear Systems**: Fixed Point, Bisection, Secant, Newton–Raphson, False Position  
+- **Differential Equations**:
+  - Euler  
+  - Heun  
+  - RK2, RK4  
+  - RKF45  
+  - Systems of ODEs  
+  - Shooting & Finite Differences (BVP)  
+  - Adams–Bashforth & Adams–Moulton  
+- **Matrix Methods**: LU, Cholesky, Gauss, Inverse, Determinant  
+- **Numerical Derivatives**: forward, backward, central, higher‑order  
+
+### 🧱 Architecture
+- Modular OOP design  
+- Clean separation between UI, callbacks, and computation logic  
+- Extensible method catalog (JSON‑based)  
+- Typed payload rendering (scalar, vector, matrix, plot, table, markdown)
+
+### 🧪 Hybrid Testing Environment
+- **Local unit tests** (pytest) for numerical algorithms  
+- **Server‑side integration tests** via GitHub Actions  
+- **Local UI interaction tests** using `dash.testing`  
+
+> Los entornos de pruebas son híbridos:  
+> - Los **unit tests** se ejecutan localmente sobre los métodos numéricos.  
+> - Los **integration tests** corren en GitHub Actions para validar el pipeline completo.  
+> - Las pruebas de UI se ejecutan localmente con `dash.testing` durante el MVP.
+
+---
+
+# 📁 Repository Structure
 
 ```
 NA-Engine/
 │
-├── app/                         
-│   ├── __init__.py
-│   ├── app.py                   
-│   ├── layout/                  
-│   │   ├── base_layout.py
-│   │   ├── home_layout.py
-│   │   ├── interpolation_layout.py
-│   │   ├── integration_layout.py
-│   │   ├── navigation_layout.py
-│   │   └── ode_layout.py
-│   │
-│   ├── callbacks/               
-│   │   ├── integration_callbacks.py
-│   │   ├── interpolation_callbacks.py
-│   │   ├── navigation_callbacks.py
-│   │   ├── ode_callbacks.py
-│   │   └── theme_callbacks.py
-│   │
-│   └── assets/                  
-│       ├── base.css
-│       ├── components.css
-│       ├── dark.css
-│       ├── layout.css
-│       ├── responsive.css
-│       ├── theme.css
-│       ├── hero2.png
-│       ├── puma3.png
-│       └── puma4.png
+├── app/
+│   ├── app.py
+│   ├── layout/
+│   ├── callbacks/
+│   ├── components/
+│   └── assets/
 │
-├── core/                        
-│   ├── __init__.py
-│   ├── base_method.py           
-│   ├── registry.py              # <-- JSON catalog loader
-│   ├── exceptions.py            # <-- Fine Exceptions
-│   ├── method_catalog.json      # <-- Method catalog
-│   │
-│   ├── interpolation/
-│   │   ├── newton.py
-│   │   ├── lagrange.py
-│   │   └── splines.py
-│   │
-│   ├── integration/
-│   │   └── integral.py
-│   │
-│   ├── nonlinear/
-│   │   └── Non-linear-base.py
-|   |
-│   └── ode/
-│       ├── euler.py
-│       ├── runge_kutta.py
-│       └── systems.py
+├── core/
+│   ├── base_method.py
+│   ├── contract.py
+│   ├── renderer.py
+│   ├── registry.py
+│   ├── exceptions.py
+│   ├── error_normalizer.py
+│   ├── method_catalog.json
+│   └── modules...
 │
-├── strategies/                  # <-- NUEVO: validators, executors, formatters
-│   ├── __init__.py
+├── strategies/
 │   ├── validators/
-│   │   ├── __init__.py
-│   │   ├── interpolation_validators.py # This file will encapsulate the validation for all interpolation methods unless there are specific conditions to split
-│   │   ├── integration_validators.py
-│   │   └── ode_validators.py
-│   │
-│   ├── executors/
-│   │   ├── __init__.py
-│   │   ├── lagrange_executors.py
-│   │   ├── newton_executors.py
-│   │   ├── integration_executors.py
-│   │   └── ode_executors.py # TBD
-│   │
-│   └── formatters/
-│       ├── __init__.py
-│       └── table_formatter.py
+│   └── executors/
 │
-├── tests/                       
-│   ├── test_gauss.py
-│   ├── test_hermite.py
-│   ├── test_lagrange.py
-│   ├── test_newton.py
-│   ├── test_ode.py
-│   ├── test_romberg.py
-│   ├── test_test_simpson_trapezoid.py
-│   └── test_spline_cubic.py
+├── docs/
+│   ├── arch/
+│   ├── backend/
+│   ├── error/
+│   ├── modules/
+│   ├── theory/
+│   └── ui/
 │
-├── examples/                    
+├── tests/
+│   ├── unit/
+│   └── integration/
 │
-├── requirements.txt
-├── run.py                       
+├── scripts/
+├── examples/
+├── run.py
 └── README.md
-
 ```
 
 ---
 
-## ▶️ Running the Application
+# ▶️ Running the Application
 
-### **1. Install dependencies (Python 3.12)**
+### 1. Install dependencies (Python 3.12)
 
 ```
 pip install -r requirements.txt
 ```
 
-### **2. Start the application**
+### 2. Start the application
 
 ```
 python run.py
 ```
 
-The app will start locally and provide a URL such as:
+Then open:
 
 ```
-`http://127.0.0.1:8050/`
+http://127.0.0.1:8050/
 ```
-
-Open it in your browser to use NA‑Engine.
 
 ---
 
-## 🖼️ Screenshots
-
-Below are previews of the NA‑Engine interface in both **light** and **dark** themes.
+# 🖼️ Screenshots
 
 ### 🌞 Light Theme
-
 <p align="center">
   <img src="app/assets/main-light.png" width="800">
 </p>
 
-<p align="center">
-  <img src="app/assets/main-light-1.png" width="800">
-</p>
-
-
-<p align="center">
-  <img src="app/assets/main-light-2.png" width="800">
-</p>
-
-
 ### 🌙 Dark Theme
-
 <p align="center">
   <img src="app/assets/main-dark.png" width="800">
 </p>
 
-<p align="center">
-  <img src="app/assets/main-dark-1.png" width="800">
-</p>
+---
 
+# 🧠 Architecture Overview
 
-<p align="center">
-  <img src="app/assets/main-dark-2.png" width="800">
-</p>
+NA‑Engine follows a clean, scalable architecture based on **layered contracts**.
+
+### 🔹 Dash UI Layer
+Layouts + callbacks, fully decoupled from numerical logic.
+
+### 🔹 Core Numerical Engine
+`NumericalMethod` orchestrates:
+- Constructor  
+- Validator  
+- Executor  
+
+### 🔹 Renderer Layer
+Transforms raw results into typed payloads.
+
+### 🔹 UIContract Layer
+Builds Dash components based on payload type.
 
 ---
 
-## Core Calculator UML Diagram
-```mermaid
-classDiagram
-    class NumericalMethod {
-        - method: str
-        - input: dict
-        - kwargs: dict
-        - catalog: dict
-        + validate_input() bool
-        + execute() Any
-        + format_output(result) dict
-    }
+# 🧪 Testing Strategy
 
-    class MethodRegistry {
-        + load_catalog() dict
-        + get_method_info(method: str) dict
-    }
+### 1. Local Unit Tests (pytest)
+Validan:
+- Correctitud  
+- Estabilidad numérica  
+- Precisión  
+- Comportamiento determinista  
+- Stress tests con DataFrames grandes  
 
-    class BaseValidator {
-        <<interface>>
-        + validate(input_data: dict) bool
-    }
+### 2. Integration Tests (GitHub Actions)
+Validan:
+- Pipeline completo  
+- Consistencia entre módulos  
+- Manejo de errores  
+- Estabilidad del renderer  
 
-    class BaseExecutor {
-        <<interface>>
-        + run(instance: Any) Any
-    }
-
-    class NewtonInterpolation
-    class NewtonInputValidator
-    class NewtonExecutor
-
-    NumericalMethod --> MethodRegistry : uses
-    NumericalMethod --> BaseValidator : composes
-    NumericalMethod --> BaseExecutor : composes
-
-    NewtonInputValidator ..|> BaseValidator
-    NewtonExecutor ..|> BaseExecutor
-```
----
-
-## 🟦 **Execution Flow in NA‑Engine**
-
-```mermaid
-flowchart TD
-
-    %% User
-    A[User provides input_data] --> B[Create NumericalMethod instance]
-
-    %% NumericalMethod
-    B --> C{Select method type}
-
-    %% Specific constructor
-    C -->|integration| D[Constructor: Integral]
-    C -->|nonlinear| E[Constructor: NonLinearEquation]
-    C -->|interpolation| F[Constructor: Interpolation]
-    C -->|others| G[Other constructor]
-
-    %% method_instance created
-    D --> H[method_instance created]
-    E --> H
-    F --> H
-    G --> H
-
-    %% Validation
-    H --> I[User calls validate_input]
-    I -->|valid| J[Validation successful]
-    I -->|invalid| X[ValidationError]
-
-    %% Execution
-    J --> K[User calls execute]
-
-    %% Executor selection
-    K --> L{Select executor based on calculation_mode}
-
-    %% Executor examples
-    L -->|simpson| M[IntegrationExecutor simpson]
-    L -->|trapezoid| N[IntegrationExecutor trapezoid]
-    L -->|newton| O[NonLinearExecutor newton]
-    L -->|secant| P[NonLinearExecutor secant]
-    L -->|bisection| Q[NonLinearExecutor bisection]
-    L -->|others| R[Other executor]
-
-    %% Result or error
-    M --> S[Final result]
-    N --> S
-    O --> S
-    P --> S
-    Q --> S
-    R --> S
-
-    %% ExecutionError
-    M --> Y[ExecutionError]
-    N --> Y
-    O --> Y
-    P --> Y
-    Q --> Y
-    R --> Y
-```
+### 3. UI Interaction Tests (dash.testing)
+Validan:
+- Comportamiento dinámico  
+- Callbacks  
+- Renderizado  
+- Manejo de tablas y uploads  
 
 ---
 
-## Unit Testing
+# 🛣️ Roadmap
 
-```
-python -m pytest -q
-```
-
-Will execute all scripts inside the tests folder that matches the following conventions:
-
-- Filename like `test_*.py` or `*_test.py`
-- Functions inside are named `test_*`
-- Classes inside are named `Test*` and must not have `__init__` function
-
-If we only want to execute a single file we perform
-
-```
-python tests\test_<method-name>.py -q
-```
-
-And furthermore, if we want only to execute a single test we perform
-
-```
-python tests\test_<method-name>.py::test_<test-name> -q
-```
-
-If we want to skip one file, either we change the name of the file or write the following code at the beginning
-
-```python
-pytestmark = pytest.mark.skip("Work in progress")
-```
+- [X] Hermite & Barycentric interpolation  
+- [X] Advanced ODE solvers (RK45, Adams–Bashforth)  
+- [X] CI/CD pipeline  
+- [X] Symbolic support (SymPy)  
+- [ ] PDE solvers (Heat, Wave, Laplace)  
+- [ ] Docker support  
+- [ ] Django backend integration  
 
 ---
 
-### 📌 Notes
+# 📜 License
 
-
-
----
-
-## 🧠 Architecture Overview
-
-NA‑Engine follows a clean, scalable architecture:
-
-### **Dash UI Layer**
-Layouts and callbacks separated by module for clarity and maintainability.
-
-### **Core Numerical Engine**
-Each numerical method is implemented as a class inheriting from `NumericalMethod`, enabling:
-
-- Polymorphism  
-- Reusability  
-- Testability  
-- Extensibility  
-
-### **Testing Layer**
-`pytest`‑based unit tests ensure correctness and prevent regressions as the engine grows.
+Licensed under the **MIT License**.
 
 ---
 
-## 🛣️ Roadmap
+# ✨ Author
 
-- [X] Improve UI/UX with custom CSS and components
-- [ ] Add Hermite and Barycentric interpolation
-- [ ] Add advanced ODE solvers (RK45, Adams–Bashforth)
-- [ ] Add PDE solvers (Heat, Wave, Laplace)
-- [ ] Add symbolic support (SymPy)
-- [ ] Add CI/CD pipeline (GitLab or GitHub Actions)
-- [ ] Add Docker support
-- [ ] Add Django backend integration
-
+Developed by **Axel Espinosa, M. Sc.**
 
 ---
-
-## 📜 License — MIT
-
-This project is licensed under the **MIT License**, allowing free use, modification, and distribution with attribution.
-
----
-
-## ✨ Author
-
-Developed by **Axel Espinosa M. Sc.**
-
-
----
-
