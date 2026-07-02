@@ -29,43 +29,66 @@ class UIContract:
     # ------------------------------------------------------------------
     # Bloques
     # ------------------------------------------------------------------
-
     def _build_blocks(self, calculation_mode: str, result: Dict[str, Any]) -> list:
-        """
-        Inspecciona result y construye una lista ordenada de componentes Dash.
-        Cada clave conocida genera su propio bloque.
-        """
         blocks = []
 
-        # 1. Valor numérico principal
         if "value" in result:
             blocks.append(self._block_value(calculation_mode, result))
 
-        # 2. Expresión simbólica / polinomio
         if "expression" in result:
             blocks.append(self._block_expression(result["expression"]))
 
-        # 3. Tabla
+        # Gráfica con nodos superpuestos
+        if "x" in result and "y" in result:
+            blocks.append(self._block_plot(result))
+
         if "table" in result:
             blocks.append(self._block_table(result["table"]))
 
-        # 4. Plot (si el executor devuelve x, y)
-        if "x" in result and "y" in result:
-            payload = self.renderer.render(calculation_mode, result)
-            blocks.append(build_result_view(payload))
-
-        # 5. Solución vectorial
-        if "solution" in result and "value" not in result:
-            payload = self.renderer.render(calculation_mode, result)
-            blocks.append(build_result_view(payload))
-
-        # fallback
         if not blocks:
             payload = self.renderer.render(calculation_mode, result)
             blocks.append(build_result_view(payload))
 
         return blocks
 
+    def _block_plot(self, result: Dict[str, Any]) -> html.Div:
+        import plotly.graph_objects as go
+        from dash import dcc
+
+        fig = go.Figure()
+
+        # Curva del polinomio
+        fig.add_trace(go.Scatter(
+            x=result["x"],
+            y=result["y"],
+            mode="lines",
+            name="P(x)",
+            line=dict(color="#dec6e5", width=2),
+        ))
+
+        # Nodos originales del df
+        if "x_nodes" in result and "y_nodes" in result:
+            fig.add_trace(go.Scatter(
+                x=result["x_nodes"],
+                y=result["y_nodes"],
+                mode="markers",
+                name="Nodos",
+                marker=dict(color="#e5c07b", size=8, symbol="circle"),
+            ))
+
+        fig.update_layout(
+            template="plotly_dark",
+            margin=dict(l=20, r=20, t=30, b=20),
+            xaxis_title="x",
+            yaxis_title="P(x)",
+            legend=dict(orientation="h", y=-0.2),
+        )
+
+        return html.Div([
+            dcc.Markdown("### Gráfica del polinomio", className="result-explanation"),
+            dcc.Graph(figure=fig, className="result-plot"),
+        ])
+    
     # ------------------------------------------------------------------
     # Builders de bloques individuales
     # ------------------------------------------------------------------
