@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from core.base_method import NumericalMethod
 from core.contract import UIContract
-from core.exceptions import ValidationError
+from core.exceptions import ValidationError, InputError
 from app.callbacks.interpolation_callbacks import _build_dataframe_from_upload
 from dash import html
 
@@ -104,7 +104,7 @@ def test_upload_volumen_csv(n):
 
 def test_upload_none_contents():
     """Sin archivo debe lanzar ValidationError."""
-    with pytest.raises(ValidationError):
+    with pytest.raises(InputError):
         _build_dataframe_from_upload("lagrange", None, "data.csv")
 
 
@@ -112,21 +112,21 @@ def test_upload_formato_no_soportado():
     """Formato desconocido debe lanzar ValidationError."""
     df = make_df(10, "lagrange")
     contents = encode_csv(df).replace("text/csv", "text/xml")
-    with pytest.raises(ValidationError):
+    with pytest.raises(InputError):
         _build_dataframe_from_upload("lagrange", contents, "data.xml")
 
 
 def test_upload_columnas_faltantes():
     """CSV sin columna y debe lanzar ValidationError."""
     df = pd.DataFrame({"x": np.linspace(0, 10, 10)})
-    with pytest.raises(ValidationError):
+    with pytest.raises(InputError):
         _build_dataframe_from_upload("lagrange", encode_csv(df), "data.csv")
 
 
 def test_upload_hermite_sin_dy():
     """CSV sin columna dy para Hermite debe lanzar ValidationError."""
     df = pd.DataFrame({"x": np.linspace(0, 10, 10), "y": np.sin(np.linspace(0, 10, 10))})
-    with pytest.raises(ValidationError):
+    with pytest.raises(InputError):
         _build_dataframe_from_upload("hermite", encode_csv(df), "data.csv")
 
 
@@ -148,7 +148,7 @@ def test_full_process_upload(method, n):
     df = _build_dataframe_from_upload(method, encode_csv(df_original), "data.csv")
 
     input_data = {
-        "mode":             "upload",
+        "mode":             "table",
         "data":             df,
         "xk":               5.0,
         "calculation_mode": method,
