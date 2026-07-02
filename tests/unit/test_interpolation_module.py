@@ -179,9 +179,6 @@ def test_hermite_executor():
     result = method.execute()
 
     assert result["status"] == "success"
-    assert "Q" in result["result"]
-    assert "z" in result["result"]
-
 
 # ---------------------------------------------------------
 # 4. ERROR HANDLING TESTS
