@@ -31,7 +31,7 @@ def _build_dataframe_from_function(method: str, fn_expr: str, a: float, b: float
         try:
             return float(eval(expr, {"__builtins__": {}}, {"x": x, "np": np}))
         except Exception as e:
-            raise ValidationError(f"Error evaluando f(x): {e}")
+            raise InputError(f"Error evaluando f(x): {e}")
 
     # Evaluar f(x)
     ys = [safe_eval(fn_expr, x) for x in xs]
@@ -44,7 +44,7 @@ def _build_dataframe_from_function(method: str, fn_expr: str, a: float, b: float
             df_sym = sp.diff(f_sym, x_sym)
             dys = [float(df_sym.subs(x_sym, x)) for x in xs]
         except Exception as e:
-            raise ValidationError(f"Error calculando derivada: {e}")
+            raise InputError(f"Error calculando derivada: {e}")
 
         return pd.DataFrame({"x": xs, "y": ys, "dy": dys})
 
@@ -58,7 +58,7 @@ def _build_dataframe_from_upload(method: str, contents: str, filename: str) -> p
     """
 
     if contents is None:
-        raise ValidationError("No se ha cargado ningún archivo.")
+        raise InputError("No se ha cargado ningún archivo.")
 
     content_type, content_string = contents.split(',')
     decoded = base64.b64decode(content_string)
@@ -78,17 +78,17 @@ def _build_dataframe_from_upload(method: str, contents: str, filename: str) -> p
             df = pd.read_json(io.StringIO(decoded.decode("utf-8")))
 
         else:
-            raise ValidationError(f"Formato no soportado: {filename}")
+            raise InputError(f"Formato no soportado: {filename}")
 
     except Exception as e:
-        raise ValidationError(f"Error leyendo archivo: {e}")
+        raise InputError(f"Error leyendo archivo: {e}")
 
     # Validar columnas según método
     required = ["x", "y", "dy"] if method == "hermite" else ["x", "y"]
 
     missing = [c for c in required if c not in df.columns]
     if missing:
-        raise ValidationError(f"Faltan columnas requeridas: {missing}")
+        raise InputError(f"Faltan columnas requeridas: {missing}")
 
     # Convertir a numérico y limpiar
     df = df[required].apply(pd.to_numeric, errors="coerce").dropna()
@@ -224,10 +224,10 @@ def register_interpolation_callbacks(app):
         try:
             nm = NumericalMethod("interpolation", input_data)
             nm.validate_input()
-        except ValidationError as e:
+        except InputError as e:
             return contract.resolve(method, {
                 "status":     "error",
-                "error_type": "ValidationError",
+                "error_type": "InputError",
                 "message":    str(e),
                 "context":    input_data,
             })
