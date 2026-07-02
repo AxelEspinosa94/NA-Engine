@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 from core.base_method import NumericalMethod
-from core.exceptions import ValidationError
+from core.exceptions import ValidationError, ConstructionError, ExecutionError
 
 
 # ============================================================
@@ -89,7 +89,7 @@ def test_fixed_point_max_iter_exceeded():
 # ============================================================
 
 def test_fixed_point_missing_g():
-    with pytest.raises(ValidationError):
+    with pytest.raises(ConstructionError):
         NumericalMethod(
             method="nonlinear",
             input_data={
