@@ -17,3 +17,6 @@ class ExecutionError(Exception):
 
 class ConstructionError(Exception):
     pass
+
+class InputError(Exception):
+    pass
