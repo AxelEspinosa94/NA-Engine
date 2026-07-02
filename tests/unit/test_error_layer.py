@@ -137,9 +137,9 @@ def test_execute_returns_normalized_construction_error():
     
     with pytest.raises(ConstructionError):
         NumericalMethod(
-            method="lagrange",
+            method="interpolation",
             input_data={
-                "mode": "lagrange",
+                "calculation_mode": "lagrange",
                 "points": "corrupted",  # fuerza ConstructionError
             },
         )
