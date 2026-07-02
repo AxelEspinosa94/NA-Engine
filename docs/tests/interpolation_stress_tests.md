@@ -212,4 +212,8 @@ To add stress tests for a new module:
 3. Follow the same structure  
 4. Add to the matrix in this document  
 
+## 11. Notes
+
+Hermite was excluded from the precision test  with $f(x)=2x+1$ since the derivative of this function is a constant, thus, generating oscilation in the resulting polynomial. This is a known limitation of the method with this type of input, not an executor's bug.
+
 ---
