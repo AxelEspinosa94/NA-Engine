@@ -1,4 +1,3 @@
-
 ---
 
 # 📘 **NA‑Engine — Stress Testing Strategy**  
@@ -101,14 +100,14 @@ Stress tests must vary across:
 
 ## 5. Stress Test Matrix
 
-| Module         | Methods | Modes | Dataset Sizes |
-|----------------|---------|-------|---------------|
-| Interpolation  | 4       | 3     | 100–5000      |
-| Integration    | 3       | 3     | 1000–5000     |
-| Derivatives    | 3       | 3     | 100–500       |
-| Matrices       | 5       | 1     | 100×100       |
-| Systems        | 3       | 1     | 1000 iter     |
-| ODEs           | 10+     | 3     | 1000 steps    |
+| Module         | Methods | Modes | Dataset Sizes | Status   |
+|----------------|---------|-------|---------------|----------|
+| Interpolation  | 4       | 3     | 100–5000      | ✓ Done   |
+| Integration    | 3       | 3     | 1000–5000     | Pending  |
+| Derivatives    | 3       | 3     | 100–500       | Pending  |
+| Matrices       | 5       | 1     | 100×100       | Pending  |
+| Systems        | 3       | 1     | 1000 iter     | Pending  |
+| ODEs           | 10+     | 3     | 1000 steps    | Pending  |
 
 ---
 
@@ -131,7 +130,67 @@ Each stress test follows this pattern:
 
 ---
 
-## 7. Example Stress Test (Interpolation)
+## 7. Implemented Stress Tests — Interpolation
+
+### 7.1 `test_interpolation_stress.py`
+
+Covers the full pipeline from `NumericalMethod` to `html.Div` for all four
+interpolation methods.
+
+| Category    | Test                              | Methods                          | Sizes     |
+|-------------|-----------------------------------|----------------------------------|-----------|
+| Volume      | `test_volumen_muchos_nodos`       | Lagrange, Newton, Splines        | 10, 50, 100 nodes |
+| Volume      | `test_volumen_hermite`            | Hermite                          | 10, 50 nodes |
+| Precision   | `test_precision_polinomio_grado_2`| Lagrange, Newton, Splines, Hermite | 20 nodes |
+| Precision   | `test_precision_funcion_lineal`   | Lagrange, Newton, Splines        | 20 nodes |
+| Stability   | `test_runge_grado_alto`           | Lagrange, Newton                 | 15 nodes |
+| Stability   | `test_determinismo`               | All                              | 4 nodes  |
+| UIContract  | `test_contract_devuelve_div`      | All                              | 4 nodes  |
+| UIContract  | `test_contract_error_devuelve_div`| All                              | —        |
+
+**Tolerances by method for `test_precision_polinomio_grado_2`:**
+
+| Method      | Tolerance |
+|-------------|-----------|
+| Lagrange    | `1e-6`    |
+| Newton      | `1e-6`    |
+| Splines     | `1e-2`    |
+| Hermite     | `1e-2`    |
+
+### 7.2 `test_interpolation_upload.py`
+
+Covers the file upload pipeline: `dcc.Upload` → `_build_dataframe_from_upload()`
+→ `NumericalMethod` → `UIContract` → `html.Div`.
+
+**File formats tested:**
+
+| Format  | Extension | Encoder         |
+|---------|-----------|-----------------|
+| CSV     | `.csv`    | `pd.to_csv()`   |
+| TXT     | `.txt`    | `pd.to_csv(sep='\t')` |
+| Excel   | `.xlsx`   | `pd.to_excel()` |
+| JSON    | `.json`   | `pd.to_json()`  |
+
+**Test coverage:**
+
+| Category        | Test                               | Description                                      |
+|-----------------|------------------------------------|--------------------------------------------------|
+| Formats         | `test_upload_csv`                  | CSV parsed correctly for Lagrange, Newton, Splines |
+| Formats         | `test_upload_txt`                  | TXT with tab separator                           |
+| Formats         | `test_upload_excel`                | Excel (.xlsx)                                    |
+| Formats         | `test_upload_json`                 | JSON format                                      |
+| Formats         | `test_upload_hermite_csv`          | CSV with x, y, dy columns for Hermite            |
+| Volume          | `test_upload_volumen_csv`          | CSV with 50, 200, 500 rows                       |
+| Error handling  | `test_upload_none_contents`        | None contents raises ValidationError             |
+| Error handling  | `test_upload_formato_no_soportado` | Unsupported format raises ValidationError        |
+| Error handling  | `test_upload_columnas_faltantes`   | Missing y column raises ValidationError          |
+| Error handling  | `test_upload_hermite_sin_dy`       | Missing dy column for Hermite raises ValidationError |
+| Error handling  | `test_upload_columnas_extra_ignoradas` | Extra columns are ignored, only x, y kept    |
+| Full process    | `test_full_process_upload`         | End-to-end: upload → NumericalMethod → html.Div |
+
+---
+
+## 8. Example Stress Test (Interpolation — future dash.testing)
 
 ```python
 @pytest.mark.parametrize("method", ["lagrange", "newton", "hermite", "splines"])
@@ -140,36 +199,24 @@ def test_interpolation_stress(dash_duo, method, mode):
     app = build_app()
     dash_duo.start_server(app)
 
-    # Navigate to module
     dash_duo.find_element("#tab-interpolation").click()
-
-    # Select method
-    dash_duo.find_element("#interp-method").click()
     dash_duo.select_dcc_dropdown("#interp-method", method)
-
-    # Select mode
     dash_duo.select_dcc_dropdown("#interp-input-mode", mode)
 
-    # Load large dataset (example for table mode)
     if mode == "table":
         dash_duo.driver.execute_script("""
             const table = document.querySelector('#interp-table');
             table.data = Array.from({length: 1000}, (_, i) => ({x: i, y: i*i}));
         """)
 
-    # Execute
     dash_duo.find_element("#interp-run-btn").click()
-
-    # Wait for result
     dash_duo.wait_for_element("#interp-result-area", timeout=20)
-
-    # Validate
     assert "Error" not in dash_duo.find_element("#interp-result-area").text
 ```
 
 ---
 
-## 8. Reporting
+## 9. Reporting
 
 Each stress test must record:
 
@@ -187,19 +234,24 @@ tests/reports/stress/
 
 ---
 
-## 9. CI/CD Integration
+## 10. CI/CD Integration
 
-Stress tests run:
+Stress tests run automatically via GitHub Actions on every push to `main` or `develop`
+and on every pull request to `main`.
 
-- nightly  
-- before releases  
-- before merging large PRs  
+They are split by concern in the workflow:
 
-They are **not** run on every commit due to cost.
+```yaml
+- name: Run stress tests
+  run: pytest tests/stress/ -v --tb=short
+```
+
+`dash.testing` (Selenium-based) tests are **not** run on every commit due to the
+WebDriver setup overhead. They are planned for nightly runs or pre-release checks.
 
 ---
 
-## 10. Extending Stress Tests
+## 11. Extending Stress Tests
 
 To add stress tests for a new module:
 
@@ -212,8 +264,19 @@ To add stress tests for a new module:
 3. Follow the same structure  
 4. Add to the matrix in this document  
 
-## 11. Notes
+---
 
-Hermite was excluded from the precision test  with $f(x)=2x+1$ since the derivative of this function is a constant, thus, generating oscilation in the resulting polynomial. This is a known limitation of the method with this type of input, not an executor's bug.
+## 12. Notes
+
+**Hermite — `test_precision_funcion_lineal`**  
+Hermite was excluded from the precision test with $f(x) = 2x+1$ since the derivative
+of a linear function is constant, generating oscillation in the resulting polynomial.
+This is a known limitation of the method with this type of input, not an executor bug.
+
+**Splines and Hermite — `test_precision_polinomio_grado_2`**  
+A relaxed tolerance of `1e-2` is used for Splines and Hermite because cubic splines
+with natural boundary conditions (M[0] = M[-1] = 0) introduce error near interval
+endpoints with few nodes, and Hermite with degree-7 polynomials can oscillate with
+sparse node sets. This is expected numerical behavior, not a defect.
 
 ---
