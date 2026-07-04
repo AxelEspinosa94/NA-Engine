@@ -1,75 +1,115 @@
-# Module Development Checklist
-
-Standardized checklist for implementing a new numerical module in NA-Engine.
-Follow this order to ensure consistency across all modules.
 
 ---
 
-## 1. UI Setup
+# 📋 **NA‑Engine — Module Development Checklist**  
+*Standardized checklist for implementing any numerical module in NA‑Engine.*
 
-- [ ] Identify all required inputs for the module (method selector, input mode,
-      specific parameters like `xk`, `a`, `b`, `n`, tolerance, etc.)
-- [ ] Check existing CSS classes before writing new styles —
-      reuse `.card`, `.input`, `.btn-primary`, `.upload-area`, `.result-area`, etc.
-- [ ] If new styles are needed, base them on an existing functional module
-      (interpolation is the reference) and add them to a dedicated
-      `app/assets/<module>.css` file following the `.dark` override pattern
-- [ ] Build the layout in `app/layout/<module>_layout.py`:
+This checklist ensures consistency across all modules and accelerates development by following the same architectural, UI, backend, testing, and documentation patterns.
+
+---
+
+# 🟦 0. Smoke Test (Before Everything Else)
+
+Create a minimal end‑to‑end test to confirm the module is “alive” before writing full tests.
+
+- [ ] Create `scripts/smoke_<module>.py`
+- [ ] Build a minimal `input_data` dict
+- [ ] Run:
+  ```python
+  nm = NumericalMethod("<module>", input_data)
+  nm.validate_input()
+  outcome = nm.execute()
+  payload = UIContract().resolve(method, outcome)
+  ```
+- [ ] Confirm:
+  - [ ] `outcome["status"] == "success"`
+  - [ ] Renderer returns correct payload types
+  - [ ] UIContract returns a non‑empty `html.Div`
+- [ ] Run the module UI manually in the browser
+- [ ] Confirm dynamic input area loads correctly
+
+---
+
+# 🟦 1. UI Setup
+
+- [ ] Identify all required inputs for the module:
+  - method selector  
+  - input mode (table / function / upload)  
+  - module‑specific parameters (`xk`, `a`, `b`, `n`, `tol`, `max_iter`, etc.)
+- [ ] Reuse existing CSS classes:
+  - `.card`, `.input`, `.btn-primary`, `.upload-area`, `.result-area`, `.dark`
+- [ ] If new styles are needed:
+  - base them on interpolation module  
+  - place them in `app/assets/<module>.css`  
+  - include `.dark` overrides
+- [ ] Build layout in `app/layout/<module>_layout.py`:
   - [ ] Module header (`.module-header`)
   - [ ] Method selector (`dcc.Dropdown`)
-  - [ ] Input mode selector (`dcc.RadioItems`: table / function / upload)
-      when applicable
+  - [ ] Input mode selector (`dcc.RadioItems`) if applicable
   - [ ] Dynamic input area (`html.Div(id="<module>-input-area")`)
-  - [ ] Method-specific parameter inputs (e.g. `xk`, `a`, `b`, `n`)
+  - [ ] Parameter cards (`xk`, `a`, `b`, `n`, `tol`, etc.)
   - [ ] Execute button (`.btn-primary`)
-  - [ ] Result area (`html.Div(id="<module>-result-area", className="result-area")`)
-- [ ] Register the layout section in `app/layout/base_layout.py`
-- [ ] Enable the navbar button for the module in `base_layout.py`
-- [ ] Enable the home banner/card that navigates to the module
+  - [ ] Result area (`html.Div(id="<module>-result-area")`)
+- [ ] Register layout in `app/layout/base_layout.py`
+- [ ] Enable navbar button for the module
+- [ ] Enable home banner/card navigation
 
 ---
 
-## 2. Output Design
+# 🟦 2. Output Design
 
-- [ ] Define what results the module should display:
-  - [ ] Scalar value (e.g. integral result, derivative value)
-  - [ ] Expression / formula
-  - [ ] Plot (curve, nodes, comparison)
-  - [ ] Table (iteration table, node table)
-  - [ ] Vector / matrix (for linear systems, LU decomposition, etc.)
-- [ ] Check `Renderer.KEY_DISPATCH` — verify the executor output keys
-      map to the correct payload type, or add new entries if needed
-- [ ] Define the executor return dict structure:
+Define what the module should display:
+
+- [ ] Scalar value  
+- [ ] Expression / formula  
+- [ ] Plot (curve, nodes, trajectories, comparison)  
+- [ ] Table (iterations, nodes, steps)  
+- [ ] Vector / matrix (systems, LU, Jacobians)
+
+Renderer integration:
+
+- [ ] Check `Renderer.KEY_DISPATCH`  
+- [ ] Add new payload types if needed  
+- [ ] Define executor return structure:
   ```python
   {
-      "value":      float,        # main numerical result
-      "expression": str,          # symbolic or formatted expression (if applicable)
-      "table":      pd.DataFrame, # iteration or node table (if applicable)
-      "x":          list[float],  # x points for plotting (if applicable)
-      "y":          list[float],  # y points for plotting (if applicable)
+      "value": float,
+      "expression": str,
+      "table": pd.DataFrame,
+      "x": list[float],
+      "y": list[float],
+      "matrix": list[list[float]],
+      "vector": list[float],
   }
   ```
-- [ ] If the result is composite (multiple blocks), verify `UIContract._build_blocks()`
-      covers the new keys or add new branches as needed
+- [ ] If composite output:
+  - [ ] Define block order explicitly  
+  - [ ] Ensure `UIContract._build_blocks()` supports all keys  
 
 ---
 
-## 3. Backend — Constructor, Validator, Executor
+# 🟦 3. Backend — Constructor, Validator, Executor
 
-- [ ] Verify the constructor exists and parses `input_data` correctly:
-  - [ ] Assigns all required attributes from `input_data`
-  - [ ] Handles `mode` (table / function / upload) if applicable
-  - [ ] Raises `ConstructionError` for structurally invalid inputs
-- [ ] Verify the validator covers all `calculation_mode` values:
-  - [ ] Add `_validate_<mode>()` per method if rules differ
-  - [ ] Reuse `_validate_default()` if methods share the same rules
-  - [ ] Raises `ValidationError` with descriptive messages
-- [ ] Implement or update `_run_<method>()` in the executor:
-  - [ ] Returns the standardized result dict defined in step 2
-  - [ ] Adds symbolic expression generation if needed
-  - [ ] Adds plot data generation (`x`, `y`, `x_nodes`, `y_nodes`) if needed
-  - [ ] Raises `ExecutionError` on computation failure
-- [ ] Register the module in `core/method_catalog.json`:
+### Constructor
+- [ ] Parse all fields from `input_data`
+- [ ] Handle input mode (table / function / upload)
+- [ ] Raise `ConstructionError` for malformed input
+
+### Validator
+- [ ] Validate each `calculation_mode`
+- [ ] Add `_validate_<method>()` if rules differ
+- [ ] Reuse `_validate_default()` when possible
+- [ ] Raise `ValidationError` with descriptive messages
+
+### Executor
+- [ ] Implement `_run_<method>()`
+- [ ] Return standardized dict (see section 2)
+- [ ] Generate symbolic expressions if applicable
+- [ ] Generate plot data (`x`, `y`, nodes)
+- [ ] Raise `ExecutionError` on failure
+
+### Method Catalog
+- [ ] Register module in `core/method_catalog.json`:
   ```json
   {
     "<method>": {
@@ -80,89 +120,105 @@ Follow this order to ensure consistency across all modules.
   }
   ```
 
+### Error Normalization
+- [ ] Ensure all errors pass through `ErrorNormalizer`
+
 ---
 
-## 4. Callbacks
+# 🟦 4. Callbacks
 
 - [ ] Create `app/callbacks/<module>_callbacks.py`
-- [ ] Instantiate `UIContract` as a module-level global:
+- [ ] Instantiate:
   ```python
   contract = UIContract()
   ```
-- [ ] Implement `build_input_area` callback:
-  - [ ] Triggered by method selector + input mode selector
-  - [ ] Returns dynamic form components via `_build_mode_area(method, mode)`
-  - [ ] Shows/hides parameter cards (xk, a/b, n, etc.) as needed
-- [ ] Implement `run_<module>` callback:
-  - [ ] Reads all `State` inputs
-  - [ ] Builds `input_data` dict
-  - [ ] Handles `ValidationError` before calling `execute()`
-  - [ ] Calls `contract.resolve(method, outcome)`
-  - [ ] Returns result to `Output("<module>-result-area", "children")`
-- [ ] Implement `add_row` callback if the module uses an editable `DataTable`
-- [ ] Implement `_build_dataframe_from_upload()` if upload mode is supported
-- [ ] Register callbacks in `app/app.py`:
+
+### build_input_area
+- [ ] Triggered by method selector + input mode
+- [ ] Calls `_build_mode_area(method, mode)`
+- [ ] Shows/hides parameter cards
+- [ ] Uses `dash.no_update` when appropriate
+
+### run_<module>
+- [ ] Read all `State` inputs
+- [ ] Build `input_data`
+- [ ] Catch `ValidationError` before execution
+- [ ] Call `NumericalMethod`
+- [ ] Call `contract.resolve(method, outcome)`
+- [ ] Return result to `<module>-result-area`
+
+### Optional callbacks
+- [ ] `add_row` for editable tables  
+- [ ] `_build_dataframe_from_upload()` for upload mode  
+
+### Registration
+- [ ] Add to `app/app.py`:
   ```python
-  from app.callbacks.<module>_callbacks import register_<module>_callbacks
   register_<module>_callbacks(app)
   ```
 
 ---
 
-## 5. Testing & CI
+# 🟦 5. Testing & CI
 
-- [ ] **Unit tests** — `tests/unit/test_<module>.py`:
-  - [ ] Test constructor with valid and invalid inputs
-  - [ ] Test validator for each `calculation_mode`
-  - [ ] Test executor return structure for each method
-  - [ ] Test `Renderer` payload type for each result key
+### Unit Tests (`tests/unit/test_<module>.py`)
+- [ ] Constructor: valid + invalid inputs  
+- [ ] Validator: each calculation mode  
+- [ ] Executor: return structure  
+- [ ] Renderer: payload type correctness  
 
-- [ ] **Integration tests** — `tests/integration/test_<module>.py`:
-  - [ ] Happy path: valid input → `status == "success"`
-  - [ ] Error path: invalid input → `ValidationError` handled cleanly
-  - [ ] Edge cases per method (see interpolation as reference)
-  - [ ] `UIContract.resolve()` returns `html.Div` for both success and error
+### Integration Tests (`tests/integration/test_<module>.py`)
+- [ ] Happy path → success  
+- [ ] Error path → clean ValidationError  
+- [ ] Edge cases per method  
+- [ ] UIContract returns `html.Div` for success and error  
 
-- [ ] **Stress tests** — `tests/stress/test_<module>_stress.py`:
-  - [ ] Volume: large datasets (50, 200, 500+ nodes/steps)
-  - [ ] Precision: known analytical results with tolerance by method
-  - [ ] Stability: determinism (same input → same output across runs)
-  - [ ] Error handling: invalid files, missing columns, unsupported formats
-  - [ ] Upload: all supported formats (CSV, TXT, Excel, JSON) if applicable
-  - [ ] Full process: upload/table → `NumericalMethod` → `UIContract` → `html.Div`
-  - [ ] Mark tests as `@pytest.mark.pending` until the module is complete,
-        then remove the marker to include them in CI automatically
+### Stress Tests (`tests/stress/test_<module>_stress.py`)
+- [ ] Volume: large datasets (50–500+ nodes/steps)  
+- [ ] Precision: analytical ground truth  
+- [ ] Stability: determinism  
+- [ ] Error handling: invalid formats  
+- [ ] Upload tests: CSV/TXT/Excel/JSON  
+- [ ] Full pipeline: upload/table → NumericalMethod → UIContract → html.Div  
+- [ ] Mark as `@pytest.mark.pending` until module is complete  
 
-- [ ] **CI verification**:
-  - [ ] Push to `main` or `develop` and confirm GitHub Actions passes
-  - [ ] Check the Actions tab for green status
-  - [ ] Update stress test matrix in `docs/UI/stress_testing_strategy.md`
+### CI
+- [ ] Confirm GitHub Actions passes  
+- [ ] Update stress test matrix in `docs/UI/stress_testing_strategy.md`
 
 ---
 
-## 6. Documentation
+# 🟦 6. Documentation
 
-- [ ] Update `core/method_catalog.json` entry (already done in step 3)
-- [ ] Update `docs/arch/overview.md` if new architectural patterns were introduced
-- [ ] Add module entry to the stress test matrix in
-      `docs/UI/stress_testing_strategy.md` and mark as `✓ Done`
-- [ ] Create `docs/UI/<module>/ui_evidence.md` with:
-  - [ ] Sample input used for manual testing
-  - [ ] Outcome dict from smoke test
-  - [ ] Rendered payload type
-  - [ ] Expected vs actual result (analytical ground truth where available)
-  - [ ] Screenshot or smoke test output (optional)
-- [ ] Run smoke test and confirm output:
-  ```bash
-  python scripts/smoke_<module>.py
-  ```
+- [ ] Update `method_catalog.json`  
+- [ ] Update `docs/arch/overview.md` if architecture changed  
+- [ ] Add module entry to stress test matrix  
+- [ ] Create `docs/UI/<module>/ui_evidence.md`:
+  - sample input  
+  - outcome dict  
+  - payload type  
+  - expected vs actual  
+  - screenshot (optional)
+- [ ] Update theory docs in `docs/theory/<module>.md`:
+  - formulas  
+  - derivations  
+  - stability conditions  
+  - analytical examples  
 
 ---
 
-## Reference: Interpolation as Baseline
+# 🟦 Reference Module: Interpolation
 
-Interpolation is the reference implementation for all modules.
-When in doubt about structure, naming, or patterns, check:
+Use interpolation as the baseline for:
+
+- layout  
+- callbacks  
+- upload mode  
+- DataFrame construction  
+- stress tests  
+- documentation structure  
+
+Files to reference:
 
 ```
 app/layout/interpolation_layout.py
@@ -171,3 +227,5 @@ tests/stress/test_interpolation_stress.py
 tests/stress/test_interpolation_upload.py
 docs/UI/interpolation/
 ```
+
+---
