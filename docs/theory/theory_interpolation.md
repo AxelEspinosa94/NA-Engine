@@ -78,11 +78,7 @@ $$
 ## 2.3 Newton Polynomial
 
 $$
-P_n(x) = c_0 
-+ c_1(x - x_0)
-+ c_2(x - x_0)(x - x_1)
-+ \dots
-+ c_n(x - x_0)\cdots(x - x_{n-1})
+P_n(x) = c_0 + c_1(x - x_0)+ c_2(x - x_0)(x - x_1) + \dots + c_n(x - x_0)\cdots x - x_{n-1})
 $$
 
 where $c_k = f[x_0, \dots, x_k]$.
@@ -126,11 +122,7 @@ Let $h_i = x_{i+1} - x_i$.
 For $i = 1, \dots, n-1$:
 
 $$
-h_{i-1} M_{i-1} + 2(h_{i-1} + h_i) M_i + h_i M_{i+1}
-= 6\left(
-\frac{y_{i+1} - y_i}{h_i}
-- \frac{y_i - y_{i-1}}{h_{i-1}}
-\right)
+h_{i-1} M_{i-1} + 2(h_{i-1} + h_i) M_i + h_i M_{i+1} = 6\left(\frac{y_{i+1} - y_i}{h_i} - \frac{y_i - y_{i-1}}{h_{i-1}}\right)
 $$
 
 Boundary conditions:
@@ -144,11 +136,7 @@ $$
 Once $M_i$ are known, the spline on interval $[x_k, x_{k+1}]$ is:
 
 $$
-S(x) =
-M_k \frac{(x_{k+1} - x)^3}{6h_k}
-+ M_{k+1} \frac{(x - x_k)^3}{6h_k}
-+ \left(y_k - \frac{M_k h_k^2}{6}\right)\frac{x_{k+1} - x}{h_k}
-+ \left(y_{k+1} - \frac{M_{k+1} h_k^2}{6}\right)\frac{x - x_k}{h_k}
+S(x) = M_k \frac{(x_{k+1} - x)^3}{6h_k} + M_{k+1} \frac{(x - x_k)^3}{6h_k} + \left(y_k - \frac{M_k h_k^2}{6}\right)\frac{x_{k+1} - x}{h_k} + \left(y_{k+1} - \frac{M_{k+1} h_k^2}{6}\right)\frac{x - x_k}{h_k}
 $$
 
 ---
@@ -204,10 +192,7 @@ $$
 ## 4.4 Hermite Polynomial
 
 $$
-H(x) = Q_{0,0}
-+ Q_{0,1}(x - z_0)
-+ Q_{0,2}(x - z_0)(x - z_1)
-+ \dots
+H(x) = Q_{0,0}+ Q_{0,1}(x - z_0)+ Q_{0,2}(x - z_0)(x - z_1)+ \dots
 $$
 
 ## 4.5 Properties
