@@ -42,11 +42,7 @@ Let $h_i = x_{i+1} - x_i$.
 For $i = 1, \dots, n-1$:
 
 $$
-h_{i-1} M_{i-1}+ 2(h_{i-1} + h_i) M_i+ h_i M_{i+1}=
-6\left(
-\frac{y_{i+1} - y_i}{h_i}
-- \frac{y_i - y_{i-1}}{h_{i-1}}
-\right)
+h_{i-1} M_{i-1}+ 2(h_{i-1} + h_i) M_i+ h_i M_{i+1}=6\left(\frac{y_{i+1} - y_i}{h_i}- \frac{y_i - y_{i-1}}{h_{i-1}}\right)
 $$
 
 Boundary:
