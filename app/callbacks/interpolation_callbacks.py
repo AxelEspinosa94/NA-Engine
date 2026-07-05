@@ -169,7 +169,7 @@ def register_interpolation_callbacks(app):
     def build_input_area(method, mode):
         if not method:
             return [], True, True, True
-        if mode == "upload":
+        else:
             area = _build_mode_area(method, mode)
             return area, False, False, False
         return no_update, no_update, no_update, no_update
