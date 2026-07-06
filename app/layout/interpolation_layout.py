@@ -45,7 +45,7 @@ interpolation_section = html.Div(
         ]),
 
         # ── Área dinámica de input ───────────────────────────────────
-        html.Div(id="interp-input-area", className="card"),
+        html.Div(id="interp-input-area", className="card input-area"),
 
         # ── xk ──────────────────────────────────────────────────────
         html.Div(className="card", id="interp-xk-card", hidden=True, children=[
