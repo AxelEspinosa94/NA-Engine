@@ -37,4 +37,4 @@ jobs:
       #Solo se correrán los tests de estrés
 
       - name: Run stress tests
-        run: pytest tests/stress/ -v --tb=short -m "pending"
+        run: pytest tests/stress/ -v --tb=long -m "pending"
