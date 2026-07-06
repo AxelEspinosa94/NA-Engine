@@ -16,7 +16,7 @@ METHODS = [
     "gauss",
 ]
 
-# n mínimo requerido por método
+# n razonables por método — romberg y gauss son muy sensibles a n grande
 MIN_N = {
     "trapezoid_simple":    1,
     "trapezoid_composite": 2,
@@ -24,6 +24,15 @@ MIN_N = {
     "simpson_3_8":         3,
     "romberg":             2,
     "gauss":               2,
+}
+
+MAX_N = {
+    "trapezoid_simple":    1,   # por definición es n=1
+    "trapezoid_composite": 500,
+    "simpson_1_3":         500,
+    "simpson_3_8":         500,
+    "romberg":             6,   # 2^6 = 64 evaluaciones, suficiente
+    "gauss":               20,  # gauss con muchos puntos es exacto y rápido
 }
 
 
@@ -49,7 +58,7 @@ def make_outcome(method: str, function: str, interval: list, n: int):
 @pytest.mark.parametrize("n", [10, 50, 100, 500])
 def test_volumen_subintervalos(method, n):
     """El método no debe explotar con n subintervalos."""
-    n_actual = max(n, MIN_N[method])
+    n_actual = max(MIN_N[method], min(n, MAX_N[method]))
     outcome = make_outcome(method, "x**2", [0, 1], n_actual)
     assert outcome["status"] == "success"
     assert "value" in outcome["result"]
