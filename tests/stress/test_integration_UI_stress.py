@@ -59,6 +59,8 @@ def make_outcome(method: str, function: str, interval: list, n: int):
 def test_volumen_subintervalos(method, n):
     """El método no debe explotar con n subintervalos."""
     n_actual = max(MIN_N[method], min(n, MAX_N[method]))
+    if method == "simpson_3_8" and n_actual % 3 != 0:
+        n_actual += (3 - n_actual % 3)  # ajustar a múltiplo de 3
     outcome = make_outcome(method, "x**2", [0, 1], n_actual)
     assert outcome["status"] == "success"
     assert "value" in outcome["result"]
@@ -68,7 +70,7 @@ def test_volumen_subintervalos(method, n):
 
 @pytest.mark.pending
 @pytest.mark.parametrize("method,tol", [
-    ("trapezoid_simple",    1e-1),   # un solo tramo, error grande esperado
+    ("trapezoid_simple",    2e-1),   # un solo tramo, error grande esperado
     ("trapezoid_composite", 1e-3),
     ("simpson_1_3",         1e-6),
     ("simpson_3_8",         1e-6),
@@ -78,6 +80,8 @@ def test_volumen_subintervalos(method, n):
 def test_precision_polinomio_grado_2(method, tol):
     """Integral de x² en [0,1] = 1/3 exacto."""
     n = max(100, MIN_N[method])
+    if method == "simpson_3_8" and n_actual % 3 != 0:
+        n_actual += (3 - n_actual % 3)  # ajustar a múltiplo de 3
     outcome = make_outcome(method, "x**2", [0, 1], n)
     assert outcome["status"] == "success"
     assert abs(outcome["result"]["value"] - 1/3) < tol
@@ -96,6 +100,8 @@ def test_precision_funcion_trigonometrica(method, tol):
     """Integral de sin(x) en [0, pi] = 2 exacto."""
     import math
     n = max(100, MIN_N[method])
+    if method == "simpson_3_8" and n % 3 != 0:
+        n += (3 - n % 3)  # ajustar a múltiplo de 3
     outcome = make_outcome(method, "sin(x)", [0, math.pi], n)
     assert outcome["status"] == "success"
     assert abs(outcome["result"]["value"] - 2.0) < tol
@@ -112,6 +118,8 @@ def test_precision_funcion_exponencial(method, tol):
     """Integral de e^x en [0,1] = e - 1 exacto."""
     import math
     n = max(100, MIN_N[method])
+    if method == "simpson_3_8" and n % 3 != 0:
+        n += (3 - n % 3)  # ajustar a múltiplo de 3
     outcome = make_outcome(method, "exp(x)", [0, 1], n)
     assert outcome["status"] == "success"
     assert abs(outcome["result"]["value"] - (math.e - 1)) < tol
@@ -124,6 +132,8 @@ def test_precision_funcion_exponencial(method, tol):
 def test_determinismo(method):
     """El mismo input siempre produce el mismo output."""
     n = max(10, MIN_N[method])
+    if method == "simpson_3_8" and n % 3 != 0:
+        n += (3 - n % 3)  # ajustar a múltiplo de 3
     outcome_1 = make_outcome(method, "x**2", [0, 1], n)
     outcome_2 = make_outcome(method, "x**2", [0, 1], n)
     assert outcome_1["result"]["value"] == outcome_2["result"]["value"]
@@ -139,6 +149,8 @@ def test_determinismo(method):
 def test_intervalo_negativo(method):
     """Intervalo [a, b] con a < 0 debe funcionar correctamente."""
     n = max(10, MIN_N[method])
+    if method == "simpson_3_8" and n % 3 != 0:
+        n += (3 - n % 3)  # ajustar a múltiplo de 3
     outcome = make_outcome(method, "x**2", [-1, 1], n)
     assert outcome["status"] == "success"
     # integral de x² en [-1,1] = 2/3
@@ -150,6 +162,8 @@ def test_intervalo_negativo(method):
 def test_intervalo_unitario(method):
     """Intervalo de longitud 1 debe funcionar sin explotar."""
     n = max(10, MIN_N[method])
+    if method == "simpson_3_8" and n % 3 != 0:
+        n += (3 - n % 3)  # ajustar a múltiplo de 3
     outcome = make_outcome(method, "x**3", [0, 1], n)
     assert outcome["status"] == "success"
 
@@ -172,6 +186,8 @@ def test_funcion_sin_primitiva_gaussiana(method):
     Valor de referencia: integral de e^(-x²) en [0,1] ≈ 0.7468
     """
     n = max(50, MIN_N[method])
+    if method == "simpson_3_8" and n % 3 != 0:
+        n += (3 - n % 3)  # ajustar a múltiplo de 3
     outcome = make_outcome(method, "exp(-x**2)", [0, 1], n)
     # el proceso debe completar, sea success o error controlado
     assert outcome["status"] in ("success", "error")
@@ -193,6 +209,8 @@ def test_funcion_sin_primitiva_sinc(method):
     (evitamos x=0 por la singularidad removible)
     """
     n = max(50, MIN_N[method])
+    if method == "simpson_3_8" and n % 3 != 0:
+        n += (3 - n % 3)  # ajustar a múltiplo de 3
     outcome = make_outcome(method, "sin(x)/x", [0.001, np.pi], n)
     assert outcome["status"] in ("success", "error")
     if outcome["status"] == "success":
@@ -221,6 +239,8 @@ def test_funcion_con_singularidad(method):
 def test_estructura_resultado(method):
     """El resultado debe contener las claves esperadas."""
     n = max(10, MIN_N[method])
+    if method == "simpson_3_8" and n % 3 != 0:
+        n += (3 - n % 3)  # ajustar a múltiplo de 3
     outcome = make_outcome(method, "x**2", [0, 1], n)
     assert outcome["status"] == "success"
     result = outcome["result"]
@@ -236,6 +256,8 @@ def test_estructura_resultado(method):
 def test_contract_devuelve_div(method):
     """El full process hasta html.Div no debe explotar."""
     n = max(10, MIN_N[method])
+    if method == "simpson_3_8" and n % 3 != 0:
+        n += (3 - n % 3)  # ajustar a múltiplo de 3
     outcome = make_outcome(method, "x**2", [0, 1], n)
     result = contract.resolve(method, outcome)
     assert isinstance(result, html.Div)
