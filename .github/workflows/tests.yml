@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  PYTEST_ADDOPTS: "--maxfail=1 --disable-warnings -q --color=yes"
+  CI: "true"
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -37,4 +41,5 @@ jobs:
       #Solo se correrán los tests de estrés
 
       - name: Run stress tests
-        run: pytest tests/stress/ -v --tb=long -m "pending"
+      #  run: pytest tests/stress/ -v --tb=long -m "pending"
+        run: pytest tests/stress/ -vv -s --tb=long --maxfail=1 --full-trace --log-cli-level=DEBUG -m "pending"
