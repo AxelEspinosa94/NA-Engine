@@ -17,27 +17,17 @@ class IntegrationValidator:
         mode = input_data.get("mode")
         calculation_mode = input_data.get("calculation_mode")
 
+        if mode != "function":
+           raise ValidationError("Integration only supports mode='function'.")
+
         if calculation_mode not in self.SUPPORTED_MODES:
             raise ValidationError("Unsupported calculation_mode.")
 
-        # Only function mode allowed
-        if mode != "function":
-            raise ValidationError("Integration only supports mode='function'.")
-
-        # Function
-        if not isinstance(input_data.get("function"), str):
-            raise ValidationError("Function must be a string.")
-
         # Interval
         interval = input_data.get("interval")
-        if not isinstance(interval, (list, tuple)) or len(interval) != 2:
-            raise ValidationError("Function mode requires interval [a, b].")
-
         # n
         n = input_data.get("n")
-        if not isinstance(n, int) or n <= 0:
-            raise ValidationError("Function mode requires positive integer n.")
-
+        
         # Method-specific constraints
         self._validate_n_for_mode(n, calculation_mode)
 
@@ -46,6 +36,8 @@ class IntegrationValidator:
             gp = input_data.get("gauss_points", 2)
             if gp > 50:
                 raise ValidationError("Gauss-Legendre unstable for n > 50.")
+            if not isinstance(gp, int) or gp <= 0:
+                raise ValidationError("Gauss-Legendre requires positive integer gauss_points.")
 
         return True
 
