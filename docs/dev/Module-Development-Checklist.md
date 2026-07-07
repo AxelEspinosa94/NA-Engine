@@ -16,7 +16,7 @@ Create a minimal end‑to‑end test to confirm the module is “alive” before
 - [ ] Build a minimal `input_data` dict
 - [ ] Run:
   ```python
-  nm = NumericalMethod("<module>", input_data)
+  nm = NumericalMethod(<"module">, input_data)
   nm.validate_input()
   outcome = nm.execute()
   payload = UIContract().resolve(method, outcome)
@@ -25,8 +25,6 @@ Create a minimal end‑to‑end test to confirm the module is “alive” before
   - [ ] `outcome["status"] == "success"`
   - [ ] Renderer returns correct payload types
   - [ ] UIContract returns a non‑empty `html.Div`
-- [ ] Run the module UI manually in the browser
-- [ ] Confirm dynamic input area loads correctly
 
 ---
 
@@ -40,7 +38,7 @@ Create a minimal end‑to‑end test to confirm the module is “alive” before
   - `.card`, `.input`, `.btn-primary`, `.upload-area`, `.result-area`, `.dark`
 - [ ] If new styles are needed:
   - base them on interpolation module  
-  - place them in `app/assets/<module>.css`  
+  - place them in `app/assets/<module>.css` 
   - include `.dark` overrides
 - [ ] Build layout in `app/layout/<module>_layout.py`:
   - [ ] Module header (`.module-header`)
@@ -53,6 +51,8 @@ Create a minimal end‑to‑end test to confirm the module is “alive” before
 - [ ] Register layout in `app/layout/base_layout.py`
 - [ ] Enable navbar button for the module
 - [ ] Enable home banner/card navigation
+- [ ] Run the module UI manually in the browser
+- [ ] Confirm dynamic input area loads correctly
 
 ---
 
@@ -66,7 +66,7 @@ Define what the module should display:
 - [ ] Table (iterations, nodes, steps)  
 - [ ] Vector / matrix (systems, LU, Jacobians)
 
-Renderer integration:
+Renderer <module>:
 
 - [ ] Check `Renderer.KEY_DISPATCH`  
 - [ ] Add new payload types if needed  
@@ -161,44 +161,23 @@ Renderer integration:
 
 # 🟦 5. Testing & CI
 
-### Unit Tests (`tests/unit/test_<module>.py`)
-- [ ] Constructor: valid + invalid inputs  
-- [ ] Validator: each calculation mode  
-- [ ] Executor: return structure  
-- [ ] Renderer: payload type correctness  
-
-### Integration Tests (`tests/integration/test_<module>.py`)
-- [ ] Happy path → success  
-- [ ] Error path → clean ValidationError  
-- [ ] Edge cases per method  
-- [ ] UIContract returns `html.Div` for success and error  
-
 ### Stress Tests (`tests/stress/test_<module>_stress.py`)
 - [ ] Volume: large datasets (50–500+ nodes/steps)  
 - [ ] Precision: analytical ground truth  
 - [ ] Stability: determinism  
 - [ ] Error handling: invalid formats  
-- [ ] Upload tests: CSV/TXT/Excel/JSON  
+- [ ] Upload tests: CSV/TXT/Excel/JSON  (if apply)
 - [ ] Full pipeline: upload/table → NumericalMethod → UIContract → html.Div  
 - [ ] Mark as `@pytest.mark.pending` until module is complete  
 
 ### CI
 - [ ] Confirm GitHub Actions passes  
-- [ ] Update stress test matrix in `docs/UI/stress_testing_strategy.md`
 
 ---
 
 # 🟦 6. Documentation
 
-- [ ] Update `method_catalog.json`  
 - [ ] Update `docs/arch/overview.md` if architecture changed  
-- [ ] Add module entry to stress test matrix  
-- [ ] Create `docs/UI/<module>/ui_evidence.md`:
-  - sample input  
-  - outcome dict  
-  - payload type  
-  - expected vs actual  
-  - screenshot (optional)
 - [ ] Update theory docs in `docs/theory/<module>.md`:
   - formulas  
   - derivations  
