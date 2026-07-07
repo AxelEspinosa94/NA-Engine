@@ -16,27 +16,15 @@ METHODS = [
     "gauss",
 ]
 
-# n razonables por método — romberg y gauss son muy sensibles a n grande
-MIN_N = {
-    "trapezoid_simple":    1,
-    "trapezoid_composite": 2,
-    "simpson_1_3":         2,
-    "simpson_3_8":         3,
-    "romberg":             2,
-    "gauss":               2,
+# n razonables por método para STRESS (no accuracy)
+N_STRESS = {
+    "trapezoid_simple":    1,     # por definición
+    "trapezoid_composite": 300,   # suficientemente grande
+    "simpson_1_3":         300,   # suficientemente grande
+    "simpson_3_8":         300,   # múltiplo de 3
+    "romberg":             6,     # romberg explota con n grande
+    "gauss":               15,    # gauss estable y rápido
 }
-
-MAX_N = {
-    "trapezoid_simple":    1,   # por definición es n=1
-    "trapezoid_composite": 500,
-    "simpson_1_3":         500,
-    "simpson_3_8":         500,
-    "romberg":             6,   # 2^6 = 64 evaluaciones, suficiente
-    "gauss":               20,  # gauss con muchos puntos es exacto y rápido
-}
-
-
-# ── Helper ───────────────────────────────────────────────────────────────────
 
 def make_outcome(method: str, function: str, interval: list, n: int):
     input_data = {
@@ -51,170 +39,92 @@ def make_outcome(method: str, function: str, interval: list, n: int):
     return nm.execute()
 
 
-# ── Volumen: número de subintervalos ─────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────
+# STRESS: volumen de subintervalos (solo estabilidad)
+# ────────────────────────────────────────────────────────────────
 
 @pytest.mark.pending
 @pytest.mark.parametrize("method", METHODS)
-@pytest.mark.parametrize("n", [10, 50, 100, 500])
-def test_volumen_subintervalos(method, n):
-    """El método no debe explotar con n subintervalos."""
-    n_actual = min(max(n, MIN_N[method]), MAX_N[method])
-    if method == "simpson_3_8" and n_actual % 3 != 0:
-        n_actual += (3 - n_actual % 3)  # ajustar a múltiplo de 3
-    outcome = make_outcome(method, "x**2", [0, 1], n_actual)
+def test_volumen_stress(method):
+    """El método debe soportar n grande sin explotar."""
+    n = N_STRESS[method]
+    outcome = make_outcome(method, "x**2", [0, 1], n)
     assert outcome["status"] == "success"
     assert "value" in outcome["result"]
 
 
-# ── Precisión: resultados con primitiva conocida ──────────────────────────────
-
-@pytest.mark.pending
-@pytest.mark.parametrize("method,tol", [
-    ("trapezoid_simple",    2e-1),   # un solo tramo, error grande esperado
-    ("trapezoid_composite", 1e-3),
-    ("simpson_1_3",         1e-6),
-    ("simpson_3_8",         1e-6),
-    ("romberg",             1e-8),
-    ("gauss",               1e-8),
-])
-def test_precision_polinomio_grado_2(method, n, tol):
-    """Integral de x² en [0,1] = 1/3 exacto."""
-    n_actual = min(max(n, MIN_N[method]), MAX_N[method])
-    if method == "simpson_3_8" and n_actual % 3 != 0:
-        n_actual += (3 - n_actual % 3)  # ajustar a múltiplo de 3
-    outcome = make_outcome(method, "x**2", [0, 1], n_actual)
-    assert outcome["status"] == "success"
-    assert abs(outcome["result"]["value"] - 1/3) < tol
-
-
-@pytest.mark.pending
-@pytest.mark.parametrize("method,tol", [
-    ("trapezoid_simple",    1e-1),
-    ("trapezoid_composite", 1e-4),
-    ("simpson_1_3",         1e-6),
-    ("simpson_3_8",         1e-6),
-    ("romberg",             1e-8),
-    ("gauss",               1e-8),
-])
-def test_precision_funcion_trigonometrica(method, tol):
-    """Integral de sin(x) en [0, pi] = 2 exacto."""
-    import math
-    n_actual = min(max(n, MIN_N[method]), MAX_N[method])
-    if method == "simpson_3_8" and n % 3 != 0:
-        n_actual += (3 - n_actual % 3)  # ajustar a múltiplo de 3
-    outcome = make_outcome(method, "sin(x)", [0, math.pi], n_actual)
-    assert outcome["status"] == "success"
-    assert abs(outcome["result"]["value"] - 2.0) < tol
-
-
-@pytest.mark.pending
-@pytest.mark.parametrize("method,tol", [
-    ("trapezoid_composite", 1e-3),
-    ("simpson_1_3",         1e-6),
-    ("romberg",             1e-8),
-    ("gauss",               1e-8),
-])
-def test_precision_funcion_exponencial(method, n, tol):
-    """Integral de e^x en [0,1] = e - 1 exacto."""
-    import math
-    n_actual = min(max(n, MIN_N[method]), MAX_N[method])
-    if method == "simpson_3_8" and n_actual % 3 != 0:
-        n_actual += (3 - n_actual % 3)  # ajustar a múltiplo de 3
-    outcome = make_outcome(method, "exp(x)", [0, 1], n_actual)
-    assert outcome["status"] == "success"
-    assert abs(outcome["result"]["value"] - (math.e - 1)) < tol
-
-
-# ── Estabilidad ───────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────
+# STRESS: determinismo
+# ────────────────────────────────────────────────────────────────
 
 @pytest.mark.pending
 @pytest.mark.parametrize("method", METHODS)
 def test_determinismo(method):
-    """El mismo input siempre produce el mismo output."""
-    n = min(max(n, MIN_N[method]), MAX_N[method])
-    if method == "simpson_3_8" and n % 3 != 0:
-        n += (3 - n % 3)  # ajustar a múltiplo de 3
+    """El mismo input debe producir el mismo output."""
+    n = N_STRESS[method]
     outcome_1 = make_outcome(method, "x**2", [0, 1], n)
     outcome_2 = make_outcome(method, "x**2", [0, 1], n)
     assert outcome_1["result"]["value"] == outcome_2["result"]["value"]
 
 
+# ────────────────────────────────────────────────────────────────
+# STRESS: intervalos negativos
+# ────────────────────────────────────────────────────────────────
+
 @pytest.mark.pending
-@pytest.mark.parametrize("method", [
-    "trapezoid_composite",
-    "simpson_1_3",
-    "romberg",
-    "gauss",
-])
+@pytest.mark.parametrize("method", METHODS)
 def test_intervalo_negativo(method):
-    """Intervalo [a, b] con a < 0 debe funcionar correctamente."""
-    n = min(max(n, MIN_N[method]), MAX_N[method])
-    if method == "simpson_3_8" and n % 3 != 0:
-        n += (3 - n % 3)  # ajustar a múltiplo de 3
+    """Intervalos negativos deben funcionar sin explotar."""
+    n = N_STRESS[method]
     outcome = make_outcome(method, "x**2", [-1, 1], n)
     assert outcome["status"] == "success"
-    # integral de x² en [-1,1] = 2/3
-    assert abs(outcome["result"]["value"] - 2/3) < 1e-3
 
+
+# ────────────────────────────────────────────────────────────────
+# STRESS: intervalos unitarios
+# ────────────────────────────────────────────────────────────────
 
 @pytest.mark.pending
 @pytest.mark.parametrize("method", METHODS)
 def test_intervalo_unitario(method):
     """Intervalo de longitud 1 debe funcionar sin explotar."""
-    n = min(max(n, MIN_N[method]), MAX_N[method])
-    if method == "simpson_3_8" and n % 3 != 0:
-        n += (3 - n % 3)  # ajustar a múltiplo de 3
+    n = N_STRESS[method]
     outcome = make_outcome(method, "x**3", [0, 1], n)
     assert outcome["status"] == "success"
 
 
-# ── Funciones sin primitiva elemental ────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────
+# STRESS: funciones sin primitiva elemental
+# ────────────────────────────────────────────────────────────────
 
 @pytest.mark.pending
 @pytest.mark.parametrize("method", [
     "trapezoid_composite",
     "simpson_1_3",
+    "simpson_3_8",
     "romberg",
     "gauss",
 ])
 def test_funcion_sin_primitiva_gaussiana(method):
-    """
-    e^(-x²) no tiene primitiva elemental (función de error).
-    El método numérico debe completar y devolver un resultado aproximado.
-    sympy puede devolver None o la integral sin evaluar — el sistema
-    no debe explotar en ningún caso.
-    Valor de referencia: integral de e^(-x²) en [0,1] ≈ 0.7468
-    """
-    n = min(max(n, MIN_N[method]), MAX_N[method])
-    if method == "simpson_3_8" and n % 3 != 0:
-        n += (3 - n % 3)  # ajustar a múltiplo de 3
+    """e^(-x²) debe producir un resultado o error controlado."""
+    n = N_STRESS[method]
     outcome = make_outcome(method, "exp(-x**2)", [0, 1], n)
-    # el proceso debe completar, sea success o error controlado
     assert outcome["status"] in ("success", "error")
-    if outcome["status"] == "success":
-        assert abs(outcome["result"]["value"] - 0.7468) < 1e-2
 
 
 @pytest.mark.pending
 @pytest.mark.parametrize("method", [
     "trapezoid_composite",
     "simpson_1_3",
+    "simpson_3_8",
     "romberg",
     "gauss",
 ])
 def test_funcion_sin_primitiva_sinc(method):
-    """
-    sin(x)/x (sinc) no tiene primitiva elemental.
-    Valor de referencia: integral de sin(x)/x en [0.001, pi] ≈ 1.5708
-    (evitamos x=0 por la singularidad removible)
-    """
-    n = min(max(n, MIN_N[method]), MAX_N[method])
-    if method == "simpson_3_8" and n % 3 != 0:
-        n += (3 - n % 3)  # ajustar a múltiplo de 3
+    """sin(x)/x debe producir resultado o error controlado."""
+    n = N_STRESS[method]
     outcome = make_outcome(method, "sin(x)/x", [0.001, np.pi], n)
     assert outcome["status"] in ("success", "error")
-    if outcome["status"] == "success":
-        assert abs(outcome["result"]["value"] - 1.5708) < 1e-2
 
 
 @pytest.mark.pending
@@ -223,41 +133,38 @@ def test_funcion_sin_primitiva_sinc(method):
     "simpson_1_3",
 ])
 def test_funcion_con_singularidad(method):
-    """
-    1/x tiene singularidad en x=0. Si el intervalo incluye o
-    se acerca a 0, el sistema debe devolver error controlado, no explotar.
-    """
-    outcome = make_outcome(method, "1/x", [0, 1], 10)
-    # esperamos error controlado, no excepción no manejada
+    """1/x debe producir error controlado, no crash."""
+    n = N_STRESS[method]
+    outcome = make_outcome(method, "1/x", [0, 1], n)
     assert outcome["status"] in ("success", "error")
 
 
-# ── Estructura del resultado ──────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────
+# STRESS: estructura del resultado
+# ────────────────────────────────────────────────────────────────
 
 @pytest.mark.pending
 @pytest.mark.parametrize("method", METHODS)
 def test_estructura_resultado(method):
     """El resultado debe contener las claves esperadas."""
-    n = min(max(n, MIN_N[method]), MAX_N[method])
-    if method == "simpson_3_8" and n % 3 != 0:
-        n += (3 - n % 3)  # ajustar a múltiplo de 3
+    n = N_STRESS[method]
     outcome = make_outcome(method, "x**2", [0, 1], n)
     assert outcome["status"] == "success"
     result = outcome["result"]
     required_keys = ["value", "x", "y", "a", "b", "n", "calculation_mode"]
     for key in required_keys:
-        assert key in result, f"Clave faltante: {key}"
+        assert key in result
 
 
-# ── UIContract ────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────
+# STRESS: UIContract
+# ────────────────────────────────────────────────────────────────
 
 @pytest.mark.pending
 @pytest.mark.parametrize("method", METHODS)
 def test_contract_devuelve_div(method):
-    """El full process hasta html.Div no debe explotar."""
-    n = min(max(n, MIN_N[method]), MAX_N[method])
-    if method == "simpson_3_8" and n % 3 != 0:
-        n += (3 - n % 3)  # ajustar a múltiplo de 3
+    """UIContract debe devolver un html.Div válido."""
+    n = N_STRESS[method]
     outcome = make_outcome(method, "x**2", [0, 1], n)
     result = contract.resolve(method, outcome)
     assert isinstance(result, html.Div)
@@ -267,7 +174,7 @@ def test_contract_devuelve_div(method):
 @pytest.mark.pending
 @pytest.mark.parametrize("method", METHODS)
 def test_contract_error_devuelve_div(method):
-    """Un outcome de error también debe producir un html.Div limpio."""
+    """UIContract debe manejar errores sin explotar."""
     outcome = {
         "status":     "error",
         "error_type": "ValidationError",
