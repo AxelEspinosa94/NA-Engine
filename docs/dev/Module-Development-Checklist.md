@@ -8,87 +8,9 @@ This checklist ensures consistency across all modules and accelerates developmen
 
 ---
 
-# 🟦 0. Smoke Test (Before Everything Else)
-
-Create a minimal end‑to‑end test to confirm the module is “alive” before writing full tests.
-
-- [ ] Create `scripts/smoke_<module>.py`
-- [ ] Build a minimal `input_data` dict
-- [ ] Run:
-  ```python
-  nm = NumericalMethod(<"module">, input_data)
-  nm.validate_input()
-  outcome = nm.execute()
-  payload = UIContract().resolve(method, outcome)
-  ```
-- [ ] Confirm:
-  - [ ] `outcome["status"] == "success"`
-  - [ ] Renderer returns correct payload types
-  - [ ] UIContract returns a non‑empty `html.Div`
-
 ---
 
-# 🟦 1. UI Setup
-
-- [ ] Identify all required inputs for the module:
-  - method selector  
-  - input mode (table / function / upload)  
-  - module‑specific parameters (`xk`, `a`, `b`, `n`, `tol`, `max_iter`, etc.)
-- [ ] Reuse existing CSS classes:
-  - `.card`, `.input`, `.btn-primary`, `.upload-area`, `.result-area`, `.dark`
-- [ ] If new styles are needed:
-  - base them on interpolation module  
-  - place them in `app/assets/<module>.css` 
-  - include `.dark` overrides
-- [ ] Build layout in `app/layout/<module>_layout.py`:
-  - [ ] Module header (`.module-header`)
-  - [ ] Method selector (`dcc.Dropdown`)
-  - [ ] Input mode selector (`dcc.RadioItems`) if applicable
-  - [ ] Dynamic input area (`html.Div(id="<module>-input-area")`)
-  - [ ] Parameter cards (`xk`, `a`, `b`, `n`, `tol`, etc.)
-  - [ ] Execute button (`.btn-primary`)
-  - [ ] Result area (`html.Div(id="<module>-result-area")`)
-- [ ] Register layout in `app/layout/base_layout.py`
-- [ ] Enable navbar button for the module
-- [ ] Enable home banner/card navigation
-- [ ] Run the module UI manually in the browser
-- [ ] Confirm dynamic input area loads correctly
-
----
-
-# 🟦 2. Output Design
-
-Define what the module should display:
-
-- [ ] Scalar value  
-- [ ] Expression / formula  
-- [ ] Plot (curve, nodes, trajectories, comparison)  
-- [ ] Table (iterations, nodes, steps)  
-- [ ] Vector / matrix (systems, LU, Jacobians)
-
-Renderer <module>:
-
-- [ ] Check `Renderer.KEY_DISPATCH`  
-- [ ] Add new payload types if needed  
-- [ ] Define executor return structure:
-  ```python
-  {
-      "value": float,
-      "expression": str,
-      "table": pd.DataFrame,
-      "x": list[float],
-      "y": list[float],
-      "matrix": list[list[float]],
-      "vector": list[float],
-  }
-  ```
-- [ ] If composite output:
-  - [ ] Define block order explicitly  
-  - [ ] Ensure `UIContract._build_blocks()` supports all keys  
-
----
-
-# 🟦 3. Backend — Constructor, Validator, Executor
+# 🟦 0. Backend — Constructor, Validator, Executor
 
 ### Constructor
 - [ ] Parse all fields from `input_data`
@@ -122,6 +44,85 @@ Renderer <module>:
 
 ### Error Normalization
 - [ ] Ensure all errors pass through `ErrorNormalizer`
+
+---
+# 🟦 1. Output Design
+
+Define what the module should display:
+
+- [ ] Scalar value  
+- [ ] Expression / formula  
+- [ ] Plot (curve, nodes, trajectories, comparison)  
+- [ ] Table (iterations, nodes, steps)  
+- [ ] Vector / matrix (systems, LU, Jacobians)
+
+Renderer <module>:
+
+- [ ] Check `Renderer.KEY_DISPATCH`  
+- [ ] Add new payload types if needed  
+- [ ] Define executor return structure:
+  ```python
+  {
+      "value": float,
+      "expression": str,
+      "table": pd.DataFrame,
+      "x": list[float],
+      "y": list[float],
+      "matrix": list[list[float]],
+      "vector": list[float],
+  }
+  ```
+- [ ] If composite output:
+  - [ ] Define block order explicitly  
+  - [ ] Ensure `UIContract._build_blocks()` supports all keys  
+
+
+---
+# 🟦 2. Smoke Test
+
+Create a minimal end‑to‑end test to confirm the module is “alive” before writing full tests.
+
+- [ ] Create `scripts/smoke_<module>.py`
+- [ ] Build a minimal `input_data` dict
+- [ ] Run:
+  ```python
+  nm = NumericalMethod(<"module">, input_data)
+  nm.validate_input()
+  outcome = nm.execute()
+  payload = UIContract().resolve(method, outcome)
+  ```
+- [ ] Confirm:
+  - [ ] `outcome["status"] == "success"`
+  - [ ] Renderer returns correct payload types
+  - [ ] UIContract returns a non‑empty `html.Div`
+
+---
+
+# 🟦 3. UI Setup
+
+- [ ] Identify all required inputs for the module:
+  - method selector  
+  - input mode (table / function / upload)  
+  - module‑specific parameters (`xk`, `a`, `b`, `n`, `tol`, `max_iter`, etc.)
+- [ ] Reuse existing CSS classes:
+  - `.card`, `.input`, `.btn-primary`, `.upload-area`, `.result-area`, `.dark`
+- [ ] If new styles are needed:
+  - base them on interpolation module  
+  - place them in `app/assets/<module>.css` 
+  - include `.dark` overrides
+- [ ] Build layout in `app/layout/<module>_layout.py`:
+  - [ ] Module header (`.module-header`)
+  - [ ] Method selector (`dcc.Dropdown`)
+  - [ ] Input mode selector (`dcc.RadioItems`) if applicable
+  - [ ] Dynamic input area (`html.Div(id="<module>-input-area")`)
+  - [ ] Parameter cards (`xk`, `a`, `b`, `n`, `tol`, etc.)
+  - [ ] Execute button (`.btn-primary`)
+  - [ ] Result area (`html.Div(id="<module>-result-area")`)
+- [ ] Register layout in `app/layout/base_layout.py`
+- [ ] Enable navbar button for the module
+- [ ] Enable home banner/card navigation
+- [ ] Run the module UI manually in the browser
+- [ ] Confirm dynamic input area loads correctly
 
 ---
 
@@ -206,5 +207,10 @@ tests/stress/test_interpolation_stress.py
 tests/stress/test_interpolation_upload.py
 docs/UI/interpolation/
 ```
+
+---
+# Log:
+
+**07/07/2026**: Steps were reordered to match the current work done in Interpolation and Integration module.
 
 ---
