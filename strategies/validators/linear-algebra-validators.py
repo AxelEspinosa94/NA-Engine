@@ -15,12 +15,29 @@ class LinearAlgebraValidator:
         "condition_number", "transpose", "rank"
     ]
 
-    def validate(self,  input_data: Dict[str, Any]):
+    def validate(self, input_data: Dict[str, Any]):
 
+        # ---------------------------
+        # Validate calculation_type
+        # ---------------------------
+        calc_type = input_data.get("calculation_type")
+        if calc_type not in ("matrix_operations", "ec-system"):
+            raise ValidationError(
+                "calculation_type must be either 'matrix_operations' or 'ec-system'."
+            )
 
+        # ---------------------------
+        # Validate calculation_mode
+        # ---------------------------
         mode = input_data.get("calculation_mode")
         if mode is None:
             raise ValidationError("calculation_mode is required for LinearAlgebra.")
+
+        if calc_type == "matrix_operations" and mode not in self.MATRIX_MODES:
+            raise ValidationError(f"{mode} is not a valid matrix operation.")
+
+        if calc_type == "ec-system" and mode not in self.SYSTEM_MODES:
+            raise ValidationError(f"{mode} is not a valid system solver.")
 
         # ---------------------------
         # Validate A
@@ -38,9 +55,9 @@ class LinearAlgebraValidator:
             raise ValidationError("Matrix A contains NaN or infinity.")
 
         # ---------------------------
-        # Validate b for system solvers
+        # Validate b only for system solvers
         # ---------------------------
-        if mode in self.SYSTEM_MODES:
+        if calc_type == "ec-system":
 
             b = input_data.get("b")
             if b is None:
@@ -55,7 +72,7 @@ class LinearAlgebraValidator:
                 raise ValidationError("Dimensions of A and b do not match.")
 
         # ---------------------------
-        # Square matrix required
+        # Square matrix required (only for specific modes)
         # ---------------------------
         if mode in ["determinant", "inverse", "lu", "cholesky", "qr"]:
             if A.shape[0] != A.shape[1]:
