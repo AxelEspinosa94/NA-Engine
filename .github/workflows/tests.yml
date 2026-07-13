@@ -40,6 +40,6 @@ jobs:
       #por lo que no es necesario volver a correrlos en stage 4. 
       #Solo se correrán los tests de estrés
 
-      #- name: Run stress tests
+      - name: Run stress tests
       #  run: pytest tests/stress/ -v --tb=long -m "pending"
-      #  run: pytest tests/stress/ -vv -s --tb=long --maxfail=1 --full-trace --log-cli-level=DEBUG -m "pending"
+        run: pytest tests/stress/ -vv -s --tb=long --maxfail=1 --full-trace --log-cli-level=DEBUG -m "pending"
