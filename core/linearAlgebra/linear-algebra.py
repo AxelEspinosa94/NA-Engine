@@ -17,10 +17,11 @@ class LinearAlgebra:
         if "A" not in input_data:
             raise ConstructionError("Matrix A is required for linear algebra operations.")
 
-        self.A = np.array(input_data["A"], dtype=float)
-
-        if self.A.ndim != 2:
-            raise ConstructionError("Matrix A must be 2-dimensional.")
+        # Convert A safely
+        try:
+            self.A = np.array(input_data["A"], dtype=float)
+        except Exception:
+            raise ConstructionError("Matrix A must be rectangular and numeric.")
 
         # Optional: only required for system solvers
         self.b = None
