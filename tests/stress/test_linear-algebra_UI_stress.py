@@ -1,3 +1,4 @@
+from core.exceptions import ValidationError, ConstructionError, ExecutionError
 import numpy as np
 import pytest
 import io
@@ -28,6 +29,7 @@ def test_large_matrix_determinant(n):
 
     nm.validate_input()
     result = nm.execute()
+    result = result.get("result")
 
     assert "value" in result
     assert isinstance(result["value"], float)
@@ -47,6 +49,7 @@ def test_large_system_gauss(n):
 
     nm.validate_input()
     result = nm.execute()
+    result = result.get("result")
 
     assert "solution" in result
     assert len(result["solution"]) == n
@@ -68,6 +71,7 @@ def test_precision_inverse():
 
     nm.validate_input()
     result = nm.execute()
+    result = result.get("result")
 
     assert np.allclose(result["value"], expected, atol=1e-12)
 
@@ -86,6 +90,7 @@ def test_precision_qr():
 
     nm.validate_input()
     result = nm.execute()
+    result = result.get("result")
 
     assert np.allclose(result["solution"], expected, atol=1e-12)
 
@@ -118,6 +123,9 @@ def test_stability_gauss():
     r1 = nm1.execute()
     r2 = nm2.execute()
 
+    r1 = r1.get("result")
+    r2 = r2.get("result")
+
     assert np.allclose(r1["solution"], r2["solution"])
 
 
@@ -126,26 +134,22 @@ def test_stability_gauss():
 # ═══════════════════════════════════════════════════════════════
 
 def test_error_invalid_matrix_shape():
-    nm = NumericalMethod("linear_algebra", {
-        "A": [[1, 2, 3], [4, 5]],  # ragged matrix
-        "calculation_mode": "determinant",
-        "calculation_type": "matrix_operations",
-    })
 
-    with pytest.raises(Exception):
-        nm.validate_input()
+    with pytest.raises(ConstructionError):
+        NumericalMethod("linear_algebra", {
+            "A": [[1, 2, 3], [4, 5]],  # ragged matrix
+            "calculation_mode": "determinant",
+            "calculation_type": "matrix_operations",
+        })
 
 
 def test_error_missing_b_for_system():
-    nm = NumericalMethod("linear_algebra", {
-        "A": [[1, 2], [3, 4]],
-        "calculation_mode": "gauss",
-        "calculation_type": "ec-system",
-    })
-
-    with pytest.raises(Exception):
-        nm.validate_input()
-
+    with pytest.raises(ConstructionError):
+        NumericalMethod("linear_algebra", {
+            "A": [[1, 2], [3, 4]],
+            "calculation_mode": "gauss",
+            "calculation_type": "ec-system",
+        })
 
 # ═══════════════════════════════════════════════════════════════
 # 5. UPLOAD TESTS — CSV / TXT / Excel
@@ -168,6 +172,7 @@ def test_upload_txt_matrix():
 
     nm.validate_input()
     result = nm.execute()
+    result = result.get("result")
 
     assert "value" in result
 
@@ -189,6 +194,7 @@ def test_upload_txt_system():
 
     nm.validate_input()
     result = nm.execute()
+    result = result.get("result")
 
     assert "solution" in result
 
