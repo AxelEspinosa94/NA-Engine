@@ -4,6 +4,7 @@ from dash import html, dcc
 from .home_layout import home_layout
 from .interpolation_layout import interpolation_section
 from .integration_layout import integration_section
+from .linear_algebra_layout import linear_algebra_section
 from .ode_layout import ode_section
 # Más adelante:
 # from .derivatives_layout import derivatives_section
@@ -36,6 +37,7 @@ layout = html.Div(
                 html.Button("Home", id="tab-home", className="nav-btn"),
                 html.Button("Interpolación", id="tab-interpolation", className="nav-btn"),
                 html.Button("Integración", id="tab-integration", className="nav-btn"),
+                html.Button("Álgebra Lineal", id="tab-linear-algebra", className="nav-btn"),
                 html.Button("Punto Fijo / ODEs", id="tab-odes", className="nav-btn"),
                 html.Button("Tema", id="toggle-theme", className="nav-btn"),
             ],
@@ -47,9 +49,10 @@ layout = html.Div(
         html.Main(
             id="main-content",
             children=[
-                html.Section(id="home-container", className="section active", children=[home_layout]),
+                html.Section(id="home-section", className="section active", children=[home_layout]),
                 html.Section(id="section-interpolation", className="section", children=[interpolation_section]),
                 html.Section(id="section-integration", className="section", children=[integration_section]),
+                html.Section(id="section-linear-algebra", className="section", children=[linear_algebra_section]),
                 html.Section(id="section-odes", className="section", children=[ode_section]),
             ],
         ),
