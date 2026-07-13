@@ -4,9 +4,10 @@ def register_navigation_callbacks(app):
 
     # Secciones en el mismo orden que los Outputs
     section_ids = [
-        "home-container",
+        "home-section",
         "section-interpolation",
         "section-integration",
+        "section-linear-algebra",
         "section-odes",
     ]
 
@@ -16,12 +17,14 @@ def register_navigation_callbacks(app):
         "tab-home",
         "tab-interpolation",
         "tab-integration",
+        "tab-linear-algebra",
         "tab-odes",
 
         # Home Dashboard
         "home-start-btn",
         "go-interpolation",
         "go-integration",
+        "go-linear-algebra",
         "go-odes",
     ]
 
@@ -31,13 +34,15 @@ def register_navigation_callbacks(app):
         "tab-home": 0,
         "tab-interpolation": 1,
         "tab-integration": 2,
-        "tab-odes": 3,
+        "tab-linear-algebra": 3,
+        "tab-odes": 4,
 
         # Home Dashboard
         "home-start-btn": 1,   # Comenzar → Interpolación
         "go-interpolation": 1,
         "go-integration": 2,
-        "go-odes": 3,
+        "go-linear-algebra": 3,
+        "go-odes": 4,
     }
 
     @app.callback(
