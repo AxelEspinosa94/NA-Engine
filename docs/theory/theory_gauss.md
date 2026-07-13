@@ -5,11 +5,11 @@
 
 Gauss elimination solves:
 
-\[
+$$
 Ax = b
-\]
+$$
 
-by transforming \( A \) into an upper triangular matrix.
+by transforming $A$ into an upper triangular matrix.
 
 ---
 
@@ -31,7 +31,7 @@ by transforming \( A \) into an upper triangular matrix.
 
 # 3. Conceptual Example
 
-\[
+$$
 A = \begin{pmatrix}
 4 & 3 \\
 6 & 3
@@ -41,13 +41,13 @@ b = \begin{pmatrix}
 10 \\
 12
 \end{pmatrix}
-\]
+$$
 
 Solution:
 
-\[
+$$
 x = (1, 2)
-\]
+$$
 
 ---
 

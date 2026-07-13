@@ -5,11 +5,11 @@
 
 Gauss‑Jordan solves:
 
-\[
+$$
 Ax = b
-\]
+$$
 
-by reducing the augmented matrix \([A|b]\) to **reduced row echelon form**.
+by reducing the augmented matrix $[A|b]$ to **reduced row echelon form**.
 
 ---
 
@@ -24,7 +24,7 @@ by reducing the augmented matrix \([A|b]\) to **reduced row echelon form**.
 # 2. Properties
 
 - Produces exact solution  
-- Also computes inverse when applied to \([A|I]\)
+- Also computes inverse when applied to $[A|I]$
 
 ---
 
@@ -32,9 +32,9 @@ by reducing the augmented matrix \([A|b]\) to **reduced row echelon form**.
 
 Same system:
 
-\[
+$$
 x = (1, 2)
-\]
+$$
 
 ---
 

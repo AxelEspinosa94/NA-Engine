@@ -5,21 +5,21 @@
 
 QR factorization decomposes:
 
-\[
+$$
 A = QR
-\]
+$$
 
 where:
 
-- \( Q \) is orthogonal  
-- \( R \) is upper triangular  
+- $Q$ is orthogonal  
+- $R$ is upper triangular  
 
 ---
 
 # 1. Solving a System
 
-1. Compute \( y = Q^T b \)  
-2. Solve \( Rx = y \)
+1. Compute $y = Q^T b$  
+2. Solve $Rx = y$
 
 ---
 
@@ -33,9 +33,9 @@ where:
 
 # 3. Conceptual Example
 
-\[
+$$
 x = (1, 2)
-\]
+$$
 
 ---
 

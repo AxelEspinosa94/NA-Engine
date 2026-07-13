@@ -17,18 +17,18 @@ The rank of a matrix is the number of linearly independent rows or columns.
 
 # 2. Conceptual Example
 
-\[
+$$
 A = \begin{pmatrix}
 4 & 3 \\
 6 & 3
 \end{pmatrix}
-\]
+$$
 
 Rank:
 
-\[
+$$
 \operatorname{rank}(A) = 2
-\]
+$$
 
 ---
 

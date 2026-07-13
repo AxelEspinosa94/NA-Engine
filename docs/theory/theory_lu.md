@@ -5,22 +5,22 @@
 
 LU factorization decomposes:
 
-\[
+$$
 PA = LU
-\]
+$$
 
 where:
 
-- \( P \) is a permutation matrix  
-- \( L \) is lower triangular  
-- \( U \) is upper triangular  
+- $P$ is a permutation matrix  
+- $L$ is lower triangular  
+- $U$ is upper triangular  
 
 ---
 
 # 1. Solving a System
 
-1. Solve \( Ly = Pb \)  
-2. Solve \( Ux = y \)
+1. Solve $Ly = Pb$  
+2. Solve $Ux = y$
 
 ---
 
@@ -33,9 +33,9 @@ where:
 
 # 3. Conceptual Example
 
-\[
+$$
 x = (1, 2)
-\]
+$$
 
 ---
 

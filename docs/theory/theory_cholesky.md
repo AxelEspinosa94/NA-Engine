@@ -5,16 +5,16 @@
 
 Cholesky decomposes a symmetric positive‑definite matrix:
 
-\[
+$$
 A = LL^T
-\]
+$$
 
 ---
 
 # 1. Solving a System
 
-1. Solve \( Ly = b \)  
-2. Solve \( L^T x = y \)
+1. Solve $Ly = b$  
+2. Solve $L^T x = y$
 
 ---
 
@@ -27,9 +27,9 @@ A = LL^T
 
 # 3. Conceptual Example
 
-\[
+$$
 x = (1, 2)
-\]
+$$
 
 ---
 

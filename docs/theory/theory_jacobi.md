@@ -5,16 +5,16 @@
 
 Jacobi solves:
 
-\[
+$$
 Ax = b
-\]
+$$
 
 using the iteration:
 
-\[
+$$
 x_i^{(k+1)} = \frac{1}{A_{ii}}
 \left(b_i - \sum_{j\neq i} A_{ij} x_j^{(k)}\right)
-\]
+$$
 
 ---
 
@@ -29,9 +29,9 @@ Converges if:
 
 # 2. Conceptual Example
 
-\[
+$$
 x = (1, 2)
-\]
+$$
 
 ---
 
