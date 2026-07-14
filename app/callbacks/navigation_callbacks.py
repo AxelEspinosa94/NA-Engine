@@ -8,6 +8,7 @@ def register_navigation_callbacks(app):
         "section-interpolation",
         "section-integration",
         "section-linear-algebra",
+        "section-numerical-derivative",
         "section-odes",
     ]
 
@@ -18,6 +19,7 @@ def register_navigation_callbacks(app):
         "tab-interpolation",
         "tab-integration",
         "tab-linear-algebra",
+        "tab-numerical-derivative",
         "tab-odes",
 
         # Home Dashboard
@@ -25,6 +27,7 @@ def register_navigation_callbacks(app):
         "go-interpolation",
         "go-integration",
         "go-linear-algebra",
+        "go-numerical-derivative",
         "go-odes",
     ]
 
@@ -35,14 +38,16 @@ def register_navigation_callbacks(app):
         "tab-interpolation": 1,
         "tab-integration": 2,
         "tab-linear-algebra": 3,
-        "tab-odes": 4,
+        "tab-numerical-derivative": 4,
+        "tab-odes": 5,
 
         # Home Dashboard
         "home-start-btn": 1,   # Comenzar → Interpolación
         "go-interpolation": 1,
         "go-integration": 2,
         "go-linear-algebra": 3,
-        "go-odes": 4,
+        "go-numerical-derivative": 4,
+        "go-odes": 5,
     }
 
     @app.callback(
