@@ -70,17 +70,17 @@ home_layout = html.Div(
                 html.Div(
                     className="module-card",
                     children=[
-                        html.H3("Punto Fijo / ODEs"),
-                        html.P("Punto Fijo, Euler, Runge–Kutta."),
-                        html.Button("Ir al módulo", id="go-odes", className="secondary-btn"),
+                        html.H3("Derivación Numérica"),
+                        html.P("Diferencias finitas, derivación simbólica."),
+                        html.Button("Ir al módulo", id="go-numerical-derivative", className="secondary-btn"),
                     ],
                 ),
                 html.Div(
                     className="module-card",
                     children=[
-                        html.H3("Derivación Numérica"),
-                        html.P("Diferencias finitas, derivación simbólica."),
-                        html.Button("Próximamente", disabled=True, className="disabled-btn"),
+                        html.H3("Punto Fijo / ODEs"),
+                        html.P("Punto Fijo, Euler, Runge–Kutta."),
+                        html.Button("Ir al módulo", id="go-odes", className="secondary-btn"),
                     ],
                 ),
                 html.Div(
