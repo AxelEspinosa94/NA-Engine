@@ -70,7 +70,7 @@ def test_large_x(mode):
 
 @pytest.mark.parametrize("mode", MODES)
 def test_small_h(mode):
-    fn = "np.sin(x) + x**2"
+    fn = "sin(x) + x**2"
     x = 2.0
     h = 1e-10
 
