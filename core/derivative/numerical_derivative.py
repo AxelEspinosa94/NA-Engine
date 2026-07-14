@@ -81,41 +81,24 @@ class NumericalDerivative:
     # Helper: validate allowed variables in function
     # ============================================================
     def _validate_function_variables(self):
-        """
-        Ensures the function only contains allowed variables:
-        - Normal derivative: only x
-        - Partial derivative: x and y
-        """
-
-        # Extract alphabetic tokens
         tokens = re.findall(r"[a-zA-Z_]+", self.function)
 
-        # Allowed variables
         allowed_vars = {"x"} if self.calculation_mode not in ["partial_x", "partial_y"] else {"x", "y"}
 
-        # Allowed function names
         allowed_funcs = {
-            "sin", "cos", "tan", "exp", "log", "sqrt",
-            "arcsin", "arccos", "arctan",
-            "sinh", "cosh", "tanh",
-            "np", "np.sin", "np.cos", "np.exp", "np.log"
+            "np", "sin", "cos", "tan", "exp", "log", "sqrt"
         }
 
         for t in tokens:
-            # Skip function names
             if t in allowed_funcs:
                 continue
-
-            # Skip numpy prefix
             if t == "np":
                 continue
-
-            # Validate variables
             if t not in allowed_vars:
                 raise ConstructionError(
-                    f"Invalid variable '{t}' in function. "
-                    f"Allowed variables: {allowed_vars}."
+                    f"Invalid variable '{t}' in function. Allowed variables: {allowed_vars}."
                 )
+
 
     def _normalize_function(self):
         """
