@@ -5,33 +5,33 @@
 
 Forward difference approximates the first derivative of a function:
 
-\[
+$$
 f'(x) \approx \frac{f(x+h) - f(x)}{h}
-\]
+$$
 
-where \( h > 0 \) is a small step size.
+where $h > 0$ is a small step size.
 
 ---
 
 ## 1. Formula
 
-\[
+$$
 D_f^{+}(x) = \frac{f(x+h) - f(x)}{h}
-\]
+$$
 
-This uses the point \( x \) and a forward point \( x+h \).
+This uses the point $x$ and a forward point $x+h$.
 
 ---
 
 ## 2. Error
 
-For smooth \( f \):
+For smooth $f$:
 
-\[
+$$
 f'(x) = D_f^{+}(x) - \frac{h}{2}f''(x) + O(h^2)
-\]
+$$
 
-So the method is **first‑order accurate** in \( h \).
+So the method is **first‑order accurate** in $h$.
 
 ---
 
@@ -47,19 +47,19 @@ So the method is **first‑order accurate** in \( h \).
 
 For:
 
-\[
+$$
 f(x) = \sin(x),\quad x = 1,\quad h = 10^{-4}
-\]
+$$
 
-\[
+$$
 f'(1) \approx \frac{\sin(1 + h) - \sin(1)}{h}
-\]
+$$
 
 which approximates:
 
-\[
+$$
 \cos(1) \approx 0.540302
-\]
+$$
 
 ---
 

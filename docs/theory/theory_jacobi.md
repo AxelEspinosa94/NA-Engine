@@ -22,8 +22,8 @@ $$
 
 Converges if:
 
-- \( A \) is diagonally dominant  
-- Or \( A \) is symmetric positive definite  
+- $A$ is diagonally dominant  
+- Or $A$ is symmetric positive definite  
 
 ---
 
