@@ -85,14 +85,32 @@ class NumericalDerivative:
         - Partial derivative: x and y
         """
 
-        # Extract variable names (alphabetic tokens)
-        tokens = re.findall(r"[a-zA-Z]+", self.function)
+        # Extract alphabetic tokens
+        tokens = re.findall(r"[a-zA-Z_]+", self.function)
 
-        allowed = {"x"} if self.calculation_mode not in ["partial_x", "partial_y"] else {"x", "y"}
+        # Allowed variables
+        allowed_vars = {"x"} if self.calculation_mode not in ["partial_x", "partial_y"] else {"x", "y"}
+
+        # Allowed function names
+        allowed_funcs = {
+            "sin", "cos", "tan", "exp", "log", "sqrt",
+            "arcsin", "arccos", "arctan",
+            "sinh", "cosh", "tanh",
+            "np", "np.sin", "np.cos", "np.exp", "np.log"
+        }
 
         for t in tokens:
-            if t not in allowed:
+            # Skip function names
+            if t in allowed_funcs:
+                continue
+
+            # Skip numpy prefix
+            if t == "np":
+                continue
+
+            # Validate variables
+            if t not in allowed_vars:
                 raise ConstructionError(
                     f"Invalid variable '{t}' in function. "
-                    f"Allowed variables: {allowed}."
+                    f"Allowed variables: {allowed_vars}."
                 )
