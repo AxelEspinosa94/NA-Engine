@@ -73,8 +73,8 @@ class NumericalDerivative:
         # ───────────────────────────────────────────────
         # Validate function variables
         # ───────────────────────────────────────────────
-        self._normalize_function()
-        self._validate_function_variables()
+        #self._normalize_function()
+        #self._validate_function_variables()
         
 
     # ============================================================
