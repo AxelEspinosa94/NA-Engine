@@ -31,7 +31,7 @@ This checklist ensures consistency across all modules and accelerates developmen
 - [ ] Raise `ExecutionError` on failure
 
 ### Method Catalog
-- [ ] Register module in `core/method_catalog.json`:
+- [ ] Register module in `core/method_catalog.json` (if necessary):
   ```json
   {
     "<method>": {
