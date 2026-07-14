@@ -69,23 +69,23 @@ class NumericalDerivativeValidator:
         # ───────────────────────────────────────────────
         # Validate function variables depending on mode
         # ───────────────────────────────────────────────
-        tokens = re.findall(r"[a-zA-Z]+", func)
+        #tokens = re.findall(r"[a-zA-Z]+", func)
 
-        if mode in ["forward", "backward", "central",
-                    "second_forward", "second_central",
-                    "third_forward", "richardson"]:
-            allowed = {"x"}
-        elif mode == "partial_x":
-            allowed = {"x", "y"}   # f(x, y) but derivative wrt x
-        elif mode == "partial_y":
-            allowed = {"x", "y"}   # f(x, y) but derivative wrt y
+        #if mode in ["forward", "backward", "central",
+        #            "second_forward", "second_central",
+        #            "third_forward", "richardson"]:
+        #    allowed = {"x"}
+        #elif mode == "partial_x":
+        #    allowed = {"x", "y"}   # f(x, y) but derivative wrt x
+        #elif mode == "partial_y":
+        #    allowed = {"x", "y"}   # f(x, y) but derivative wrt y
 
-        for t in tokens:
-            if t not in allowed:
-                raise ValidationError(
-                    f"Invalid variable '{t}' in function for mode '{mode}'. "
-                    f"Allowed variables: {allowed}."
-                )
+        #for t in tokens:
+        #    if t not in allowed:
+        #        raise ValidationError(
+        #            f"Invalid variable '{t}' in function for mode '{mode}'. "
+        #            f"Allowed variables: {allowed}."
+        #        )
 
         # ───────────────────────────────────────────────
         # Richardson order
