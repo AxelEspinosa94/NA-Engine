@@ -73,7 +73,9 @@ class NumericalDerivative:
         # ───────────────────────────────────────────────
         # Validate function variables
         # ───────────────────────────────────────────────
+        self._normalize_function()
         self._validate_function_variables()
+        
 
     # ============================================================
     # Helper: validate allowed variables in function
@@ -114,3 +116,24 @@ class NumericalDerivative:
                     f"Invalid variable '{t}' in function. "
                     f"Allowed variables: {allowed_vars}."
                 )
+
+    def _normalize_function(self):
+        """
+        Converts common math functions to numpy equivalents.
+        Example: sin(x) -> np.sin(x)
+        """
+        replacements = {
+            "sin": "np.sin",
+            "cos": "np.cos",
+            "tan": "np.tan",
+            "exp": "np.exp",
+            "log": "np.log",
+            "sqrt": "np.sqrt",
+        }
+
+        expr = self.function
+
+        for k, v in replacements.items():
+            expr = re.sub(rf"\b{k}\b", v, expr)
+
+        self.function = expr
