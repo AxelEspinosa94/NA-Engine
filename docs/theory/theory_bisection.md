@@ -5,15 +5,15 @@
 
 The bisection method is a bracketing technique for solving:
 
-\[
+$$
 f(x) = 0
-\]
+$$
 
-It requires an interval \([a, b]\) such that:
+It requires an interval $[a, b]$ such that:
 
-\[
+$$
 f(a)f(b) < 0
-\]
+$$
 
 meaning the function changes sign.
 
@@ -23,21 +23,21 @@ meaning the function changes sign.
 
 At each step:
 
-\[
+$$
 c = \frac{a + b}{2}
-\]
+$$
 
-Evaluate \( f(c) \):
+Evaluate $f(c)$:
 
-- If \( f(a)f(c) < 0 \), the root is in \([a, c]\)
-- Else, it is in \([c, b]\)
+- If $f(a)f(c) < 0$, the root is in $[a, c]$
+- Else, it is in $[c, b]$
 
 ---
 
 # 2. Stopping Criteria
 
-- \(|f(c)| < \text{tol}\)
-- \(|b - a| < \text{tol}\)
+- $|f(c)| < \text{tol}$
+- $|b - a| < \text{tol}$
 
 ---
 
@@ -59,27 +59,27 @@ Evaluate \( f(c) \):
 
 Solve:
 
-\[
+$$
 x^2 - 2 = 0
-\]
+$$
 
 Choose:
 
-\[
+$$
 a = 1,\quad b = 2
-\]
+$$
 
 Since:
 
-\[
+$$
 f(1) = -1,\quad f(2) = 2
-\]
+$$
 
 the method converges to:
 
-\[
+$$
 \sqrt{2} \approx 1.41421356
-\]
+$$
 
 ---
 

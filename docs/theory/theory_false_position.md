@@ -10,23 +10,23 @@ The false position method is a hybrid of:
 
 It solves:
 
-\[
+$$
 f(x) = 0
-\]
+$$
 
-using an interval \([a, b]\) with:
+using an interval $[a, b]$ with:
 
-\[
+$$
 f(a)f(b) < 0
-\]
+$$
 
 ---
 
 # 1. Iteration Formula
 
-\[
+$$
 c = b - f(b)\frac{b - a}{f(b) - f(a)}
-\]
+$$
 
 This is the secant formula, but the interval is updated **while preserving the sign change**.
 
@@ -34,9 +34,9 @@ This is the secant formula, but the interval is updated **while preserving the s
 
 # 2. Stopping Criterion
 
-\[
+$$
 |f(c)| < \text{tol}
-\]
+$$
 
 ---
 
@@ -57,21 +57,21 @@ This is the secant formula, but the interval is updated **while preserving the s
 
 Solve:
 
-\[
+$$
 x^2 - 2 = 0
-\]
+$$
 
 Start with:
 
-\[
+$$
 a = 1,\quad b = 2
-\]
+$$
 
 The method converges to:
 
-\[
+$$
 \sqrt{2} \approx 1.41421356
-\]
+$$
 
 ---
 
