@@ -200,5 +200,6 @@ docs/UI/interpolation/
 # Log:
 
 **07/07/2026**: Steps were reordered to match the current work done in Interpolation and Integration module.
+**07/16/2026**: Executor step was isolated in step 1 since it needs special preparation for the output.
 
 ---
