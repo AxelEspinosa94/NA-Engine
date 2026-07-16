@@ -33,6 +33,7 @@ class NonLinearEquation:
             if not isinstance(g_str, str):
                 raise ConstructionError("Fixed point method requires g(x).")
 
+            g_str = self._normalize_function(g_str)
             g_sym = sp.sympify(g_str)
             self.g = sp.lambdify(x, g_sym, "numpy")
 
