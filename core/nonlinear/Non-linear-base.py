@@ -22,6 +22,7 @@ class NonLinearEquation:
         if not isinstance(func_str, str):
             raise ConstructionError("Function must be a string.")
 
+        func_str = self._normalize_function(func_str)
         x = sp.symbols("x")
         f_sym = sp.sympify(func_str)
         self.f = sp.lambdify(x, f_sym, "numpy")
@@ -81,3 +82,17 @@ class NonLinearEquation:
             if not isinstance(self.x0, (float, int)):
                 raise ConstructionError("x0 must be numeric.")
 
+    def _normalize_function(self, expr: str) -> str:
+        replacements = {
+            "np.sin": "sin",
+            "np.cos": "cos",
+            "np.tan": "tan",
+            "np.exp": "exp",
+            "np.log": "log",
+            "np.sqrt": "sqrt",
+        }
+
+        for k, v in replacements.items():
+            expr = expr.replace(k, v)
+
+        return expr
