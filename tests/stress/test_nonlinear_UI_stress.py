@@ -40,7 +40,7 @@ def run_nm(mode, fn, x0=None, x1=None, interval=None, g=None, tol=1e-6, max_iter
     if g is not None:
         input_data["g"] = g
 
-    nm = NumericalMethod("non_linear_equation", input_data)
+    nm = NumericalMethod("nonlinear", input_data)
     nm.validate_input()
     return nm.execute()
 
@@ -106,7 +106,7 @@ def test_newton_derivative_zero():
     fn = "x**3"
     x0 = 0.0  # derivative = 0 → should raise ExecutionError
 
-    nm = NumericalMethod("non_linear_equation", {
+    nm = NumericalMethod("nonlinear", {
         "mode": "function",
         "function": fn,
         "calculation_mode": "newton",
@@ -130,7 +130,7 @@ def test_secant_near_zero_denominator():
     x0 = 2.0000001
     x1 = 2.0000002  # f(x0) ≈ f(x1)
 
-    nm = NumericalMethod("non_linear_equation", {
+    nm = NumericalMethod("nonlinear", {
         "mode": "function",
         "function": fn,
         "calculation_mode": "secant",
@@ -155,7 +155,7 @@ def test_fixed_point_divergence():
     g = "2*x"  # g'(x) = 2 → diverges
     x0 = 1.0
 
-    nm = NumericalMethod("non_linear_equation", {
+    nm = NumericalMethod("nonlinear", {
         "mode": "function",
         "function": fn,
         "calculation_mode": "fixed_point",
