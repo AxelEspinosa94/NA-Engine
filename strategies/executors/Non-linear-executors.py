@@ -1,34 +1,78 @@
 import numpy as np
-from core.exceptions import ValidationError, ExecutionError
+import pandas as pd
+from core.exceptions import ExecutionError
+
 
 class NonLinearExecutor:
 
     def run(self, instance):
-        calculation_mode = instance.calculation_mode
+        mode = instance.calculation_mode
 
         dispatch = {
-            "fixed_point": lambda: self._fixed_point(instance),
-            "bisection": lambda: self._bisection(instance),
-            "newton": lambda: self._newton(instance),
-            "secant": lambda: self._secant(instance),
-            "false_position": lambda: self._false_position(instance),
+            "fixed_point": self._fixed_point,
+            "bisection": self._bisection,
+            "newton": self._newton,
+            "secant": self._secant,
+            "false_position": self._false_position,
         }
 
-        if calculation_mode not in dispatch:
-            raise ValidationError(f"Executor not implemented for calculation_mode '{calculation_mode}'.")
+        if mode not in dispatch:
+            raise ExecutionError(f"Executor not implemented for calculation_mode '{mode}'.")
 
-        value, iterations = dispatch[calculation_mode]()
+        # Run method → returns (root, iterations, x_list, y_list)
+        root, iters, xs, ys = dispatch[mode](instance)
+
+        # Build final payload
+        return self._build_output(instance, root, iters, xs, ys)
+
+    # ============================================================
+    # Output builder
+    # ============================================================
+
+    def _build_output(self, instance, root, iters, xs, ys):
+        # Build iteration table
+        table = pd.DataFrame({
+            "iter": list(range(1, len(xs) + 1)),
+            "x": xs,
+            "f(x)": ys,
+        })
+
+        # Build symbolic expression
+        expr = self._build_expr(instance.calculation_mode)
 
         return {
-            "root": float(value),
-            "iterations": iterations,
-            "calculation_mode": calculation_mode,
+            "value": float(root),
+            "expression": expr,
+            "table": table,
+            "x": xs,
+            "y": ys,
+            "matrix": None,
+            "vector": xs,
+            "calculation_mode": instance.calculation_mode,
+            "iterations": iters,
             "tol": instance.tol,
         }
 
-    # -------------------------
-    # Methods (to implement in step 4–5)
-    # -------------------------
+    # ============================================================
+    # Symbolic expressions
+    # ============================================================
+
+    def _build_expr(self, mode):
+        if mode == "newton":
+            return "x_{n+1} = x_n - f(x_n)/f'(x_n)"
+        if mode == "secant":
+            return "x_{n+1} = x_n - f(x_n)(x_n - x_{n-1}) / (f(x_n) - f(x_{n-1}))"
+        if mode == "bisection":
+            return "c = (a + b) / 2"
+        if mode == "false_position":
+            return "c = b - f(b)(b - a) / (f(b) - f(a))"
+        if mode == "fixed_point":
+            return "x_{n+1} = g(x_n)"
+        return ""
+
+    # ============================================================
+    # Methods
+    # ============================================================
 
     def _fixed_point(self, instance):
         g = instance.g
@@ -37,7 +81,8 @@ class NonLinearExecutor:
         tol = instance.tol
         max_iter = instance.max_iter
 
-        # Validación de convergencia local
+        xs, ys = [], []
+
         try:
             if abs(gprime(x)) >= 1:
                 raise ExecutionError(
@@ -52,9 +97,11 @@ class NonLinearExecutor:
             if not np.isfinite(x_next):
                 raise ExecutionError("g(x) produced NaN or infinity.")
 
-            # Criterio de paro
+            xs.append(x_next)
+            ys.append(instance.f(x_next))
+
             if abs(x_next - x) < tol:
-                return x_next, i
+                return x_next, i, xs, ys
 
             x = x_next
 
@@ -66,10 +113,11 @@ class NonLinearExecutor:
         tol = instance.tol
         max_iter = instance.max_iter
 
+        xs, ys = [], []
+
         fa = f(a)
         fb = f(b)
 
-        # Validación de cambio de signo
         if fa * fb > 0:
             raise ExecutionError(
                 f"Bisection requires f(a) and f(b) to have opposite signs. "
@@ -80,11 +128,12 @@ class NonLinearExecutor:
             c = (a + b) / 2
             fc = f(c)
 
-            # Criterio de paro
-            if abs(fc) < tol or abs(b - a) < tol:
-                return c, i
+            xs.append(c)
+            ys.append(fc)
 
-            # Elegir subintervalo
+            if abs(fc) < tol or abs(b - a) < tol:
+                return c, i, xs, ys
+
             if fa * fc < 0:
                 b = c
                 fb = fc
@@ -101,35 +150,22 @@ class NonLinearExecutor:
         tol = instance.tol
         max_iter = instance.max_iter
 
-        if x is None:
-            raise ExecutionError("Newton method requires x0.")
+        xs, ys = [], []
 
         for i in range(1, max_iter + 1):
+            fx = f(x)
+            fpx = fprime(x)
 
-            try:
-                fx = f(x)
-            except Exception as e:
-                raise ExecutionError(f"Newton method failed while evaluating f(x): {e}")
-
-            try:
-                fpx = fprime(x)
-            except Exception as e:
-                raise ExecutionError(f"Newton method failed while evaluating f'(x): {e}")
-
-            # Derivada inválida o cero
-            if (not np.isfinite(fpx)) or np.isnan(fpx) or abs(fpx) < 1e-14:
+            if abs(fpx) < 1e-14 or not np.isfinite(fpx):
                 raise ExecutionError("Newton method failed: derivative is zero or invalid.")
 
-            # Siguiente iteración
             x_next = x - fx / fpx
 
-            # Validación: NaN o infinito
-            if (not np.isfinite(x_next)) or np.isnan(x_next):
-                raise ExecutionError("Newton method produced NaN or infinity.")
+            xs.append(x_next)
+            ys.append(f(x_next))
 
-            # Criterio de paro
             if abs(x_next - x) < tol:
-                return x_next, i
+                return x_next, i, xs, ys
 
             x = x_next
 
@@ -142,34 +178,27 @@ class NonLinearExecutor:
         tol = instance.tol
         max_iter = instance.max_iter
 
-        if x0 is None or x1 is None:
-            raise ExecutionError("Secant method requires x0 and x1.")
+        xs, ys = [], []
 
         for i in range(1, max_iter + 1):
             f0 = f(x0)
             f1 = f(x1)
 
-            # Validación: denominador no puede ser cero
             denom = f1 - f0
             if denom == 0 or not np.isfinite(denom):
                 raise ExecutionError("Secant method failed: zero or invalid denominator.")
 
-            # Fórmula de la secante
             x2 = x1 - f1 * (x1 - x0) / denom
 
-            # Validación: NaN o infinito
-            if not np.isfinite(x2):
-                raise ExecutionError("Secant method produced NaN or infinity.")
+            xs.append(x2)
+            ys.append(f(x2))
 
-            # Criterio de paro
             if abs(x2 - x1) < tol:
-                return x2, i
+                return x2, i, xs, ys
 
-            # Avanzar iteración
             x0, x1 = x1, x2
 
         raise ExecutionError("Secant method did not converge within max_iter.")
-
 
     def _false_position(self, instance):
         f = instance.f
@@ -177,10 +206,11 @@ class NonLinearExecutor:
         tol = instance.tol
         max_iter = instance.max_iter
 
+        xs, ys = [], []
+
         fa = f(a)
         fb = f(b)
 
-        # Validación: debe haber cambio de signo
         if fa * fb > 0:
             raise ExecutionError(
                 f"False Position requires f(a) and f(b) to have opposite signs. "
@@ -188,19 +218,15 @@ class NonLinearExecutor:
             )
 
         for i in range(1, max_iter + 1):
-            # Fórmula de Regula Falsi
             c = b - fb * (b - a) / (fb - fa)
             fc = f(c)
 
-            # Validación: NaN o infinito
-            if not np.isfinite(c) or not np.isfinite(fc):
-                raise ExecutionError("False Position produced NaN or infinity.")
+            xs.append(c)
+            ys.append(fc)
 
-            # Criterio de paro
             if abs(fc) < tol:
-                return c, i
+                return c, i, xs, ys
 
-            # Actualizar intervalo conservando el cambio de signo
             if fa * fc < 0:
                 b = c
                 fb = fc
@@ -209,4 +235,3 @@ class NonLinearExecutor:
                 fa = fc
 
         raise ExecutionError("False Position did not converge within max_iter.")
-
