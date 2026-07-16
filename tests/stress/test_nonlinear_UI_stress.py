@@ -3,6 +3,7 @@
 import pytest
 import numpy as np
 from core.base_method import NumericalMethod
+from core.exceptions import ConstructionError, ValidationError, ExecutionError
 from core.contract import UIContract
 
 contract = UIContract()
@@ -117,7 +118,7 @@ def test_newton_derivative_zero():
 
     nm.validate_input()
 
-    with pytest.raises(Exception):
+    with pytest.raises(ExecutionError):
         nm.execute()
 
 
@@ -142,7 +143,7 @@ def test_secant_near_zero_denominator():
 
     nm.validate_input()
 
-    with pytest.raises(Exception):
+    with pytest.raises(ExecutionError):
         nm.execute()
 
 
@@ -167,7 +168,7 @@ def test_fixed_point_divergence():
 
     nm.validate_input()
 
-    with pytest.raises(Exception):
+    with pytest.raises(ExecutionError):
         nm.execute()
 
 
