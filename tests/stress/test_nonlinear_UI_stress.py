@@ -118,8 +118,10 @@ def test_newton_derivative_zero():
 
     nm.validate_input()
 
-    with pytest.raises(ExecutionError):
-        nm.execute()
+    outcome = nm.execute()
+    assert outcome["status"] == "error"
+    assert outcome["error_type"] == "ExecutionError"
+
 
 
 # ============================================================
@@ -143,8 +145,9 @@ def test_secant_near_zero_denominator():
 
     nm.validate_input()
 
-    with pytest.raises(ExecutionError):
-        nm.execute()
+    outcome = nm.execute()
+    assert outcome["status"] == "error"
+    assert outcome["error_type"] == "ExecutionError"
 
 
 # ============================================================
@@ -168,8 +171,9 @@ def test_fixed_point_divergence():
 
     nm.validate_input()
 
-    with pytest.raises(ExecutionError):
-        nm.execute()
+    outcome = nm.execute()
+    assert outcome["status"] == "error"
+    assert outcome["error_type"] == "ExecutionError"
 
 
 # ============================================================
