@@ -131,7 +131,7 @@ def test_newton_derivative_zero():
 def test_secant_near_zero_denominator():
     fn = "x**2 - 4"
     x0 = 2.0000001
-    x1 = 2.0000002  # f(x0) ≈ f(x1)
+    x1 = 2.0000002  # f(x0) ≈ f(x1), denominator small but not zero
 
     nm = NumericalMethod("nonlinear", {
         "mode": "function",
@@ -144,10 +144,14 @@ def test_secant_near_zero_denominator():
     })
 
     nm.validate_input()
-
     outcome = nm.execute()
-    assert outcome["status"] == "error"
-    assert outcome["error_type"] == "ExecutionError"
+
+    # Should NOT be an error — denominator is small but valid
+    assert outcome["status"] == "success"
+
+    # The root should be close to 2
+    assert abs(outcome["value"] - 2.0) < 1e-3
+
 
 
 # ============================================================
