@@ -78,6 +78,14 @@ home_layout = html.Div(
                 html.Div(
                     className="module-card",
                     children=[
+                        html.H3("Ecuaciones No Lineales"),
+                        html.P("Bisección, Falsa Posición, Secante, Newton y Punto Fijo."),
+                        html.Button("Ir al módulo", id="go-nonlinear", className="secondary-btn"),
+                    ],
+                ),
+                html.Div(
+                    className="module-card",
+                    children=[
                         html.H3("Punto Fijo / ODEs"),
                         html.P("Punto Fijo, Euler, Runge–Kutta."),
                         html.Button("Ir al módulo", id="go-odes", className="secondary-btn"),
