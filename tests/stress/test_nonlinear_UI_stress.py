@@ -150,7 +150,7 @@ def test_secant_near_zero_denominator():
     assert outcome["status"] == "success"
 
     # The root should be close to 2
-    assert abs(outcome["value"] - 2.0) < 1e-3
+    assert abs(outcome.get("result").get("value") - 2.0) < 1e-3
 
 
 
