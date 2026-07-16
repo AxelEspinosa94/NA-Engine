@@ -132,7 +132,7 @@ pip install -r requirements.txt
 ### 2. Start the application
 
 ```
-python run.py
+python .\run.py
 ```
 
 Then open:
