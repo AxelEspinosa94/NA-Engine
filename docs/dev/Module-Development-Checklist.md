@@ -30,18 +30,6 @@ This checklist ensures consistency across all modules and accelerates developmen
 - [ ] Generate plot data (`x`, `y`, nodes)
 - [ ] Raise `ExecutionError` on failure
 
-### Method Catalog
-- [ ] Register module in `core/method_catalog.json` (if necessary):
-  ```json
-  {
-    "<method>": {
-      "classConstructor":    "core.<module>.<module>.<Module>",
-      "classInputValidator": "strategies.validators.<module>_validators.<Module>Validator",
-      "classExecutor":       "strategies.executors.<module>_executors.<Module>Executor"
-    }
-  }
-  ```
-
 ### Error Normalization
 - [ ] Ensure all errors pass through `ErrorNormalizer`
 
