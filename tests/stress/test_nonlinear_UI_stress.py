@@ -9,7 +9,7 @@ from core.contract import UIContract
 contract = UIContract()
 
 # Mark entire module as pending until Stage 4 is complete
-pytestmark = pytest.mark.pending
+#pytestmark = pytest.mark.pending
 
 MODES = [
     "bisection",
