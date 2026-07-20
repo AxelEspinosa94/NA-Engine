@@ -4,17 +4,17 @@ from core.exceptions import ExecutionError
 
 class ODEExecutor:
     """
-    Executors for Ordinary Differential Equations (ODEs).
-    Includes IVP, systems, BVP (shooting, finite differences),
-    and multistep methods.
+    Stage 4 executor for ODE solvers.
+    Returns standardized dicts compatible with Renderer + UIContract.
     """
 
     # ============================================================
-    # Helper: evaluate f(x, y)
+    # Helper: safe evaluation of f(x, y)
     # ============================================================
     def _eval(self, expr, x, y):
         try:
-            return float(eval(expr, {"__builtins__": {}}, {"x": x, "y": y, "np": np}))
+            local = {"x": x, "y": y, "np": np}
+            return float(eval(expr, {"__builtins__": {}}, local))
         except Exception as e:
             raise ExecutionError(f"Error evaluating function '{expr}': {e}")
 
@@ -22,35 +22,33 @@ class ODEExecutor:
     # Dispatcher
     # ============================================================
     def run(self, instance):
-        mode = instance.input_data["calculation_mode"]
+        mode = instance.calculation_mode
 
         dispatch = {
-            "euler": lambda: self.euler(instance),
-            "heun": lambda: self.heun(instance),
-            "rk2": lambda: self.rk2(instance),
-            "rk4": lambda: self.rk4(instance),
-            "rk4_system": lambda: self.rk4_system(instance),
-            "shooting": lambda: self.shooting(instance),
-            "finite_differences": lambda: self.finite_differences(instance),
-            "adams_bashforth_2": lambda: self.adams_bashforth_2(instance),
-            "adams_bashforth_3": lambda: self.adams_bashforth_3(instance),
-            "adams_moulton_2": lambda: self.adams_moulton_2(instance),
+            "euler": self._run_euler,
+            "heun": self._run_heun,
+            "rk2": self._run_rk2,
+            "rk4": self._run_rk4,
+            "rk4_system": self._run_rk4_system,
+            "shooting": self._run_shooting,
+            "finite_differences": self._run_finite_diff,
+            "adams_bashforth_2": self._run_ab2,
+            "adams_bashforth_3": self._run_ab3,
+            "adams_moulton_2": self._run_am2,
         }
 
         if mode not in dispatch:
             raise ExecutionError(f"Unknown calculation_mode: {mode}")
 
-        return dispatch[mode]()
+        return dispatch[mode](instance)
 
     # ============================================================
     # Euler
     # ============================================================
-    def euler(self, instance):
-        f = instance.input_data["function"]
-        x0 = float(instance.input_data["x0"])
-        y0 = float(instance.input_data["y0"])
-        x_end = float(instance.input_data["x_end"])
-        h = float(instance.input_data["h"])
+    def _run_euler(self, instance):
+        f = instance.f
+        x0, y0 = float(instance.x0), float(instance.y0)
+        x_end, h = float(instance.x_end), float(instance.h)
 
         xs, ys = [x0], [y0]
         x, y = x0, y0
@@ -61,17 +59,20 @@ class ODEExecutor:
             xs.append(x)
             ys.append(y)
 
-        return {"x": xs, "y": ys}
+        return {
+            "calculation_mode": "euler",
+            "x": xs,
+            "y": ys,
+            "expression": "y_{n+1} = y_n + h f(x_n, y_n)",
+        }
 
     # ============================================================
-    # Heun (Euler mejorado)
+    # Heun
     # ============================================================
-    def heun(self, instance):
-        f = instance.input_data["function"]
-        x0 = float(instance.input_data["x0"])
-        y0 = float(instance.input_data["y0"])
-        x_end = float(instance.input_data["x_end"])
-        h = float(instance.input_data["h"])
+    def _run_heun(self, instance):
+        f = instance.f
+        x0, y0 = float(instance.x0), float(instance.y0)
+        x_end, h = float(instance.x_end), float(instance.h)
 
         xs, ys = [x0], [y0]
         x, y = x0, y0
@@ -84,40 +85,46 @@ class ODEExecutor:
             xs.append(x)
             ys.append(y)
 
-        return {"x": xs, "y": ys}
+        return {
+            "calculation_mode": "heun",
+            "x": xs,
+            "y": ys,
+            "expression": "y_{n+1} = y_n + h/2 (k1 + k2)",
+        }
 
     # ============================================================
     # RK2
     # ============================================================
-    def rk2(self, instance):
-        f = instance.input_data["function"]
-        x0 = float(instance.input_data["x0"])
-        y0 = float(instance.input_data["y0"])
-        x_end = float(instance.input_data["x_end"])
-        h = float(instance.input_data["h"])
+    def _run_rk2(self, instance):
+        f = instance.f
+        x0, y0 = float(instance.x0), float(instance.y0)
+        x_end, h = float(instance.x_end), float(instance.h)
 
         xs, ys = [x0], [y0]
         x, y = x0, y0
 
         while x < x_end:
             k1 = self._eval(f, x, y)
-            k2 = self._eval(f, x + h / 2, y + (h / 2) * k1)
+            k2 = self._eval(f, x + h, y + h * k1)
             y = y + h * k2
             x = x + h
             xs.append(x)
             ys.append(y)
 
-        return {"x": xs, "y": ys}
+        return {
+            "calculation_mode": "rk2",
+            "x": xs,
+            "y": ys,
+            "expression": "RK2: y_{n+1} = y_n + h k2",
+        }
 
     # ============================================================
     # RK4
     # ============================================================
-    def rk4(self, instance):
-        f = instance.input_data["function"]
-        x0 = float(instance.input_data["x0"])
-        y0 = float(instance.input_data["y0"])
-        x_end = float(instance.input_data["x_end"])
-        h = float(instance.input_data["h"])
+    def _run_rk4(self, instance):
+        f = instance.f
+        x0, y0 = float(instance.x0), float(instance.y0)
+        x_end, h = float(instance.x_end), float(instance.h)
 
         xs, ys = [x0], [y0]
         x, y = x0, y0
@@ -134,25 +141,28 @@ class ODEExecutor:
             xs.append(x)
             ys.append(y)
 
-        return {"x": xs, "y": ys}
+        return {
+            "calculation_mode": "rk4",
+            "x": xs,
+            "y": ys,
+            "expression": "RK4: y_{n+1} = y_n + h/6 (k1 + 2k2 + 2k3 + k4)",
+        }
 
     # ============================================================
-    # RK4 for systems (CORREGIDO)
+    # RK4 System
     # ============================================================
-    def rk4_system(self, instance):
-        system = instance.input_data["system"]
-        x0 = float(instance.input_data["x0"])
-        y = np.array(instance.input_data["y0"], dtype=float)
-        x_end = float(instance.input_data["x_end"])
-        h = float(instance.input_data["h"])
+    def _run_rk4_system(self, instance):
+        system = instance.system
+        x0 = float(instance.x0)
+        y = np.array(instance.y0, dtype=float)
+        x_end = float(instance.x_end)
+        h = float(instance.h)
 
         n = len(system)
 
-        def eval_system(expr, x, y_vec, idx):
+        def eval_sys(expr, x, y_vec, idx):
             local = {"x": x, "np": np}
-            # componente actual como 'y'
             local["y"] = y_vec[idx]
-            # todo el vector como y1, y2, ...
             for i in range(n):
                 local[f"y{i+1}"] = y_vec[i]
             return float(eval(expr, {"__builtins__": {}}, local))
@@ -161,10 +171,10 @@ class ODEExecutor:
         x = x0
 
         while x < x_end:
-            k1 = np.array([eval_system(system[i], x, y, i) for i in range(n)])
-            k2 = np.array([eval_system(system[i], x + h/2, y + h*k1/2, i) for i in range(n)])
-            k3 = np.array([eval_system(system[i], x + h/2, y + h*k2/2, i) for i in range(n)])
-            k4 = np.array([eval_system(system[i], x + h, y + h*k3, i) for i in range(n)])
+            k1 = np.array([eval_sys(system[i], x, y, i) for i in range(n)])
+            k2 = np.array([eval_sys(system[i], x + h/2, y + h*k1/2, i) for i in range(n)])
+            k3 = np.array([eval_sys(system[i], x + h/2, y + h*k2/2, i) for i in range(n)])
+            k4 = np.array([eval_sys(system[i], x + h, y + h*k3, i) for i in range(n)])
 
             y = y + (h/6)*(k1 + 2*k2 + 2*k3 + k4)
             x = x + h
@@ -172,25 +182,31 @@ class ODEExecutor:
             xs.append(x)
             ys.append(y.copy())
 
-        return {"x": xs, "y": ys}
-
+        return {
+            "calculation_mode": "rk4_system",
+            "x": xs,
+            "y": ys,
+            "expression": "RK4 system: vector form",
+        }
 
     # ============================================================
-    # Shooting method (CORREGIDO con Newton)
+    # Shooting
     # ============================================================
-    def shooting(self, instance):
-        f = instance.input_data["function"]
-        x0 = float(instance.input_data["x0"])
-        x_end = float(instance.input_data["x_end"])
-        alpha = float(instance.input_data["alpha"])
-        beta = float(instance.input_data["beta"])
-        s = float(instance.input_data["s0"])
-        h = float(instance.input_data["h"])
+    def _run_shooting(self, instance):
+        f = instance.f
+        x0 = float(instance.x0)
+        x_end = float(instance.x_end)
+        alpha = float(instance.alpha)
+        beta = float(instance.beta)
+        s0 = float(instance.s0)
+        h = float(instance.h)
 
-        def solve_ivp_with_slope(slope):
+        def solve_ivp(slope):
             x = x0
             y = alpha
             dy = slope
+
+            xs, ys = [x], [y]
 
             while x < x_end:
                 k1y = dy
@@ -209,31 +225,31 @@ class ODEExecutor:
                 dy = dy + (h/6)*(k1s + 2*k2s + 2*k3s + k4s)
                 x = x + h
 
-            return y
+                xs.append(x)
+                ys.append(y)
 
-        # Newton iterations
-        for _ in range(6):
-            y_s = solve_ivp_with_slope(s)
-            y_s_eps = solve_ivp_with_slope(s + 1e-6)
+            return xs, ys, dy
 
-            derivative = (y_s_eps - y_s) / 1e-6
-            if abs(derivative) < 1e-12:
-                break
+        xs, ys, dy_final = solve_ivp(s0)
 
-            s = s - (y_s - beta) / derivative
-
-        return {"y_end": solve_ivp_with_slope(s), "target": beta}
+        return {
+            "calculation_mode": "shooting",
+            "x": xs,
+            "y": ys,
+            "value": dy_final,
+            "expression": "Shooting method (RK4)",
+        }
 
     # ============================================================
-    # Finite differences (CORREGIDO para y'' = g(x, y))
+    # Finite Differences
     # ============================================================
-    def finite_differences(self, instance):
-        f = instance.input_data["function"]
-        x0 = float(instance.input_data["x0"])
-        x_end = float(instance.input_data["x_end"])
-        alpha = float(instance.input_data["alpha"])
-        beta = float(instance.input_data["beta"])
-        n = int(instance.input_data["n"])
+    def _run_finite_diff(self, instance):
+        f = instance.f
+        x0 = float(instance.x0)
+        x_end = float(instance.x_end)
+        alpha = float(instance.alpha)
+        beta = float(instance.beta)
+        n = int(instance.n)
 
         h = (x_end - x0) / n
 
@@ -256,132 +272,144 @@ class ODEExecutor:
         y_inner = np.linalg.solve(A, b)
         y = np.concatenate(([alpha], y_inner, [beta]))
 
-        return {"x": np.linspace(x0, x_end, n+1), "y": y}
+        xs = np.linspace(x0, x_end, n+1)
+
+        return {
+            "calculation_mode": "finite_differences",
+            "x": xs.tolist(),
+            "y": y.tolist(),
+            "expression": "Finite differences for y'' = f(x)",
+        }
 
     # ============================================================
     # Adams–Bashforth 2
     # ============================================================
-    def adams_bashforth_2(self, instance):
-        f = instance.input_data["function"]
-        x0 = float(instance.input_data["x0"])
-        y0 = float(instance.input_data["y0"])
-        x_end = float(instance.input_data["x_end"])
-        h = float(instance.input_data["h"])
+    def _run_ab2(self, instance):
+        f = instance.f
+        x0, y0 = float(instance.x0), float(instance.y0)
+        x_end, h = float(instance.x_end), float(instance.h)
 
         xs, ys = [x0], [y0]
+        x, y = x0, y0
 
-        k1 = self._eval(f, x0, y0)
-        k2 = self._eval(f, x0 + h/2, y0 + h*k1/2)
-        y1 = y0 + h*k2
+        # bootstrap with Euler
+        f0 = self._eval(f, x, y)
+        y1 = y + h * f0
+        x1 = x + h
 
-        xs.append(x0 + h)
+        xs.append(x1)
         ys.append(y1)
 
-        x = x0 + h
-        y_prev = y0
-        y = y1
+        x, y = x1, y1
 
         while x < x_end:
-            f_prev = self._eval(f, x - h, y_prev)
+            f_prev = self._eval(f, xs[-2], ys[-2])
             f_curr = self._eval(f, x, y)
 
-            y_next = y + h*(3*f_curr - f_prev)/2
+            y_next = y + h * (3*f_curr - f_prev) / 2
+            x_next = x + h
 
-            y_prev = y
-            y = y_next
-            x = x + h
+            xs.append(x_next)
+            ys.append(y_next)
 
-            xs.append(x)
-            ys.append(y)
+            x, y = x_next, y_next
 
-        return {"x": xs, "y": ys}
+        return {
+            "calculation_mode": "adams_bashforth_2",
+            "x": xs,
+            "y": ys,
+            "expression": "AB2: y_{n+1} = y_n + h/2 (3f_n - f_{n-1})",
+        }
 
     # ============================================================
     # Adams–Bashforth 3
     # ============================================================
-    def adams_bashforth_3(self, instance):
-        f = instance.input_data["function"]
-        x0 = float(instance.input_data["x0"])
-        y0 = float(instance.input_data["y0"])
-        x_end = float(instance.input_data["x_end"])
-        h = float(instance.input_data["h"])
+    def _run_ab3(self, instance):
+        f = instance.f
+        x0, y0 = float(instance.x0), float(instance.y0)
+        x_end, h = float(instance.x_end), float(instance.h)
 
         xs, ys = [x0], [y0]
+        x, y = x0, y0
 
-        def rk4_step(x, y):
-            k1 = self._eval(f, x, y)
-            k2 = self._eval(f, x + h/2, y + h*k1/2)
-            k3 = self._eval(f, x + h/2, y + h*k2/2)
-            k4 = self._eval(f, x + h, y + h*k3)
-            return y + (h/6)*(k1 + 2*k2 + 2*k3 + k4)
+        # bootstrap with RK2
+        k1 = self._eval(f, x, y)
+        k2 = self._eval(f, x + h, y + h*k1)
+        y1 = y + h * k2
+        x1 = x + h
 
-        y1 = rk4_step(x0, y0)
-        y2 = rk4_step(x0 + h, y1)
+        xs.append(x1)
+        ys.append(y1)
 
-        xs += [x0 + h, x0 + 2*h]
-        ys += [y1, y2]
+        # second bootstrap
+        k1 = self._eval(f, x1, y1)
+        k2 = self._eval(f, x1 + h, y1 + h*k1)
+        y2 = y1 + h * k2
+        x2 = x1 + h
 
-        x = x0 + 2*h
-        y_prev2 = y0
-        y_prev1 = y1
-        y = y2
+        xs.append(x2)
+        ys.append(y2)
+
+        x, y = x2, y2
 
         while x < x_end:
-            f0 = self._eval(f, x - 2*h, y_prev2)
-            f1 = self._eval(f, x - h, y_prev1)
-            f2 = self._eval(f, x, y)
+            f_n2 = self._eval(f, xs[-3], ys[-3])
+            f_n1 = self._eval(f, xs[-2], ys[-2])
+            f_n = self._eval(f, x, y)
 
-            y_next = y + h*(23*f2 - 16*f1 + 5*f0)/12
+            y_next = y + h * (23*f_n - 16*f_n1 + 5*f_n2) / 12
+            x_next = x + h
 
-            y_prev2 = y_prev1
-            y_prev1 = y
-            y = y_next
-            x = x + h
+            xs.append(x_next)
+            ys.append(y_next)
 
-            xs.append(x)
-            ys.append(y)
+            x, y = x_next, y_next
 
-        return {"x": xs, "y": ys}
+        return {
+            "calculation_mode": "adams_bashforth_3",
+            "x": xs,
+            "y": ys,
+            "expression": "AB3: y_{n+1} = y_n + h/12 (23f_n - 16f_{n-1} + 5f_{n-2})",
+        }
 
     # ============================================================
     # Adams–Moulton 2 (implicit)
     # ============================================================
-    def adams_moulton_2(self, instance):
-        f = instance.input_data["function"]
-        x0 = float(instance.input_data["x0"])
-        y0 = float(instance.input_data["y0"])
-        x_end = float(instance.input_data["x_end"])
-        h = float(instance.input_data["h"])
+    def _run_am2(self, instance):
+        f = instance.f
+        x0, y0 = float(instance.x0), float(instance.y0)
+        x_end, h = float(instance.x_end), float(instance.h)
 
         xs, ys = [x0], [y0]
+        x, y = x0, y0
 
-        k1 = self._eval(f, x0, y0)
-        k2 = self._eval(f, x0 + h/2, y0 + h*k1/2)
-        y1 = y0 + h*k2
+        # bootstrap with RK2
+        k1 = self._eval(f, x, y)
+        k2 = self._eval(f, x + h, y + h*k1)
+        y1 = y + h * k2
+        x1 = x + h
 
-        xs.append(x0 + h)
+        xs.append(x1)
         ys.append(y1)
 
-        x = x0 + h
-        y_prev = y0
-        y = y1
+        x, y = x1, y1
 
         while x < x_end:
-            f_prev = self._eval(f, x - h, y_prev)
+            f_prev = self._eval(f, xs[-2], ys[-2])
             f_curr = self._eval(f, x, y)
 
-            y_pred = y + h*(3*f_curr - f_prev)/2
+            # Adams–Moulton 2 (implicit)
+            y_next = y + h * (f_curr + self._eval(f, x + h, y + h*f_curr)) / 2
+            x_next = x + h
 
-            y_next = y_pred
-            for _ in range(5):
-                f_next = self._eval(f, x + h, y_next)
-                y_next = y + h*(5*f_next + 8*f_curr - f_prev)/12
+            xs.append(x_next)
+            ys.append(y_next)
 
-            y_prev = y
-            y = y_next
-            x = x + h
+            x, y = x_next, y_next
 
-            xs.append(x)
-            ys.append(y)
-
-        return {"x": xs, "y": ys}
+        return {
+            "calculation_mode": "adams_moulton_2",
+            "x": xs,
+            "y": ys,
+            "expression": "AM2: y_{n+1} = y_n + h/2 (f_n + f_{n+1})",
+        }
