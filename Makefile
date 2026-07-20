@@ -27,16 +27,16 @@ NEXT_MINOR_TAG := v$(MAJOR).$(NEXT_MINOR).0
 
 # Create a PATCH release (0.x.(y+1))
 release-patch:
-    @echo "Current tag: $(CURRENT_TAG)"
-    @echo "Next patch tag: $(NEXT_PATCH_TAG)"
-    git tag -a $(NEXT_PATCH_TAG) -m "Release $(NEXT_PATCH_TAG)"
-    git push origin $(NEXT_PATCH_TAG)
-    @echo "Patch release created."
+	@echo "Current tag: $(CURRENT_TAG)"
+	@echo "Next patch tag: $(NEXT_PATCH_TAG)"
+	git tag -a $(NEXT_PATCH_TAG) -m "Release $(NEXT_PATCH_TAG)"
+	git push origin $(NEXT_PATCH_TAG)
+	@echo "Patch release created."
 
 # Create a MINOR release (0.(x+1).0)
 release-minor:
-    @echo "Current tag: $(CURRENT_TAG)"
-    @echo "Next minor tag: $(NEXT_MINOR_TAG)"
-    git tag -a $(NEXT_MINOR_TAG) -m "Release $(NEXT_MINOR_TAG)"
-    git push origin $(NEXT_MINOR_TAG)
-    @echo "Minor release created."
+	@echo "Current tag: $(CURRENT_TAG)"
+	@echo "Next minor tag: $(NEXT_MINOR_TAG)"
+	git tag -a $(NEXT_MINOR_TAG) -m "Release $(NEXT_MINOR_TAG)"
+	git push origin $(NEXT_MINOR_TAG)
+	@echo "Minor release created."
