@@ -11,6 +11,7 @@ def register_navigation_callbacks(app):
         "section-numerical-derivative",
         "section-nonlinear",
         "section-odes",
+        "section-docs",
     ]
 
     # Todos los botones que pueden activar navegación
@@ -23,6 +24,7 @@ def register_navigation_callbacks(app):
         "tab-numerical-derivative",
         "tab-nonlinear",
         "tab-odes",
+        "tab-docs",
 
         # Home Dashboard
         "home-start-btn",
@@ -32,6 +34,7 @@ def register_navigation_callbacks(app):
         "go-numerical-derivative",
         "go-nonlinear",
         "go-odes",
+        "open-docs",
     ]
 
     # Mapeo dinámico: botón → índice de sección
@@ -44,6 +47,7 @@ def register_navigation_callbacks(app):
         "tab-numerical-derivative": 4,
         "tab-nonlinear": 5,
         "tab-odes": 6,
+        "tab-docs": 7,
 
         # Home Dashboard
         "home-start-btn": 1,   # Comenzar → Interpolación
@@ -53,6 +57,7 @@ def register_navigation_callbacks(app):
         "go-numerical-derivative": 4,
         "go-nonlinear": 5,
         "go-odes": 6,
+        "open-docs": 7,
     }
 
     @app.callback(
