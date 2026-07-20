@@ -1,0 +1,157 @@
+/* Contenedor general */
+.markdown-doc {
+    padding: 25px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    line-height: 1.6;
+    font-size: 1rem;
+    color: #333;
+}
+
+/* Títulos */
+.markdown-doc h1,
+.markdown-doc h2,
+.markdown-doc h3 {
+    margin-top: 24px;
+    margin-bottom: 12px;
+    font-weight: 600;
+    color: #222;
+}
+
+/* Párrafos */
+.markdown-doc p {
+    margin: 12px 0;
+}
+
+/* Listas */
+.markdown-doc ul,
+.markdown-doc ol {
+    margin-left: 24px;
+    margin-bottom: 16px;
+}
+
+/* Código */
+.markdown-doc code {
+    background: #f6f8fa;
+    padding: 3px 6px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+}
+
+/* Bloques de código */
+.markdown-doc pre {
+    background: #f6f8fa;
+    padding: 12px;
+    border-radius: 8px;
+    overflow-x: auto;
+}
+
+/* Separación entre elementos */
+.markdown-doc > * + * {
+    margin-top: 16px;
+}
+
+/* Ecuaciones LaTeX */
+.markdown-doc .mathjax {
+    font-size: 1.1rem;
+    margin: 16px 0;
+}
+
+/* ================================
+   Tema oscuro para documentación
+   ================================ */
+
+#app-container.dark .markdown-doc {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid var(--color-border);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    line-height: 1.7;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Títulos */
+#app-container.dark .markdown-doc h1,
+#app-container.dark .markdown-doc h2,
+#app-container.dark .markdown-doc h3 {
+    color: var(--color-accent);
+    margin-top: 24px;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+/* Párrafos */
+#app-container.dark .markdown-doc p {
+    margin: 12px 0;
+}
+
+/* Listas */
+#app-container.dark .markdown-doc ul,
+#app-container.dark .markdown-doc ol {
+    margin-left: 24px;
+    margin-bottom: 16px;
+}
+
+/* Código inline */
+#app-container.dark .markdown-doc code {
+    background-color: var(--color-bg-alt);
+    color: var(--color-accent);
+    padding: 3px 6px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+}
+
+/* Bloques de código */
+#app-container.dark .markdown-doc pre {
+    background-color: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    padding: 12px;
+    border-radius: 8px;
+    overflow-x: auto;
+    color: var(--color-text);
+}
+
+/* Tablas */
+#app-container.dark .markdown-doc table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+}
+
+#app-container.dark .markdown-doc th,
+#app-container.dark .markdown-doc td {
+    border: 1px solid var(--color-border);
+    padding: 8px 12px;
+}
+
+#app-container.dark .markdown-doc th {
+    background-color: var(--color-bg-alt);
+    color: var(--color-accent);
+}
+
+/* Separación entre elementos */
+#app-container.dark .markdown-doc > * + * {
+    margin-top: 16px;
+}
+
+/* Ecuaciones MathJax */
+#app-container.dark .markdown-doc .MathJax,
+#app-container.dark .markdown-doc mjx-container {
+    color: var(--color-text);
+    margin: 16px 0;
+}
+
+/* Links */
+#app-container.dark .markdown-doc a {
+    color: var(--color-accent);
+    text-decoration: none;
+}
+
+#app-container.dark .markdown-doc a:hover {
+    color: var(--color-accent-dark);
+    text-decoration: underline;
+}
