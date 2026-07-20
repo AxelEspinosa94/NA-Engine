@@ -10,9 +10,9 @@ The false position method is a hybrid of:
 
 It solves:
 
-$$
+\[
 f(x) = 0
-$$
+\]
 
 using an interval $[a, b]$ with:
 
