@@ -24,9 +24,9 @@ layout = html.Div(
         html.Header(
             id="app-header",
             children=[
-                html.Div(id="logo-left", children=[html.Img(src="/assets/puma3.png", className="header-logo")]),
+                html.Div(id="logo-left", children=[html.Img(src="/assets/B-Izq.png", className="header-logo")]),
                 html.Div(id="title-block", children=[html.H1("NA‑Engine"), html.H3("Numerical Analysis Engine")]),
-                html.Div(id="logo-right", children=[html.Img(src="/assets/puma4.png", className="header-logo")]),
+                html.Div(id="logo-right", children=[html.Img(src="/assets/B-Der.png", className="header-logo")]),
             ],
         ),
 
