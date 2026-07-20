@@ -86,17 +86,9 @@ home_layout = html.Div(
                 html.Div(
                     className="module-card",
                     children=[
-                        html.H3("Punto Fijo / ODEs"),
+                        html.H3("Ecuaciones Diferenciales"),
                         html.P("Punto Fijo, Euler, Runge–Kutta."),
                         html.Button("Ir al módulo", id="go-odes", className="secondary-btn"),
-                    ],
-                ),
-                html.Div(
-                    className="module-card",
-                    children=[
-                        html.H3("PDEs"),
-                        html.P("Ecuación de calor, onda, Laplace."),
-                        html.Button("Próximamente", disabled=True, className="disabled-btn"),
                     ],
                 ),
             ],
