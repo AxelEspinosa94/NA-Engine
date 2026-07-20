@@ -1,159 +1,177 @@
-# 🧩 Stage 5 — Enhancement & Expansion Checklist  
-### **NA‑Engine Roadmap (Post Stage 4)**
-
-Este documento describe las mejoras, refactorizaciones y expansiones que deben realizarse al inicio del **Stage 5**, basadas en los módulos completados durante Stage 4, incluyendo los hallazgos del módulo de **Ecuaciones No Lineales**.
 
 ---
 
-# ✅ **Prioridad Alta — Inicio de Stage 5**
+# 🧩 **Stage 5 — Módulo ODE (Enhancement & Expansion)**  
+### *Complemento del Roadmap General — NA‑Engine*
 
-## **1. Renderer / UIContract — Captions por módulo**
-- [ ] Crear un **caption registry** por módulo.
-- [ ] Reemplazar captions genéricos (“Polinomio”, “Resultado”, etc.).
-- [ ] Asegurar que cada módulo tenga:
-  - [ ] título propio  
-  - [ ] descripción propia  
-  - [ ] bloques de encabezado consistentes  
-- [ ] Integrar captions en todos los bloques del UIContract:
-  - [ ] tablas  
-  - [ ] gráficas  
-  - [ ] expresiones simbólicas  
-  - [ ] mensajes de error normalizados  
+El módulo de **Ecuaciones Diferenciales Ordinarias (ODE)** completado en Stage 4 ya cuenta con:
 
----
+- Constructor validado  
+- Validator estricto  
+- Executor completo (IVP, sistemas, BVP)  
+- Layout funcional  
+- Callbacks dinámicos  
+- Stress tests iniciales  
 
-## **2. Derivadas — Generalización de orden**
-- [ ] Unificar forward/backward/central/second/third en un solo método.
-- [ ] Añadir `order` a `input_data`.
-- [ ] Implementar selección automática de stencil según `order`.
-- [ ] Ajustar constructor y validator para soportar orden arbitrario.
-- [ ] Integrar con Richardson para orden arbitrario.
-- [ ] Actualizar documentación y layout.
+Para Stage 5, se requiere una expansión y refinamiento profundo en tres áreas:
+
+- **UI/UX**  
+- **Homologación de inputs y estilos**  
+- **Expansión funcional del módulo ODE**  
 
 ---
 
-## **3. Derivadas — Variables múltiples y parciales generalizadas**
-- [ ] Permitir variables de `a` a `z`.
-- [ ] Detectar variables automáticamente con regex.
-- [ ] Validar que la función solo use variables detectadas.
-- [ ] Implementar derivadas parciales para cualquier variable.
-- [ ] Implementar **Jacobiano**:
-  - [ ] Derivar respecto a cada variable.
-  - [ ] Devolver matriz Jacobiana.
-  - [ ] Integrar con UIContract (matriz, tabla, heatmap).
+# 🎨 **Prioridad Alta — UI/UX del módulo ODE**
+
+## **1. Homologación visual de inputs**
+- [ ] Unificar estilos de todos los inputs del módulo ODE:
+  - [ ] Inputs numéricos  
+  - [ ] Textareas  
+  - [ ] Dropdowns  
+  - [ ] RadioItems  
+- [ ] Asegurar consistencia con:
+  - [ ] Derivadas  
+  - [ ] Integración  
+  - [ ] Álgebra Lineal  
+  - [ ] No Lineales  
+- [ ] Crear un **input style registry** para NA‑Engine:
+  - [ ] Colores  
+  - [ ] Bordes  
+  - [ ] Padding  
+  - [ ] Placeholders  
+  - [ ] Tamaños  
+- [ ] Homologar mensajes de error visuales:
+  - [ ] Borde rojo  
+  - [ ] Tooltip  
+  - [ ] Bloque de error del UIContract  
 
 ---
 
-## **4. Álgebra Lineal — Estilización de vectores y matrices**
-- [ ] Reemplazar listas `<ul>` por DataTables verticales.
-- [ ] Mostrar matrices finales (L, U, Q, R).
-- [ ] Evitar mostrar pasos intermedios (costoso).
-- [ ] Añadir bloques visuales para factorizaciones.
+## **2. Pulido de UI del módulo ODE**
+- [ ] Añadir imágenes ilustrativas para cada método:
+  - [ ] Euler  
+  - [ ] Heun  
+  - [ ] RK2  
+  - [ ] RK4  
+  - [ ] Adams family  
+  - [ ] RK4 System  
+  - [ ] Shooting  
+  - [ ] Finite Differences  
+- [ ] Añadir captions específicos:
+  - [ ] “Método de Euler — IVP”  
+  - [ ] “Método de Runge–Kutta 4 — IVP”  
+  - [ ] “Sistema de ODE — RK4”  
+  - [ ] “Método de Shooting — BVP”  
+  - [ ] “Diferencias Finitas — BVP”  
+- [ ] Añadir bloques visuales:
+  - [ ] Expresión simbólica del método  
+  - [ ] Tabla de iteraciones (cuando aplique)  
+  - [ ] Gráfica de trayectoria  
+  - [ ] Gráfica de error (opcional)  
+- [ ] Añadir tooltips explicativos:
+  - [ ] ¿Qué es un IVP?  
+  - [ ] ¿Qué es un BVP?  
+  - [ ] ¿Qué es un sistema de ODE?  
+  - [ ] ¿Qué significa h?  
 
 ---
 
-## **5. Álgebra Lineal — Nuevos calculation_modes**
-- [ ] Añadir:
-  - [ ] `eigenvalues`
-  - [ ] `eigenvectors`
-  - [ ] `svd`
-  - [ ] `linear_transform`
-- [ ] Integrar validación y ejecución.
-- [ ] Añadir soporte en UIContract.
+## **3. Mejoras en el layout**
+- [ ] Reorganizar tarjetas:
+  - [ ] Inputs IVP  
+  - [ ] Inputs Sistema  
+  - [ ] Inputs Shooting  
+  - [ ] Inputs Finite Differences  
+- [ ] Añadir secciones plegables (collapsible):
+  - [ ] “Datos del problema”  
+  - [ ] “Opciones avanzadas”  
+  - [ ] “Resultados”  
+- [ ] Añadir un bloque de “Resumen del método seleccionado”.
 
 ---
 
-## **6. Ecuaciones No Lineales — Captioning y expansión del módulo**
+# 🧠 **Prioridad Alta — Expansión funcional del módulo ODE**
 
-### **6.1 Captioning**
-- [ ] Añadir captions específicos para:
-  - [ ] Bisección  
-  - [ ] Falsa Posición  
-  - [ ] Newton  
-  - [ ] Secante  
-  - [ ] Punto Fijo  
-- [ ] Añadir caption para:
-  - [ ] tabla de iteraciones  
-  - [ ] gráfica de convergencia  
-  - [ ] expresión simbólica  
-  - [ ] mensajes de divergencia  
-
-### **6.2 Solver para Sistemas de Ecuaciones No Lineales**
-- [ ] Implementar módulo **nonlinear_systems**.
-- [ ] Añadir métodos:
-  - [ ] Newton multivariable  
-  - [ ] Broyden  
-  - [ ] Jacobiano numérico  
-  - [ ] Jacobiano simbólico (opcional)  
-- [ ] Integrar:
-  - [ ] constructor  
-  - [ ] validator  
-  - [ ] executor  
-  - [ ] renderer  
-  - [ ] UIContract  
-- [ ] Añadir layout:
-  - [ ] input de múltiples funciones  
-  - [ ] input de múltiples variables  
-  - [ ] tabla de iteraciones  
-  - [ ] visualización del Jacobiano  
-- [ ] Añadir stress tests:
-  - [ ] sistemas grandes  
-  - [ ] sistemas mal condicionados  
-  - [ ] sistemas divergentes  
+## **4. Nuevos métodos IVP**
+- [ ] Añadir **RKF45 (Runge–Kutta–Fehlberg)**  
+- [ ] Añadir **Dormand–Prince (RKDP)**  
+- [ ] Añadir **Métodos adaptativos (h dinámico)**  
+- [ ] Añadir **Métodos para ODE rígidas (stiff ODEs)**:
+  - [ ] Backward Euler  
+  - [ ] Crank–Nicolson  
+  - [ ] Implicit RK  
 
 ---
 
-# 🟨 **Prioridad Media — Mitad de Stage 5**
-
-## **7. Derivadas — Mejorar normalización de funciones**
-- [ ] Expandir lista de funciones soportadas.
+## **5. Expansión del módulo de sistemas**
 - [ ] Añadir soporte para:
-  - [ ] `abs`, `sign`, `floor`, `ceil`
-  - [ ] funciones hiperbólicas
-  - [ ] funciones inversas
-- [ ] Integrar parser centralizado.
+  - [ ] Sistemas grandes (n > 10)  
+  - [ ] Sistemas acoplados no lineales  
+  - [ ] Sistemas rígidos  
+- [ ] Añadir visualización:
+  - [ ] Gráficas múltiples  
+  - [ ] Fase (phase portrait)  
+  - [ ] Trayectorias en 3D  
 
 ---
 
-## **8. Álgebra Lineal — Transformaciones lineales visuales**
-- [ ] Crear bloque visual opcional para transformaciones.
-- [ ] Mostrar efecto sobre vectores base.
-- [ ] Integrar con Plotly (2D y 3D).
+## **6. Expansión del módulo BVP**
+- [ ] Shooting avanzado:
+  - [ ] Ajuste automático de pendiente  
+  - [ ] Métodos de corrección (secante para s0)  
+- [ ] Finite Differences avanzado:
+  - [ ] Soporte para ecuaciones no lineales  
+  - [ ] Soporte para condiciones de frontera mixtas  
+  - [ ] Soporte para mallas no uniformes  
 
 ---
 
-# 🟦 **Prioridad Baja — Final de Stage 5 o Stage 6**
+# 🟨 **Prioridad Media — Documentación y teoría ODE**
 
-## **9. Input Mode Table → Interpolación → Derivada/Integración**
-- [ ] Añadir input_mode `table` al módulo de Derivadas.
-- [ ] Integrar con módulo de Interpolación.
-- [ ] Generar polinomio interpolante.
-- [ ] Derivar o integrar el polinomio.
-- [ ] Validar estabilidad para polinomios de grado alto.
-
----
-
-## **10. Documentación Teórica Integrada**
-- [ ] Crear módulo de documentación.
-- [ ] Integrar archivos `.md` del repo.
-- [ ] Renderizar con `dcc.Markdown`.
-- [ ] Añadir navegación entre temas.
-- [ ] Añadir ejemplos interactivos.
+## **7. Documentación integrada**
+- [ ] Crear módulo de teoría ODE:
+  - [ ] IVP  
+  - [ ] BVP  
+  - [ ] Sistemas  
+  - [ ] Métodos RK  
+  - [ ] Métodos multistep  
+  - [ ] Métodos implícitos  
+- [ ] Integrar con `dcc.Markdown`  
+- [ ] Añadir ejemplos interactivos:
+  - [ ] “Ejemplo RK4”  
+  - [ ] “Ejemplo Shooting”  
+  - [ ] “Ejemplo Finite Differences”  
 
 ---
 
-# 🏁 **Conclusión**
+# 🟦 **Prioridad Baja — Stage 6**
 
-Este checklist actualizado define el trabajo del Stage 5:
+## **8. Input Mode Table → ODE**
+- [ ] Permitir input_mode `table` para ODE:
+  - [ ] Cargar tabla de puntos (x, y)  
+  - [ ] Ajustar polinomio interpolante  
+  - [ ] Resolver ODE inversa (opcional)  
 
-- Refactorización profunda de Derivadas.  
-- Expansión de Álgebra Lineal.  
-- Mejoras de UX en Renderer/UIContract.  
-- Expansión del módulo de Ecuaciones No Lineales:
-  - Captioning completo  
-  - Solver para sistemas no lineales  
-- Preparación para los módulos finales:
-  - Sistemas de ecuaciones no lineales  
-  - Ecuaciones diferenciales (el “final boss”)  
+---
 
-Las tareas de prioridad baja pueden moverse al Stage 6 sin afectar el avance del proyecto.
+# 🏁 **Conclusión — Módulo ODE Stage 5**
+
+El módulo ODE en Stage 5 se enfocará en:
+
+- **Pulir la UI**  
+- **Homologar inputs y estilos**  
+- **Mejorar captions y bloques visuales**  
+- **Añadir métodos avanzados (RKF45, adaptativos, stiff)**  
+- **Expandir sistemas y BVP**  
+- **Integrar teoría y documentación**  
+
+Con esto, NA‑Engine quedará listo para:
+
+- resolver ODE avanzadas  
+- manejar sistemas grandes  
+- resolver BVP complejos  
+- ofrecer una UI profesional y homogénea  
+- preparar Stage 6 (interpolación → ODE → integración)
+
+---
+
