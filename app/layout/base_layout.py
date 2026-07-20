@@ -8,11 +8,7 @@ from .linear_algebra_layout import linear_algebra_section
 from .numerical_derivative_layout import derivative_section
 from .non_linear_layout import nonlinear_section
 from .ode_layout import ode_section
-# Más adelante:
-# from .derivatives_layout import derivatives_section
-# from .systems_layout import systems_section
-# from .matrices_layout import matrices_section
-
+from .docs_layout import docs_section
 
 layout = html.Div(
     id="app-container",
@@ -43,6 +39,7 @@ layout = html.Div(
                 html.Button("Derivadas", id="tab-numerical-derivative", className="nav-btn"),
                 html.Button("Ecuaciones No Lineales", id="tab-nonlinear", className="nav-btn"),
                 html.Button("Ecuaciones Diferenciales", id="tab-odes", className="nav-btn"),
+                html.Button("Documentación", id="tab-docs", className="nav-btn"),
                 html.Button("Tema", id="toggle-theme", className="nav-btn"),
             ],
         ),
@@ -60,6 +57,7 @@ layout = html.Div(
                 html.Section(id="section-numerical-derivative", className="section", children=[derivative_section]),
                 html.Section(id="section-nonlinear", className="section", children=[nonlinear_section]),
                 html.Section(id="section-odes", className="section", children=[ode_section]),
+                html.Section(id="section-docs", className="section", children=[docs_section]),
             ],
         ),
     ],
