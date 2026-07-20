@@ -23,18 +23,14 @@ This checklist ensures consistency across all modules and accelerates developmen
 - [ ] Reuse `_validate_default()` when possible
 - [ ] Raise `ValidationError` with descriptive messages
 
-### Executor
+---
+# 🟦 1. Executor - Output Design
+
 - [ ] Implement `_run_<method>()`
 - [ ] Return standardized dict (see section 2)
 - [ ] Generate symbolic expressions if applicable
 - [ ] Generate plot data (`x`, `y`, nodes)
 - [ ] Raise `ExecutionError` on failure
-
-### Error Normalization
-- [ ] Ensure all errors pass through `ErrorNormalizer`
-
----
-# 🟦 1. Output Design
 
 Define what the module should display:
 
@@ -64,6 +60,8 @@ Renderer <module>:
   - [ ] Define block order explicitly  
   - [ ] Ensure `UIContract._build_blocks()` supports all keys  
 
+### Error Normalization
+- [ ] Ensure all errors pass through `ErrorNormalizer`
 
 ---
 # 🟦 2. Smoke Test
