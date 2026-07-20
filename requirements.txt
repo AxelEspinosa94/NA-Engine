@@ -2,16 +2,21 @@
 dash==2.17.1
 dash-bootstrap-components==1.6.0
 plotly==5.22.0
-gunicorn==22.0.0    # Si algún día lo subes a un server
+gunicorn==22.0.0
 
 # --- Numerical Engine ---
 numpy==1.26.4
 pandas==2.2.2
-openpyxl==3.1.2     # Para leer Excel
+openpyxl==3.1.2
 sympy==1.12
+
+# --- Markdown / Documentation ---
+markdown==3.6
+markdown-it-py==3.0.0
+mdurl==0.1.2
 
 # --- Testing ---
 pytest==8.2.0
 
-# --- Optional (if you want notebooks for demos) ---
+# --- Optional ---
 jupyter==1.0.0
