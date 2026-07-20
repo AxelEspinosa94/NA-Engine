@@ -42,7 +42,7 @@ layout = html.Div(
                 html.Button("Álgebra Lineal", id="tab-linear-algebra", className="nav-btn"),
                 html.Button("Derivadas", id="tab-numerical-derivative", className="nav-btn"),
                 html.Button("Ecuaciones No Lineales", id="tab-nonlinear", className="nav-btn"),
-                html.Button("Punto Fijo / ODEs", id="tab-odes", className="nav-btn"),
+                html.Button("Ecuaciones Diferenciales", id="tab-odes", className="nav-btn"),
                 html.Button("Tema", id="toggle-theme", className="nav-btn"),
             ],
         ),
