@@ -41,5 +41,6 @@ jobs:
       #Solo se correrán los tests de estrés
 
       - name: Run stress tests
-      #  run: pytest tests/stress/ -v --tb=long -m "pending"
-        run: pytest tests/stress/ -vv -s --tb=long --maxfail=1 --full-trace --log-cli-level=DEBUG -m "pending"
+        run: |
+          pytest tests/stress/ -vv -s --tb=long --full-trace --log-cli-level=DEBUG -m "pending" \
+            || [ $? -eq 5 ] && echo "No pending tests found — all modules complete." && exit 0
