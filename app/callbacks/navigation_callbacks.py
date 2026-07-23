@@ -12,6 +12,7 @@ def register_navigation_callbacks(app):
         "section-nonlinear",
         "section-odes",
         "section-docs",
+        "section-about",
     ]
 
     # Todos los botones que pueden activar navegación
@@ -25,6 +26,7 @@ def register_navigation_callbacks(app):
         "tab-nonlinear",
         "tab-odes",
         "tab-docs",
+        "tab-about",
 
         # Home Dashboard
         "home-start-btn",
@@ -48,6 +50,7 @@ def register_navigation_callbacks(app):
         "tab-nonlinear": 5,
         "tab-odes": 6,
         "tab-docs": 7,
+        "tab-about": 8,
 
         # Home Dashboard
         "home-start-btn": 1,   # Comenzar → Interpolación
@@ -58,6 +61,7 @@ def register_navigation_callbacks(app):
         "go-nonlinear": 5,
         "go-odes": 6,
         "open-docs": 7,
+        "go-about": 8,
     }
 
     @app.callback(
