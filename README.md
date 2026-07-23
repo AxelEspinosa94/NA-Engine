@@ -218,7 +218,7 @@ Validan:
 
 # Release Notes
 
-### v0.1.0 — Documentation Module
+### v0.1.0 — MVP
 - Added dynamic documentation loader
 - Added MathJax support
 - Added dark/light theme for theory

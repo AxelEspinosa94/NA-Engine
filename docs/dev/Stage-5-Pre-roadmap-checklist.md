@@ -1,14 +1,14 @@
 
 ---
 
-# 🧩 **Stage 5 — Módulo ODE (Enhancement & Expansion)**  
+# 🧩 **Stage 5 — (Enhancement & Expansion)**  
 ### *Complemento del Roadmap General — NA‑Engine*
 
-El módulo de **Ecuaciones Diferenciales Ordinarias (ODE)** completado en Stage 4 ya cuenta con:
+El módulo de **Ecuaciones Diferenciales Ordinarias (ODE)** ha completado el Stage 4. Todos los módulos ya cuentan con:
 
 - Constructor validado  
 - Validator estricto  
-- Executor completo (IVP, sistemas, BVP)  
+- Executor completo
 - Layout funcional  
 - Callbacks dinámicos  
 - Stress tests iniciales  
@@ -21,7 +21,7 @@ Para Stage 5, se requiere una expansión y refinamiento profundo en tres áreas:
 
 ---
 
-# 🎨 **Prioridad Alta — UI/UX del módulo ODE**
+# 🎨 **Prioridad Alta — UI/UX**
 
 ## **1. Homologación visual de inputs**
 - [ ] Unificar estilos de todos los inputs del módulo ODE:
@@ -47,7 +47,7 @@ Para Stage 5, se requiere una expansión y refinamiento profundo en tres áreas:
 
 ---
 
-## **2. Pulido de UI del módulo ODE**
+## **2. Pulido de UI**
 - [ ] Añadir imágenes ilustrativas para cada método:
   - [ ] Euler  
   - [ ] Heun  

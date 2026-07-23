@@ -1,4 +1,18 @@
-## NA-Engine v0.1.0 — Documentation Module
+## NA-Engine v0.1.3 — About Section
+
+### Added
+- About section
+
+### Improved
+- Consistent styling across modules
+- Better separation of UI concerns
+- Cleaner callback structure
+
+### Notes
+This version is a patch before improvements to take place in Stage 5.
+
+
+## NA-Engine v0.1.0 — MVP
 
 ### Added
 - New dynamic documentation module
