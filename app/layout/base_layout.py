@@ -9,6 +9,7 @@ from .numerical_derivative_layout import derivative_section
 from .non_linear_layout import nonlinear_section
 from .ode_layout import ode_section
 from .docs_layout import docs_section
+from .about_layout import about_section
 
 layout = html.Div(
     id="app-container",
@@ -40,6 +41,7 @@ layout = html.Div(
                 html.Button("Ecuaciones No Lineales", id="tab-nonlinear", className="nav-btn"),
                 html.Button("Ecuaciones Diferenciales", id="tab-odes", className="nav-btn"),
                 html.Button("Documentación", id="tab-docs", className="nav-btn"),
+                html.Button("About", id="tab-about", className="nav-btn"),
                 html.Button("Tema", id="toggle-theme", className="nav-btn"),
             ],
         ),
@@ -58,6 +60,7 @@ layout = html.Div(
                 html.Section(id="section-nonlinear", className="section", children=[nonlinear_section]),
                 html.Section(id="section-odes", className="section", children=[ode_section]),
                 html.Section(id="section-docs", className="section", children=[docs_section]),
+                html.Section(id="section-about", className="section", children=[about_section]),
             ],
         ),
     ],

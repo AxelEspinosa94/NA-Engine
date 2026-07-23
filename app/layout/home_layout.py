@@ -117,6 +117,7 @@ home_layout = html.Div(
             children=[
                 html.P("Desarrollado por Carlos Axel Espinosa Ramírez"),
                 html.P("NA‑Engine © 2026 — MIT License"),
+                html.Button("About", id="go-about", className="primary-btn"),                
             ],
         ),
     ],
