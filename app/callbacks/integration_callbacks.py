@@ -10,8 +10,6 @@ from core.contract import UIContract
 from core.exceptions import ValidationError, InputError
 
 
-contract = UIContract()
-
 # ============================================================
 # Helpers
 # ============================================================
@@ -39,33 +37,10 @@ def _build_function_dataframe(fn_expr: str, a: float, b: float, n: int) -> pd.Da
     return pd.DataFrame({"x": xs, "y": ys})
 
 
-def _build_mode_area():
-    """
-    Área dinámica para modo función (único modo soportado).
-    """
-    return [
-        html.Label(className="input-label", children="Función f(x)"),
-        dcc.Input(
-            id="integr-fn",
-            type="text",
-            placeholder="ej: sin(x) + x**2",
-            className="input"
-        ),
+def _build_mode_area(method: str, mode: str):
+    return True
 
-        html.Label(className="input-label", children="Intervalo [a, b]"),
-        html.Div(className="input-row", children=[
-            dcc.Input(id="integr-a", type="number", placeholder="a", className="input"),
-            dcc.Input(id="integr-b", type="number", placeholder="b", className="input"),
-        ]),
-
-        html.Label(className="input-label", children="Número de subintervalos (n)"),
-        dcc.Input(
-            id="integr-n",
-            type="number",
-            placeholder="ej: 10",
-            className="input"
-        ),
-    ]
+contract = UIContract()
 
 def register_integration_callbacks(app):
 
@@ -73,8 +48,8 @@ def register_integration_callbacks(app):
     # Callback 1: Construye el formulario dinámico
     # ============================================================
     @app.callback(
-        Output("integr-input-area", "children"),
-        Output("integr-gauss-card", "hidden"),
+        Output("integr-mode-function", "hidden"),
+        Output("integr-mode-gauss", "hidden"),
         Output("integr-btn-card", "hidden"),
         Input("integr-method", "value"),
         Input("integr-input-mode", "value"),
@@ -83,10 +58,10 @@ def register_integration_callbacks(app):
     def build_input_area(method, mode):
 
         if not method:
-            return [], True, True, True
+            return True, True, True
 
         # Área dinámica (siempre función)
-        area = _build_mode_area()
+        area = not _build_mode_area(method, mode)
 
         # Gauss-Legendre requiere puntos
         gauss_hidden = method != "gauss"
@@ -111,7 +86,7 @@ def register_integration_callbacks(app):
         State("integr-gauss-points", "value"),
         prevent_initial_call=True,
     )
-    def run_integration(n_clicks, method, mode, fn_expr, a, b, n, gauss_points):
+    def run_integration(n_clicks, method, mode, fn_expr, a, b, n, gauss_points=None):
 
         if not method or not fn_expr or a is None or b is None or n is None:
             return no_update

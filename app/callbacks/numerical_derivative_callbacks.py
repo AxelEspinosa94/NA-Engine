@@ -15,40 +15,6 @@ contract = UIContract()
 # Helpers
 # ============================================================
 
-def _build_input_area():
-    """
-    Área dinámica para derivadas numéricas.
-    Siempre incluye:
-    - función f(x)
-    - x
-    - h
-    """
-    return [
-        html.Label("Función f(x)"),
-        dcc.Input(
-            id="deriv-function",
-            type="text",
-            placeholder="ej: x**2 + 3*x",
-            className="input",
-        ),
-
-        html.Label("Valor de x"),
-        dcc.Input(
-            id="deriv-x",
-            type="number",
-            placeholder="ej: 2.0",
-            className="input",
-        ),
-
-        html.Label("Paso h"),
-        dcc.Input(
-            id="deriv-h",
-            type="number",
-            placeholder="ej: 0.01",
-            className="input",
-        ),
-    ]
-
 
 def register_derivative_callbacks(app):
 
@@ -56,20 +22,20 @@ def register_derivative_callbacks(app):
     # Callback 1: Construye el formulario dinámico
     # ============================================================
     @app.callback(
-        Output("deriv-input-area", "children"),
+        Output("deriv-mode-base", "hidden"),
         Output("deriv-y-card", "hidden"),
         Output("deriv-btn-card", "hidden"),
         Input("deriv-method", "value"),
-        Input("deriv-input-mode", "value"),
         prevent_initial_call=True,
     )
-    def build_input_area(method, mode):
+    def build_input_area(method=None):
 
         if not method:
-            return [], True, True
+            print("No method selected")
+            return True, True, True
 
         # Área dinámica (siempre función + x + h)
-        area = _build_input_area()
+        area = False
 
         # Mostrar y solo para parciales
         y_hidden = method not in ["partial_x", "partial_y"]

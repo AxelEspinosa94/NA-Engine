@@ -6,6 +6,9 @@ import base64
 import io
 from dash import Input, Output, State, callback, html, dcc, dash_table
 from dash import no_update
+
+from core.ui.styled_components import styled_input
+
 from core.base_method import NumericalMethod
 from core.contract import UIContract
 from core.exceptions import ValidationError, InputError
@@ -110,47 +113,13 @@ def _build_dataframe(method: str, mode: str, table_data=None, fn_expr=None, a=No
 
     raise NotImplementedError(f"Modo '{mode}' no implementado.")
 
+def _build_mode_area(method: str, mode: str):
+    return {
+        "function": {"interp-mode-function": False, "interp-mode-upload": True, "interp-mode-table": True},
+        "upload":   {"interp-mode-function": True,  "interp-mode-upload": False, "interp-mode-table": True},
+        "table":    {"interp-mode-function": True,  "interp-mode-upload": True,  "interp-mode-table": False},
+    }[mode]
 
-def _build_mode_area(method: str, mode: str) -> list:
-    # columnas según método
-    columns = ["x", "y", "dy"] if method == "hermite" else ["x", "y"]
-    if mode == "function":
-        return [
-            html.Label("Función f(x)"),
-            dcc.Input(id="interp-fn",  type="text",
-                    placeholder="ej: x**2 + 1", className="input"),
-            html.Label("Rango"),
-            html.Div(className="input-row", children=[
-                dcc.Input(id="interp-a", type="number",
-                        placeholder="a", className="input"),
-                dcc.Input(id="interp-b", type="number",
-                        placeholder="b", className="input"),
-            ]),
-            html.Label("Número de puntos"),
-            dcc.Input(id="interp-n", type="number",
-                    placeholder="ej: 10", className="input"),
-        ]
-    if mode == "upload":
-        return [
-            dcc.Upload(
-                id="interp-upload",
-                children=html.Div(["Arrastra o ", html.A("selecciona un archivo")]),
-                className="upload-area",
-                accept=".csv,.txt",
-            ),
-            html.Div(id="interp-upload-preview"),
-        ]
-    # mode == "table" (default)
-    return [
-        dash_table.DataTable(
-            id="interp-table",
-            columns=[{"name": c, "id": c, "editable": True} for c in columns],
-            data=[{c: "" for c in columns} for _ in range(5)],
-            editable=True,
-            row_deletable=True,
-            #row_addable=True,  # si tu versión de Dash lo soporta
-        ),
-    ]
 
 contract = UIContract()
 
@@ -158,7 +127,9 @@ def register_interpolation_callbacks(app):
 
     # ── Callback 1: construye el formulario ─────────────────────────────────────
     @app.callback(
-        Output("interp-input-area",  "children"),
+        Output("interp-mode-function",  "hidden"),
+        Output("interp-mode-upload",  "hidden"),
+        Output("interp-mode-table",  "hidden"),
         Output("interp-mode-card",   "hidden"),
         Output("interp-xk-card",     "hidden"),
         Output("interp-btn-card",    "hidden"),
@@ -171,7 +142,7 @@ def register_interpolation_callbacks(app):
             return [], True, True, True
         else:
             area = _build_mode_area(method, mode)
-            return area, False, False, False
+            return area["interp-mode-function"], area["interp-mode-upload"], area["interp-mode-table"], False, False, False
         return no_update, no_update, no_update, no_update
 
     # ── Callback 2: ejecuta el cálculo ──────────────────────────────────────────

@@ -9,22 +9,22 @@
 # 🎨 **A. UI/UX Global**
 
 ## **1. Homologación visual de inputs**
-- [ ] Inputs numéricos  
-- [ ] Textareas  
-- [ ] Dropdowns  
-- [ ] RadioItems  
-- [ ] Botones  
-- [ ] Input Style Registry global  
-- [ ] Mensajes de error homogéneos  
-- [ ] Estados visuales (hover, error, disabled)
+- [X] Inputs numéricos  
+- [X] Textareas  
+- [X] Dropdowns  
+- [X] RadioItems  
+- [X] Botones  
+- [X] Input Style Registry global  
+- [X] Mensajes de error homogéneos  
+- [X] Estados visuales (hover, error, disabled)
 
 ## **2. Tooltip System**
-- [ ] Identificar elementos  
-- [ ] Crear `tooltip_input()`  
-- [ ] Crear `tooltip_icon()`  
-- [ ] Hover/click interactions  
-- [ ] Estilos para modo claro/oscuro  
-- [ ] Integración en todos los módulos
+- [X] Identificar elementos  
+- [X] Crear `tooltip_input()`  
+- [X] Crear `tooltip_icon()`  
+- [X] Hover/click interactions  
+- [X] Estilos para modo claro/oscuro  
+- [X] Integración en todos los módulos
 
 ## **3. Homologación de idioma (base en inglés)**
 - [ ] Migrar UI visible a inglés  

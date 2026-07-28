@@ -15,8 +15,47 @@
 }
 
 .header-logo {
-  width: 120px;
-  height: auto;
+    height: 200px;
+    width: 200px;
+    object-fit: contain;
+    object-position: center;
+    clip-path: inset(4px 4px 4px 4px); /* recorta bordes */
+}
+
+.header-logo {
+    filter: drop-shadow(0 0 6px rgba(0,0,0,0.25));
+}
+
+body.dark-mode .header-logo {
+    filter: drop-shadow(0 0 6px rgba(255,255,255,0.25));
+}
+
+.header-logo {
+    transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.header-logo:hover {
+    transform: scale(1.12);
+    filter: drop-shadow(0 0 10px rgba(0,0,0,0.35));
+}
+
+.header-logo {
+    padding: 6px;
+    border-radius: 12px;
+}
+
+#logo-left {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 10px;
+}
+
+#logo-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 10px;
 }
 
 /* NAVBAR */
@@ -83,3 +122,4 @@
   text-align: center;
   color: #777;
 }
+

@@ -1,4 +1,13 @@
 from dash import html, dcc
+from core.ui.styled_components import (
+    styled_dropdown,
+    styled_radioitems,
+    styled_input,
+    styled_button
+)
+from core.ui.tooltips import Tooltip
+from app.tooltips import get_tooltip
+
 
 nonlinear_section = html.Div(
     id="nonlinear-container",
@@ -18,9 +27,12 @@ nonlinear_section = html.Div(
         # ───────────────────────────────────────────────
         # Selector de método
         # ───────────────────────────────────────────────
-        html.Div(className="card", children=[
-            html.Label("Método"),
-            dcc.Dropdown(
+        html.Div(className="module-card", children=[
+            html.Div(className="label-with-tooltip", children=[
+                html.Div("Método", className="na-label"),
+                Tooltip(get_tooltip("nonlin-method")).render()
+            ]),
+            styled_dropdown(
                 id="nonlin-method",
                 options=[
                     {"label": "Bisección",        "value": "bisection"},
@@ -30,71 +42,118 @@ nonlinear_section = html.Div(
                     {"label": "Punto Fijo",      "value": "fixed_point"},
                 ],
                 placeholder="Selecciona un método",
-                className="input",
             ),
         ]),
 
         # ───────────────────────────────────────────────
         # Modo de entrada (siempre función)
         # ───────────────────────────────────────────────
-        html.Div(className="card", id="nonlin-mode-card", children=[
-            html.Label("Modo de entrada"),
-            dcc.RadioItems(
+        html.Div(className="module-card", id="nonlin-mode-card", children=[
+            html.Div(className="label-with-tooltip", children=[
+                html.Div("Modo de entrada", className="na-label"),
+                Tooltip(get_tooltip("nonlin-input-mode")).render()
+            ]),
+            styled_radioitems(
                 id="nonlin-input-mode",
                 options=[{"label": "Función f(x)", "value": "function"}],
                 value="function",
-                className="radio-group",
-                inline=True,
             ),
         ]),
 
         # ───────────────────────────────────────────────
-        # Área dinámica de input
+        # Área dinámica de input (contenedores predefinidos)
         # ───────────────────────────────────────────────
-        html.Div(id="nonlin-input-area", className="card input-area"),
+        html.Div(id="nonlin-input-area", className="module-card input-area", children=[
 
-        # ───────────────────────────────────────────────
-        # Input g(x) — solo para punto fijo
-        # ───────────────────────────────────────────────
-        html.Div(className="card", id="nonlin-g-card", hidden=True, children=[
-            html.Label("Función g(x)"),
-            dcc.Input(
-                id="nonlin-g",
-                type="text",
-                placeholder="ej: 0.5*(x + 5/x)",
-                className="input",
-            ),
-        ]),
+            # ─────────────────────────────────────────────
+            # Función f(x)
+            # ─────────────────────────────────────────────
+            html.Div(id="nonlin-mode-base", hidden=True, children=[
+                html.Div(className="label-with-tooltip", children=[
+                    html.Div("Función f(x)", className="na-label"),
+                    Tooltip(get_tooltip("nonlin-f")).render()
+                ]),
+                styled_input(
+                    id="nonlin-f",
+                    type="text",
+                    placeholder="ej: x**2 - 5",
+                ),
 
-        # ───────────────────────────────────────────────
-        # Input x1 — solo para secante
-        # ───────────────────────────────────────────────
-        html.Div(className="card", id="nonlin-x1-card", hidden=True, children=[
-            html.Label("Valor inicial x1"),
-            dcc.Input(
-                id="nonlin-x1",
-                type="number",
-                placeholder="ej: 3.0",
-                className="input",
-            ),
-        ]),
+                html.Div(className="label-with-tooltip", children=[
+                    html.Div("Valor inicial x0", className="na-label"),
+                    Tooltip(get_tooltip("nonlin-x0")).render()
+                ]),
+                styled_input(
+                    id="nonlin-x0",
+                    type="number",
+                    placeholder="ej: 2.0",
+                ),
+            ]),
 
-        # ───────────────────────────────────────────────
-        # Intervalo [a, b] — bisección y falsa posición
-        # ───────────────────────────────────────────────
-        html.Div(className="card", id="nonlin-interval-card", hidden=True, children=[
-            html.Label("Intervalo [a, b]"),
-            html.Div(className="input-row", children=[
-                dcc.Input(id="nonlin-a", type="number", placeholder="a", className="input"),
-                dcc.Input(id="nonlin-b", type="number", placeholder="b", className="input"),
+            # ─────────────────────────────────────────────
+            # g(x) — solo para punto fijo
+            # ─────────────────────────────────────────────
+            html.Div(id="nonlin-mode-g", hidden=True, children=[
+                html.Div(className="label-with-tooltip", children=[
+                    html.Div("Función g(x)", className="na-label"),
+                    Tooltip(get_tooltip("nonlin-g")).render()
+                ]),
+                styled_input(
+                    id="nonlin-g",
+                    type="text",
+                    placeholder="ej: 0.5*(x + 5/x)",
+                ),
+            ]),
+
+            # ─────────────────────────────────────────────
+            # x1 — solo para secante
+            # ─────────────────────────────────────────────
+            html.Div(id="nonlin-mode-x1", hidden=True, children=[
+                html.Div(className="label-with-tooltip", children=[
+                    html.Div("Valor inicial x1", className="na-label"),
+                    Tooltip(get_tooltip("nonlin-x1")).render()
+                ]),
+                styled_input(
+                    id="nonlin-x1",
+                    type="number",
+                    placeholder="ej: 3.0",
+                ),
+            ]),
+
+            # ─────────────────────────────────────────────
+            # Intervalo [a, b] — bisección y falsa posición
+            # ─────────────────────────────────────────────
+            html.Div(id="nonlin-mode-interval", hidden=True, children=[
+                html.Div(className="label-with-tooltip", children=[
+                    html.Div("Intervalo [a, b]", className="na-label"),
+                    Tooltip(get_tooltip("nonlin-interval")).render()
+                ]),
+                html.Br(),
+                html.Div(className="input-row", children=[
+                    html.Div(className="label-with-tooltip", children=[
+                        html.Div("Extremo izquierdo a", className="na-label"),
+                        Tooltip(get_tooltip("nonlin-a")).render()
+                    ]),
+                    styled_input(id="nonlin-a", type="number", placeholder="a"),
+                    html.Div(className="label-with-tooltip", children=[
+                        html.Div("Extremo derecho b", className="na-label"),
+                        Tooltip(get_tooltip("nonlin-b")).render()
+                    ]),
+                    styled_input(id="nonlin-b", type="number", placeholder="b"),
+                ]),
             ]),
         ]),
 
         # ───────────────────────────────────────────────
         # Botón de ejecución
         # ───────────────────────────────────────────────
-        html.Div(className="card", id="nonlin-btn-card", hidden=True, children=[
-            html.Button("Calcular", id="nonlin-run-btn", className="btn-primary"),
+        html.Div(className="module-card", id="nonlin-btn-card", hidden=True, children=[
+            Tooltip(get_tooltip("nonlin-run-btn")).render(),
+            styled_button(
+                id="nonlin-run-btn",
+                label="Calcular",
+                kind="primary",
+            ),
         ]),
 
         # ───────────────────────────────────────────────

@@ -1,11 +1,16 @@
-# layout/docs_section.py
-
 from dash import html, dcc
+from core.ui.styled_components import (
+    styled_dropdown,
+    styled_button
+)
 
 docs_section = html.Div(
     id="docs-container",
     children=[
 
+        # ───────────────────────────────────────────────
+        # Encabezado del módulo
+        # ───────────────────────────────────────────────
         html.Div(
             className="module-header",
             children=[
@@ -14,10 +19,12 @@ docs_section = html.Div(
             ],
         ),
 
+        # ───────────────────────────────────────────────
         # Selección de módulo
-        html.Div(className="card", children=[
+        # ───────────────────────────────────────────────
+        html.Div(className="module-card", children=[
             html.Label("Módulo"),
-            dcc.Dropdown(
+            styled_dropdown(
                 id="docs-module",
                 options=[
                     {"label": "Derivadas", "value": "numerical_derivative"},
@@ -28,26 +35,34 @@ docs_section = html.Div(
                     {"label": "Ecuaciones Diferenciales (ODE)", "value": "ode"},
                 ],
                 placeholder="Selecciona un módulo",
-                className="input",
             ),
         ]),
 
+        # ───────────────────────────────────────────────
         # Selección de método
-        html.Div(className="card", id="docs-method-card", children=[
+        # ───────────────────────────────────────────────
+        html.Div(className="module-card", id="docs-method-card", children=[
             html.Label("Método"),
-            dcc.Dropdown(
+            styled_dropdown(
                 id="docs-method",
                 placeholder="Selecciona un método",
-                className="input",
             ),
         ]),
 
+        # ───────────────────────────────────────────────
         # Botón de cargar documentación
-        html.Div(className="card", id="docs-btn-card", hidden=True, children=[
-            html.Button("Mostrar documentación", id="docs-run-btn", className="btn-primary"),
+        # ───────────────────────────────────────────────
+        html.Div(className="module-card", id="docs-btn-card", hidden=True, children=[
+            styled_button(
+                id="docs-run-btn",
+                label="Mostrar documentación",
+                kind="primary",
+            ),
         ]),
 
+        # ───────────────────────────────────────────────
         # Área donde se renderiza el markdown
+        # ───────────────────────────────────────────────
         html.Div(id="docs-result-area", className="result-area"),
     ],
 )

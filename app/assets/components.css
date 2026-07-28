@@ -46,6 +46,10 @@
 }
 
 /* CARDS */
+.module-card[hidden] {
+  display: none !important;
+}
+
 .module-card {
   background-color: var(--color-bg-alt);
   padding: var(--spacing-m);

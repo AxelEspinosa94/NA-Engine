@@ -18,23 +18,7 @@ def _build_base_area():
     """
     Área dinámica base: función f(x) y x0.
     """
-    return [
-        html.Label("Función f(x)"),
-        dcc.Input(
-            id="nonlin-f",
-            type="text",
-            placeholder="ej: x**2 - 5",
-            className="input",
-        ),
-
-        html.Label("Valor inicial x0"),
-        dcc.Input(
-            id="nonlin-x0",
-            type="number",
-            placeholder="ej: 2.0",
-            className="input",
-        ),
-    ]
+    return True, True
 
 
 def register_nonlinear_callbacks(app):
@@ -43,10 +27,10 @@ def register_nonlinear_callbacks(app):
     # Callback 1: Construye el formulario dinámico
     # ============================================================
     @app.callback(
-        Output("nonlin-input-area", "children"),
-        Output("nonlin-g-card", "hidden"),
-        Output("nonlin-x1-card", "hidden"),
-        Output("nonlin-interval-card", "hidden"),
+        Output("nonlin-mode-base", "hidden"),
+        Output("nonlin-mode-g", "hidden"),
+        Output("nonlin-mode-x1", "hidden"),
+        Output("nonlin-mode-interval", "hidden"),
         Output("nonlin-btn-card", "hidden"),
         Input("nonlin-method", "value"),
         Input("nonlin-input-mode", "value"),
@@ -58,7 +42,7 @@ def register_nonlinear_callbacks(app):
             return [], True, True, True, True
 
         # Área base: f(x) y x0
-        area = _build_base_area()
+        area = not _build_base_area()
 
         # Mostrar inputs según el método
         g_hidden = method != "fixed_point"

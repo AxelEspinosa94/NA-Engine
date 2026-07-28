@@ -1,4 +1,12 @@
 from dash import html, dcc, dash_table
+from core.ui.styled_components import (
+    styled_dropdown,
+    styled_radioitems,
+    styled_input,
+    styled_button
+)
+from core.ui.tooltips import Tooltip
+from app.tooltips import get_tooltip
 
 linear_algebra_section = html.Div(
     id="linear-algebra-container",
@@ -18,26 +26,30 @@ linear_algebra_section = html.Div(
         # ───────────────────────────────────────────────
         # Selector de tipo de operación
         # ───────────────────────────────────────────────
-        html.Div(className="card", children=[
-            html.Label("Tipo de operación"),
-            dcc.RadioItems(
+        html.Div(className="module-card", children=[
+            html.Div(className="label-with-tooltip", children=[
+                html.Div("Tipo de operación", className="na-label"),
+                Tooltip(get_tooltip("la-calculation-type")).render()
+            ]),
+            styled_radioitems(
                 id="la-calculation-type",
                 options=[
                     {"label": "Operaciones con matrices", "value": "matrix_operations"},
                     {"label": "Sistema de ecuaciones",    "value": "ec-system"},
                 ],
                 value="matrix_operations",
-                className="radio-group",
-                inline=True,
             ),
         ]),
 
         # ───────────────────────────────────────────────
         # Selector de método
         # ───────────────────────────────────────────────
-        html.Div(className="card", children=[
-            html.Label("Método"),
-            dcc.Dropdown(
+        html.Div(className="module-card", children=[
+            html.Div(className="label-with-tooltip", children=[
+                html.Div("Método", className="na-label"),
+                Tooltip(get_tooltip("la-calculation-mode")).render()
+            ]),
+            styled_dropdown(
                 id="la-calculation-mode",
                 options=[
                     # Matrix operations
@@ -58,32 +70,38 @@ linear_algebra_section = html.Div(
                     {"label": "Gauss-Seidel",        "value": "gauss_seidel"},
                 ],
                 placeholder="Selecciona un método",
-                className="input",
             ),
         ]),
 
         # ───────────────────────────────────────────────
-        # Área de modo de entrada (SIEMPRE presente)
+        # Área de modo de entrada
         # ───────────────────────────────────────────────
-        html.Div(className="card", id="la-mode-area", children=[
+        html.Div(className="module-card", id="la-mode-area", children=[
 
-            # Selector de modo
-            html.Label("Modo de entrada"),
-            dcc.RadioItems(
+            html.Div(className="label-with-tooltip", children=[
+                html.Div("Modo de Entrada", className="na-label"),
+                Tooltip(get_tooltip("la-input-mode")).render()
+            ]),
+            styled_radioitems(
                 id="la-input-mode",
                 options=[
                     {"label": "Subir archivo", "value": "upload"},
                     {"label": "Tabla manual",  "value": "table"},
                 ],
                 value="upload",
-                className="radio-group",
-                inline=True,
             ),
 
+            # ─────────────────────────────────────────────
             # Upload (visible por default)
+            # ─────────────────────────────────────────────
             html.Div(
                 id="la-upload-area",
+                hidden=False,
                 children=[
+                    html.Div(className="label-with-tooltip", children=[
+                        html.Div("Upload", className="na-label"),
+                        Tooltip(get_tooltip("la-upload")).render()
+                    ]),
                     dcc.Upload(
                         id="la-upload",
                         children=html.Div(["Arrastra o ", html.A("selecciona un archivo")]),
@@ -92,15 +110,19 @@ linear_algebra_section = html.Div(
                     ),
                     html.Div(id="la-upload-preview"),
                 ],
-                hidden=False,
             ),
 
-            # Tabla (oculta por default)
+            # ─────────────────────────────────────────────
+            # Tabla manual (oculta por default)
+            # ─────────────────────────────────────────────
             html.Div(
                 id="la-table-area",
                 hidden=True,
                 children=[
-                    html.Label("Matriz A"),
+                    html.Div(className="label-with-tooltip", children=[
+                        html.Div("Matriz A", className="na-label"),
+                        Tooltip(get_tooltip("la-table-A")).render()
+                    ]),
                     dash_table.DataTable(
                         id="la-table-A",
                         columns=[{"name": f"col{i}", "id": f"col{i}", "editable": True} for i in range(3)],
@@ -108,14 +130,20 @@ linear_algebra_section = html.Div(
                         editable=True,
                         row_deletable=True,
                     ),
+
                     html.Br(),
-                    html.Label("Vector b (solo para sistemas)"),
-                    dcc.Input(
-                        id="la-vector-b",
-                        type="text",
-                        placeholder="ej: 1 2 3",
-                        className="input",
-                    ),
+
+                    html.Div(id="la-vector-b-area", children=[
+                        html.Div(className="label-with-tooltip", children=[
+                            html.Div("Vector b (solo para sistemas)", className="na-label"),
+                            Tooltip(get_tooltip("la-vector-b")).render()
+                        ]),
+                        styled_input(
+                            id="la-vector-b",
+                            type="text",
+                            placeholder="ej: 1 2 3",
+                        ),
+                    ]),
                 ],
             ),
         ]),
@@ -123,8 +151,13 @@ linear_algebra_section = html.Div(
         # ───────────────────────────────────────────────
         # Botón de ejecución
         # ───────────────────────────────────────────────
-        html.Div(className="card", id="la-btn-card", children=[
-            html.Button("Calcular", id="la-run-btn", className="btn-primary"),
+        html.Div(className="module-card", id="la-btn-card", children=[
+            Tooltip(get_tooltip("la-run-btn")).render(),
+            styled_button(
+                id="la-run-btn",
+                label="Calcular",
+                kind="primary",
+            ),
         ]),
 
         # ───────────────────────────────────────────────

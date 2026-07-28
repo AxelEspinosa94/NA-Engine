@@ -40,6 +40,7 @@ def register_linear_algebra_callbacks(app):
     @app.callback(
         Output("la-calculation-mode", "options"),
         Output("la-calculation-mode", "value"),
+        Output("la-vector-b-area", "hidden"),
         Input("la-calculation-type", "value"),
         State("la-calculation-mode", "value"),
     )
@@ -67,15 +68,16 @@ def register_linear_algebra_callbacks(app):
         # Select correct list
         if calc_type == "matrix_operations":
             options = MATRIX_MODES
+            b = True
         else:
             options = SYSTEM_MODES
-
+            b = False
         # If current value is not valid anymore, reset it
         valid_values = [opt["value"] for opt in options]
         if current_value not in valid_values:
-            return options, None
+            return options, None, True
 
-        return options, current_value
+        return options, current_value, b
 
 
     # ============================================================

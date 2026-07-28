@@ -1,4 +1,14 @@
 from dash import html, dcc
+from core.ui.styled_components import (
+    styled_dropdown,
+    styled_radioitems,
+    styled_input,
+    styled_button,
+    styled_textarea
+)
+from core.ui.tooltips import Tooltip
+from app.tooltips import get_tooltip
+
 
 ode_section = html.Div(
     id="ode-container",
@@ -18,9 +28,12 @@ ode_section = html.Div(
         # ───────────────────────────────────────────────
         # Selector de método
         # ───────────────────────────────────────────────
-        html.Div(className="card", children=[
-            html.Label("Método"),
-            dcc.Dropdown(
+        html.Div(className="module-card", children=[
+            html.Div(className="label-with-tooltip", children=[
+                html.Div("Método", className="na-label"),
+                Tooltip(get_tooltip("ode-method")).render()
+            ]),
+            styled_dropdown(
                 id="ode-method",
                 options=[
                     {"label": "Euler",                 "value": "euler"},
@@ -35,114 +48,142 @@ ode_section = html.Div(
                     {"label": "Adams–Moulton 2",       "value": "adams_moulton_2"},
                 ],
                 placeholder="Selecciona un método",
-                className="input",
             ),
         ]),
 
         # ───────────────────────────────────────────────
         # Selector de modo de entrada
         # ───────────────────────────────────────────────
-        html.Div(className="card", children=[
-            html.Label("Modo de entrada"),
-            dcc.RadioItems(
+        html.Div(className="module-card", children=[
+            html.Div(className="label-with-tooltip", children=[
+                            html.Div("Modo de entrada", className="na-label"),
+                            Tooltip(get_tooltip("ode-input-mode")).render()
+                        ]),
+            styled_radioitems(
                 id="ode-input-mode",
                 options=[
                     {"label": "Función f(x, y)", "value": "function"},
                     {"label": "Sistema",         "value": "system"},
                 ],
                 value="function",
-                className="radio-group",
-                inline=True,
             ),
         ]),
 
         # ───────────────────────────────────────────────
         # Área dinámica de input (función o sistema)
         # ───────────────────────────────────────────────
-        html.Div(id="ode-input-area", className="card input-area", children = [
-            # ───────────────────────────────────────────────
-            # Campo de input para función f(x, y)
-            # ───────────────────────────────────────────────
-            html.Div(id= "ode-function-card",
-                children=[
-                    html.Label("f(x, y)"),
-                    dcc.Input(
-                        id="ode-function",
-                        type="text",
-                        placeholder="Ej: x + y",
-                        className="input",
-                    ),
-                ]
-            ),
-            # ───────────────────────────────────────────────
-            # Campo de input para sistemass de ecuaciones
-            # ───────────────────────────────────────────────
-            html.Div(id = "ode-system-card", hidden=True,  # Initially hidden; shown when input_mode is "system"
-                children=[
-                    html.Label("Sistema de ecuaciones"),
-                    dcc.Textarea(
-                        id="ode-system",
-                        placeholder="Ej:\ny1' = y2\ny2' = -y1",
-                        className="textarea",
-                    ),
-                ]
-            )
+        html.Div(id="ode-input-area", className="module-card input-area", children=[
+
+            # Función f(x, y)
+            html.Div(id="ode-function-card", hidden=False, children=[
+                html.Div(className="label-with-tooltip", children=[
+                                html.Div("f(x, y)", className="na-label"),
+                                Tooltip(get_tooltip("ode-function")).render()
+                            ]),
+                styled_input(
+                    id="ode-function",
+                    type="text",
+                    placeholder="Ej: x + y",
+                ),
+            ]),
+
+            # Sistema de ecuaciones
+            html.Div(id="ode-system-card", hidden=True, children=[
+                html.Div(className="label-with-tooltip", children=[
+                                html.Div("Sistema de ecuaciones", className="na-label"),
+                                Tooltip(get_tooltip("ode-system")).render()
+                            ]),
+                styled_textarea(
+                    id="ode-system",
+                    placeholder="Ej:\ny1' = y2\ny2' = -y1",
+                ),
+            ]),
         ]),
 
         # ───────────────────────────────────────────────
-        # Campos IVP (x0, y0, x_end, h)
+        # Campos IVP
         # ───────────────────────────────────────────────
-        html.Div(id="ode-ivp-card", className="card", hidden=True, children=[
-            html.Label("Condiciones iniciales"),
+        html.Div(id="ode-ivp-card", className="module-card", hidden=True, children=[
+            html.Div(className="label-with-tooltip", children=[
+                    html.Div("Condiciones Iniciales", className="na-label"),
+                    Tooltip(get_tooltip("ode-ivp")).render()
+            ]),
             html.Div(className="input-row", children=[
                 html.Div(children=[
-                    html.Label("x₀"),
-                    dcc.Input(id="ode-x0", type="number", className="input"),
+                    html.Div(className="label-with-tooltip", children=[
+                        html.Div("x₀", className="na-label"),
+                        Tooltip(get_tooltip("ode-x0")).render()
+                    ]),
+                    styled_input(id="ode-x0", type="number"),
                 ]),
                 html.Div(children=[
-                    html.Label("y₀"),
-                    dcc.Input(id="ode-y0", type="number", className="input"),
+                    html.Div(className="label-with-tooltip", children=[
+                        html.Div("y₀", className="na-label"),
+                        Tooltip(get_tooltip("ode-y0")).render()
+                    ]),
+                    styled_input(id="ode-y0", type="number"),
                 ]),
                 html.Div(children=[
-                    html.Label("x final"),
-                    dcc.Input(id="ode-x-end", type="number", className="input"),
+                    html.Div(className="label-with-tooltip", children=[
+                        html.Div("x final", className="na-label"),
+                        Tooltip(get_tooltip("ode-x-end")).render()
+                    ]),
+                    styled_input(id="ode-x-end", type="number"),
                 ]),
                 html.Div(children=[
-                    html.Label("Paso h"),
-                    dcc.Input(id="ode-h", type="number", className="input"),
+
+                    html.Div(className="label-with-tooltip", children=[
+                        html.Div("Paso h", className="na-label"),
+                        Tooltip(get_tooltip("ode-h")).render()
+                    ]),
+                    styled_input(id="ode-h", type="number"),
                 ]),
             ]),
         ]),
 
         # ───────────────────────────────────────────────
-        # Campos para sistemas (y0 vector)
+        # Campos para sistemas (vector y0)
         # ───────────────────────────────────────────────
-        html.Div(id="ode-system-y0-card", className="card", hidden=True, children=[
-            html.Label("Vector inicial y₀"),
-            dcc.Textarea(
+        html.Div(id="ode-system-y0-card", className="module-card", hidden=True, children=[
+            html.Div(className="label-with-tooltip", children=[
+                html.Div("Vector inicial y₀", className="na-label"),
+                Tooltip(get_tooltip("ode-y0-system")).render()
+            ]),
+            styled_textarea(
                 id="ode-y0-system",
                 placeholder="Ej: 1, 0, -2",
-                className="textarea",
             ),
         ]),
 
         # ───────────────────────────────────────────────
         # Campos BVP — Shooting
         # ───────────────────────────────────────────────
-        html.Div(id="ode-shooting-card", className="card", hidden=True, children=[
-            html.Label("Condiciones de frontera (Shooting)"),
+        html.Div(id="ode-shooting-card", className="module-card", hidden=True, children=[
+            html.Div(className="label-with-tooltip", children=[
+                html.Div("Condiciones de frontera (Shooting)", className="na-label"),
+                Tooltip(get_tooltip("ode-shooting")).render()
+            ]),
             html.Div(className="input-row", children=[
                 html.Div(children=[
-                    html.Label("α = y(x₀)"),
-                    dcc.Input(id="ode-alpha", type="number", className="input"),
+                    html.Div(className="label-with-tooltip", children=[
+                        html.Div("α = y(x₀)", className="na-label"),
+                        Tooltip(get_tooltip("ode-alpha")).render(),
+                    ]),
+                    styled_input(id="ode-alpha", type="number"),
                 ]),
                 html.Div(children=[
-                    html.Label("β = y(x_end)"),
-                    dcc.Input(id="ode-beta", type="number", className="input"),
+                    html.Div(className="label-with-tooltip", children=[
+                        html.Div("β = y(x_end)", className="na-label"),
+                        Tooltip(get_tooltip("ode-beta")).render()
+                    ]),
+                    styled_input(id="ode-beta", type="number"),
                 ]),
                 html.Div(children=[
-                    html.Label("Pendiente inicial s₀"),
-                    dcc.Input(id="ode-s0", type="number", className="input"),
+                    html.Div(className="label-with-tooltip", children=[
+                        html.Div("Pendiente inicial s₀", className="na-label"),
+                        Tooltip(get_tooltip("ode-s0")).render()
+                    ]),
+                    styled_input(id="ode-s0", type="number"),
                 ]),
             ]),
         ]),
@@ -150,20 +191,32 @@ ode_section = html.Div(
         # ───────────────────────────────────────────────
         # Campos BVP — Diferencias finitas
         # ───────────────────────────────────────────────
-        html.Div(id="ode-fd-card", className="card", hidden=True, children=[
-            html.Label("Diferencias finitas"),
+        html.Div(id="ode-fd-card", className="module-card", hidden=True, children=[
+            html.Div(className="label-with-tooltip", children=[
+                html.Div("Diferencias finitas", className="na-label"),
+                Tooltip(get_tooltip("ode-fd")).render()
+            ]),
             html.Div(className="input-row", children=[
                 html.Div(children=[
-                    html.Label("α = y(x₀)"),
-                    dcc.Input(id="ode-alpha-fd", type="number", className="input"),
+                    html.Div(className="label-with-tooltip", children=[
+                        html.Div("α = y(x₀)", className="na-label"),
+                        Tooltip(get_tooltip("ode-alpha-fd")).render()
+                    ]),
+                    styled_input(id="ode-alpha-fd", type="number"),
                 ]),
                 html.Div(children=[
-                    html.Label("β = y(x_end)"),
-                    dcc.Input(id="ode-beta-fd", type="number", className="input"),
+                    html.Div(className="label-with-tooltip", children=[
+                        html.Div("β = y(x_end)", className="na-label"),
+                        Tooltip(get_tooltip("ode-beta-fd")).render()
+                    ]),
+                    styled_input(id="ode-beta-fd", type="number"),
                 ]),
                 html.Div(children=[
-                    html.Label("n (subdivisiones)"),
-                    dcc.Input(id="ode-n", type="number", className="input"),
+                    html.Div(className="label-with-tooltip", children=[
+                        html.Div("n (subdivisiones)", className="na-label"),
+                        Tooltip(get_tooltip("ode-n")).render()
+                    ]),
+                    styled_input(id="ode-n", type="number"),
                 ]),
             ]),
         ]),
@@ -171,8 +224,13 @@ ode_section = html.Div(
         # ───────────────────────────────────────────────
         # Botón de ejecución
         # ───────────────────────────────────────────────
-        html.Div(className="card", id="ode-btn-card", hidden=True, children=[
-            html.Button("Calcular", id="ode-run-btn", className="btn-primary"),
+        html.Div(className="module-card", id="ode-btn-card", hidden=True, children=[
+            Tooltip(get_tooltip("ode-run-btn")).render(),
+            styled_button(
+                id="ode-run-btn",
+                label="Calcular",
+                kind="primary",
+            ),
         ]),
 
         # ───────────────────────────────────────────────
