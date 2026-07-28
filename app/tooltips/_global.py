@@ -1,0 +1,17 @@
+
+TOOLTIPS = {
+    "input-function": "Ingresa la función usando sintaxis de Python. Ejemplo: x**2 + sin(x).",
+    "input-x": "Punto donde se evalúa la función o la derivada.",
+    "input-y": "Valor de y cuando el método requiere evaluar f(x, y).",
+    "input-h": "El paso h controla la precisión del método numérico.",
+    "input-x0": "Condición inicial para métodos IVP.",
+    "input-x-end": "Punto final del intervalo de integración o solución.",
+    "input-y0": "Valor inicial de la variable dependiente.",
+    "input-y0-system": "Vector inicial para sistemas de ecuaciones diferenciales.",
+    "input-alpha": "Condición de frontera en x₀.",
+    "input-beta": "Condición de frontera en x_end.",
+    "input-n": "Número de subdivisiones o nodos para métodos discretos.",
+    "dropdown-method": "Selecciona el método numérico que deseas aplicar.",
+    "dropdown-module": "Selecciona el módulo del cual deseas consultar teoría o ejemplos.",
+    "run-button": "Ejecuta el método numérico con los parámetros proporcionados.",
+}
