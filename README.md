@@ -218,6 +218,19 @@ Validan:
 
 # Release Notes
 
+### v0.1.4 — Stage 5 - Patch 1: UI/UX Foundation + Tooltip System
+- Unified styling for all input components (numeric, text, dropdown, radio, buttons)
+- Added global tooltip system (icon, input wrapper, dark/light mode)
+- Added full tooltip coverage for all numerical modules
+- Standardized layout containers and cleaned legacy CSS
+- Prepared initial structure for future i18n
+
+### v0.1.3 — About Section
+- Added about section
+
+### v0.1.2 — VERSIONING and release automation
+- Added VERSIONING and release automation
+
 ### v0.1.0 — MVP
 - Added dynamic documentation loader
 - Added MathJax support
