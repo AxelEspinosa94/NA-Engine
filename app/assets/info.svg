@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <!-- círculo exterior -->
+  <circle cx="12" cy="12" r="10" fill="black"/>
+
+  <!-- puntito de la i -->
+  <circle cx="12" cy="8" r="2" fill="white"/>
+
+  <!-- palito de la i -->
+  <rect x="11" y="11" width="2" height="7" fill="white"/>
+</svg>

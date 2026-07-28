@@ -1,0 +1,78 @@
+/* ================================
+   Tooltip — NA‑Engine
+   ================================ */
+.label-with-tooltip {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.label-with-tooltip:hover .na-tooltip-content {
+    display: block;
+}
+
+.na-label {
+    display: inline-block;
+    font-weight: 600; /* opcional, para que se vea como label */
+    margin-bottom: 4px;
+}
+
+
+/* Mostrar tooltip al hover */
+.na-tooltip:hover .na-tooltip-content {
+    display: block;
+}
+
+
+.na-tooltip {
+    position: static;
+    display: inline-flex;
+    align-items: center;
+    margin-left: 6px;
+    cursor: help;
+}
+
+/* Icono del tooltip (pequeño círculo con "i") */
+/*.na-tooltip-icon {
+    width: 14px;
+    height: 14px;
+    background-color: var(--color-accent);
+    mask: url("/assets/info.svg") no-repeat center;
+    -webkit-mask: url("/assets/info.svg") no-repeat center;
+}*/
+
+.na-tooltip-icon {
+    width: 23px;
+    height: 23px;
+    background-image: url("/assets/info.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+
+/* Contenido del tooltip */
+.na-tooltip-content {
+    display: none;
+    position: absolute;
+    top: 120%;
+    left: 0;
+    background: var(--color-bg-alt);
+    padding: 10px 12px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    width: max-content;
+    max-width: 260px;
+    z-index: 999;
+    font-size: 0.85rem;
+    line-height: 1.3rem;
+}
+
+
+/* Responsivo */
+@media (max-width: 600px) {
+    .na-tooltip-content {
+        left: -20px;
+        max-width: 200px;
+    }
+}
