@@ -1,0 +1,85 @@
+/* ============================================================
+   ABOUT SECTION — Dedicated Styling
+   ============================================================ */
+
+/* Container general */
+#about-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px 24px;
+    animation: fadeIn 0.4s ease;
+}
+
+/* Header */
+#about-container .module-header h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+#about-container .module-header p {
+    font-size: 1.1rem;
+    opacity: 0.8;
+}
+
+/* Cards */
+#about-container .card {
+    background: var(--card-bg, #ffffff);
+    border-radius: 14px;
+    padding: 22px 26px;
+    margin-top: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#about-container .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+/* Titles inside cards */
+#about-container .card h3 {
+    margin-top: 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+/* Info boxes */
+.about-info-box {
+    background: rgba(0,0,0,0.04);
+    padding: 14px 18px;
+    border-radius: 10px;
+    margin-top: 12px;
+    font-size: 1rem;
+}
+
+/* Lists */
+.about-info-box ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.about-info-box li {
+    margin-bottom: 6px;
+}
+
+/* Dark mode */
+body.dark-mode #about-container .card {
+    background: #1e1e1e;
+    box-shadow: 0 4px 12px rgba(255,255,255,0.05);
+}
+
+body.dark-mode #about-container .card:hover {
+    box-shadow: 0 6px 18px rgba(255,255,255,0.08);
+}
+
+body.dark-mode .about-info-box {
+    background: rgba(255,255,255,0.06);
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
