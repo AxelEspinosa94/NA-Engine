@@ -2,6 +2,7 @@
 from typing import Dict, Any, Optional
 from app.components.result_view import build_result_view
 from core.renderer import Renderer
+from core.ui.tooltips import Tooltip
 from dash import html, dcc
 
 class UIContract:
@@ -19,10 +20,10 @@ class UIContract:
             })
             return build_result_view(payload)
 
-        result = outcome.get("result", {})
+        payload = self.renderer.render(calculation_mode, outcome.get("result", {}))
 
         # resultado compuesto: construir bloques independientes
-        blocks = self._build_blocks(calculation_mode, result)
+        blocks = self._build_blocks(calculation_mode, payload)
 
         return html.Div(blocks, className="result-container")
 
@@ -32,45 +33,49 @@ class UIContract:
     def _build_blocks(self, calculation_mode: str, result: Dict[str, Any]) -> list:
         blocks = []
 
-        if "value" in result:
-            blocks.append(self._block_value(calculation_mode, result))
-
-        if "expression" in result:
-            blocks.append(self._block_expression(result["expression"]))
-
-        # Gráfica con nodos superpuestos
-        if "x" in result and "y" in result:
-            blocks.append(self._block_plot(result))
-
-        if "table" in result:
-            blocks.append(self._block_table(result["table"]))
-
-        if not blocks:
-            payload = self.renderer.render(calculation_mode, result)
-            blocks.append(build_result_view(payload))
+        for block in result.get("blocks", []):
+            block_type = block.get("type")
+            if block_type == "scalar":
+                blocks.append(self._block_value(calculation_mode, block))
+            elif block_type == "markdown":
+                blocks.append(self._block_expression(block))
+            elif block_type == "table":
+                blocks.append(self._block_table(block))
+            elif block_type == "plot":
+                blocks.append(self._block_plot(block))
+            elif block_type == "vector":
+                blocks.append(self._block_solution(block))
+            elif block_type == "matrix_expression":
+                blocks.append(self._block_matrix_expression(block))
+            elif block_type == "matrix_group":
+                blocks.append(self._block_matrix_group(block))
+            else:
+                # Bloque desconocido, renderizar como raw
+                blocks.append(build_result_view(block))
 
         return blocks
 
-    def _block_plot(self, result: Dict[str, Any]) -> html.Div:
+    def _block_plot(self, payload: Dict[str, Any]) -> html.Div:
         import plotly.graph_objects as go
         from dash import dcc
 
         fig = go.Figure()
-
+        caption = payload.get("caption", "Gráfica")
+        tooltip = payload.get("tooltip", "")
         # Curva del polinomio
         fig.add_trace(go.Scatter(
-            x=result["x"],
-            y=result["y"],
+            x=payload["x"],
+            y=payload["y"],
             mode="lines",
             name="P(x)",
             line=dict(color="#dec6e5", width=2),
         ))
 
         # Nodos originales del df
-        if "x_nodes" in result and "y_nodes" in result:
+        if "x_nodes" in payload and "y_nodes" in payload:
             fig.add_trace(go.Scatter(
-                x=result["x_nodes"],
-                y=result["y_nodes"],
+                x=payload["x_nodes"],
+                y=payload["y_nodes"],
                 mode="markers",
                 name="Nodos",
                 marker=dict(color="#e5c07b", size=8, symbol="circle"),
@@ -85,7 +90,10 @@ class UIContract:
         )
 
         return html.Div([
-            dcc.Markdown("### Gráfica del polinomio", className="result-explanation"),
+            html.Div(className="label-with-tooltip", children=[
+                dcc.Markdown(caption, className="result-explanation"),
+                Tooltip(tooltip).render() if tooltip else None,
+            ]),
             dcc.Graph(figure=fig, className="result-plot"),
         ])
     
@@ -93,34 +101,100 @@ class UIContract:
     # Builders de bloques individuales
     # ------------------------------------------------------------------
 
-    def _block_value(self, method: str, result: Dict[str, Any]) -> html.Div:
-        value = result["value"]
+    def _block_value(self, method: str, payload: Dict[str, Any]) -> html.Div:
+        caption = payload.get("caption", "Resultado")
+        tooltip = payload.get("tooltip", "")
+        value = payload.get("value", None)
         md = (
-            f"### Resultado\n\n"
             f"$$f(x_k) = \\boxed{{{float(value):.6g}}}$$\n\n"
             f"Método: **{method}**"
         )
         return html.Div([
+            html.Div(className="label-with-tooltip", children=[
+                dcc.Markdown(caption, className="result-explanation"),
+                Tooltip(tooltip).render() if tooltip else None,
+            ]),
             dcc.Markdown(md, className="result-explanation", mathjax=True),
         ])
 
-    def _block_expression(self, expression: str) -> html.Div:
-        md = f"### Polinomio\n\n```\n{expression}\n```"
+    def _block_expression(self, payload: Dict[str, Any]) -> html.Div:
+        caption = payload.get("caption", "Resultado")
+        tooltip = payload.get("tooltip", "")
+        expression = payload["content"]
+
+        md = f"```\n{expression}\n```"
+
         return html.Div([
+            html.Div(className="label-with-tooltip", children=[
+                dcc.Markdown(caption, className="result-explanation"),
+                Tooltip(tooltip).render() if tooltip else None,
+            ]),
             dcc.Markdown(md, className="result-expression"),
         ])
 
-    def _block_table(self, table: Any) -> html.Div:
-        # table puede llegar como DataFrame o como dict {columns, rows}
-        if hasattr(table, "to_dict"):  # es DataFrame
-            columns = list(table.columns)
-            rows    = table.values.tolist()
-        else:
-            columns = table.get("columns", [])
-            rows    = table.get("rows", [])
 
-        payload = {"type": "table", "columns": columns, "rows": rows}
+    def _block_table(self, payload: Dict[str, Any]) -> html.Div:
+        caption = payload.get("caption", "Tabla de resultados")
+        tooltip = payload.get("tooltip", "")
+        columns = payload.get("columns", [])
+        rows = payload.get("rows", [])
+
+        p = {"type": "table", "columns": columns, "rows": rows}
         return html.Div([
-            dcc.Markdown("### Tabla de nodos", className="result-explanation"),
-            build_result_view(payload),
+            html.Div(className="label-with-tooltip", children=[
+                dcc.Markdown(caption, className="result-explanation"),
+                Tooltip(tooltip).render() if tooltip else None,
+            ]),
+            build_result_view(p),
+        ])
+
+    def _block_matrix_expression(self, payload: Dict[str, Any]) -> html.Div:
+        caption = payload.get("caption", "Matriz")
+        tooltip = payload.get("tooltip", "")
+        expression = payload["latex"]
+
+        md = f"$$\n{expression}\n$$"
+
+        return html.Div([
+            html.Div(className="label-with-tooltip", children=[
+                dcc.Markdown(caption, className="result-explanation"),
+                Tooltip(tooltip).render() if tooltip else None,
+            ]),
+            dcc.Markdown(md, className="result-expression", mathjax=True),
+        ])
+
+    def _block_matrix_group(self, payload: Dict[str, Any]) -> html.Div:
+        caption = payload.get("caption", "Matrices")
+        tooltip = payload.get("tooltip", "")
+        matrices = payload.get("matrices", [])
+
+        blocks = []
+        for key, matrix in matrices.items():
+            if key.endswith("_latex"):
+                matrix_name = key.replace("_latex", "")
+                expression = matrix
+                md = f"$$\n{matrix_name} = {expression}\n$$"
+                blocks.append(dcc.Markdown(md, className="result-expression", mathjax=True))
+
+        return html.Div([
+            html.Div(className="label-with-tooltip", children=[
+                dcc.Markdown(caption, className="result-explanation"),
+                Tooltip(tooltip).render() if tooltip else None,
+            ]),
+            html.Div(blocks, className="matrix-group"),
+        ])
+
+    def _block_solution(self, payload: Dict[str, Any]) -> html.Div:
+        caption = payload.get("caption", "Solución")
+        tooltip = payload.get("tooltip", "")
+        solution = payload.get("latex", [])
+
+        md = f"$$\n\\text{{Solución: }} {solution}\n$$"
+
+        return html.Div([
+            html.Div(className="label-with-tooltip", children=[
+                dcc.Markdown(caption, className="result-explanation"),
+                Tooltip(tooltip).render() if tooltip else None,
+            ]),
+            dcc.Markdown(md, className="result-expression", mathjax=True),
         ])

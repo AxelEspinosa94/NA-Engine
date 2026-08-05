@@ -39,22 +39,22 @@ class LinearAlgebraExecutor:
     # ============================================================
 
     def determinant(self, instance):
-        return {"value": float(np.linalg.det(instance.A))}
+        return {"determinant": float(np.linalg.det(instance.A))}
 
     def inverse(self, instance):
-        return {"value": np.linalg.inv(instance.A)}
+        return {"inverse": np.linalg.inv(instance.A)}
 
     def norm(self, instance):
-        return {"value": float(np.linalg.norm(instance.A))}
+        return {"norm": float(np.linalg.norm(instance.A))}
 
     def condition_number(self, instance):
-        return {"value": float(np.linalg.cond(instance.A))}
+        return {"condition_number": float(np.linalg.cond(instance.A))}
 
     def transpose(self, instance):
-        return {"value": instance.A.T}
+        return {"transpose": instance.A.T}
 
     def rank(self, instance):
-        return {"value": int(np.linalg.matrix_rank(instance.A))}
+        return {"rank": int(np.linalg.matrix_rank(instance.A))}
 
     # ============================================================
     # LINEAR SYSTEM SOLVERS

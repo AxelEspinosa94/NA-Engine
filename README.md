@@ -218,6 +218,17 @@ Validan:
 
 # Release Notes
 
+### v0.1.5 — Stage 5 Patch 2: Unified Output Renderer + Matrix LaTeX + Header Upgrade
+- Unified output rendering system with multi-block support.
+- Tooltip integration for all output blocks (scalar, vector, matrix, plots, tables, markdown).
+- LaTeX rendering for:
+  - Matrices (L, U, P)
+  - Vectors (solution vectors)
+  - Matrix groups (LU, QR)
+- New `matrix_expression` block type for mathematical outputs. (Will substitute the original `matrix` block type)
+- Dynamic version display in the header using Git tags.
+- New header design with gradient typography and theme-aware styling.
+
 ### v0.1.4 — Stage 5 - Patch 1: UI/UX Foundation + Tooltip System
 - Unified styling for all input components (numeric, text, dropdown, radio, buttons)
 - Added global tooltip system (icon, input wrapper, dark/light mode)
