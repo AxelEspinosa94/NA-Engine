@@ -54,7 +54,8 @@ def _render_matrix_group(p):
 
 
 def _render_table(p):
-    columns = [{"name": c, "id": c} for c in p["columns"]]
+    columns = [{"name": c, "id": c, "type": "numeric",
+        "format": {"specifier": ".4f"}} for c in p["columns"]]
     data    = [dict(zip(p["columns"], row)) for row in p["rows"]]
     return dash_table.DataTable(
         columns=columns,

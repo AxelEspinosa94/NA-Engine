@@ -44,16 +44,15 @@ class NumericalDerivativeExecutor:
         if mode not in dispatch:
             raise ExecutionError(f"Unknown calculation_mode: {mode}")
 
-        raw = dispatch[mode](instance)
-        return self._build_output(instance, raw)
+        value = dispatch[mode](instance)
+        return self._build_output(instance, value)
 
     # ============================================================
     # Output Builder (standardized)
     # ============================================================
 
     def _build_output(self, instance, raw):
-        key = list(raw.keys())[0]
-        value = float(raw[key])
+        value = float(raw)
 
         # Build expression
         expression = self._build_expr(instance, value)
@@ -113,7 +112,7 @@ class NumericalDerivativeExecutor:
         fx = self._eval_function(f, x)
         fxh = self._eval_function(f, x + h)
 
-        return {"derivative": (fxh - fx) / h}
+        return (fxh - fx) / h
 
     def backward(self, instance):
         f = instance.function
@@ -123,7 +122,7 @@ class NumericalDerivativeExecutor:
         fx = self._eval_function(f, x)
         fxh = self._eval_function(f, x - h)
 
-        return {"derivative": (fx - fxh) / h}
+        return (fx - fxh) / h
 
     def central(self, instance):
         f = instance.function
@@ -133,7 +132,7 @@ class NumericalDerivativeExecutor:
         fxh = self._eval_function(f, x + h)
         fxmh = self._eval_function(f, x - h)
 
-        return {"derivative": (fxh - fxmh) / (2 * h)}
+        return (fxh - fxmh) / (2 * h)
 
     # ============================================================
     # Richardson extrapolation
@@ -153,7 +152,7 @@ class NumericalDerivativeExecutor:
         fxm2h = self._eval_function(f, x - 2*h)
         D2h = (fx2h - fxm2h) / (4 * h)
 
-        return {"derivative": Dh + (Dh - D2h) / (2**p - 1)}
+        return Dh + (Dh - D2h) / (2**p - 1)
 
     # ============================================================
     # Higher-order derivatives
@@ -168,7 +167,7 @@ class NumericalDerivativeExecutor:
         fxh = self._eval_function(f, x + h)
         fx2h = self._eval_function(f, x + 2*h)
 
-        return {"second_derivative": (fx2h - 2*fxh + fx) / (h**2)}
+        return (fx2h - 2*fxh + fx) / (h**2)
 
     def second_central(self, instance):
         f = instance.function
@@ -179,7 +178,7 @@ class NumericalDerivativeExecutor:
         fx = self._eval_function(f, x)
         fxmh = self._eval_function(f, x - h)
 
-        return {"second_derivative": (fxh - 2*fx + fxmh) / (h**2)}
+        return (fxh - 2*fx + fxmh) / (h**2)
 
     def third_forward(self, instance):
         f = instance.function
@@ -191,7 +190,7 @@ class NumericalDerivativeExecutor:
         fx2h = self._eval_function(f, x + 2*h)
         fx3h = self._eval_function(f, x + 3*h)
 
-        return {"third_derivative": (fx3h - 3*fx2h + 3*fxh - fx) / (h**3)}
+        return (fx3h - 3*fx2h + 3*fxh - fx) / (h**3)
 
     # ============================================================
     # Partial derivatives
@@ -206,7 +205,7 @@ class NumericalDerivativeExecutor:
         fxh = self._eval_function(f, x + h, y)
         fxmh = self._eval_function(f, x - h, y)
 
-        return {"partial_x": (fxh - fxmh) / (2 * h)}
+        return (fxh - fxmh) / (2 * h)
 
     def partial_y(self, instance):
         f = instance.function
@@ -217,7 +216,7 @@ class NumericalDerivativeExecutor:
         fyh = self._eval_function(f, x, y + h)
         fymh = self._eval_function(f, x, y - h)
 
-        return {"partial_y": (fyh - fymh) / (2 * h)}
+        return (fyh - fymh) / (2 * h)
 
     # ============================================================
     # Build symbolic-like expression for UI

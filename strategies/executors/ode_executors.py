@@ -236,6 +236,7 @@ class ODEExecutor:
             "calculation_mode": "shooting",
             "x": xs,
             "y": ys,
+            "y_end": ys[-1],
             "value": dy_final,
             "expression": "Shooting method (RK4)",
         }

@@ -58,8 +58,8 @@ def test_normalize_internal_error():
 # 2. Integration tests with NumericalMethod.execute()
 # ---------------------------------------------------------
 
-def test_execute_returns_normalized_validation_error():
-    with pytest.raises(ValidationError):
+def test_execute_returns_normalized_construction_error():
+    with pytest.raises(ConstructionError):
         NumericalMethod(
             method="nonlinear",
             input_data={
@@ -68,8 +68,7 @@ def test_execute_returns_normalized_validation_error():
                 "interval": "not-an-interval",  # invalid
                 "calculation_mode": "bisection",
             },
-        ).validate_input()
-
+        )
 
 def test_execute_returns_normalized_execution_error():
     method = NumericalMethod(

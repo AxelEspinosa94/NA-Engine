@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 from core.base_method import NumericalMethod
-from core.exceptions import ValidationError, ExecutionError
+from core.exceptions import ValidationError, ExecutionError, ConstructionError
 
 
 # ============================================================
@@ -25,7 +25,7 @@ def test_secant_basic():
     method.validate_input()
     result = method.execute().get("result", {})
 
-    assert abs(result["root"] - np.sqrt(2)) < 1e-6
+    assert abs(result["value"] - np.sqrt(2)) < 1e-6
 
 
 # ============================================================
@@ -103,14 +103,12 @@ def test_secant_max_iter_exceeded():
 # ============================================================
 
 def test_secant_missing_x0_x1():
-    method = NumericalMethod(
-        method="nonlinear",
-        input_data={
-            "mode": "function",
-            "function": "x**2 - 2",
-            "calculation_mode": "secant",
-        },
-    )
-
-    with pytest.raises(ValidationError):
-        method.validate_input()
+    with pytest.raises(ConstructionError):
+        NumericalMethod(
+            method="nonlinear",
+            input_data={
+                "mode": "function",
+                "function": "x**2 - 2",
+                "calculation_mode": "secant",
+            },
+        )

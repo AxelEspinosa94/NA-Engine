@@ -27,7 +27,7 @@ def test_newton_converges_basic():
     # Luego ejecutamos
     result = method.execute().get("result", {})
 
-    assert abs(result["root"] - np.sqrt(2)) < 1e-8
+    assert abs(result["value"] - np.sqrt(2)) < 1e-8
 
 
 # ============================================================
@@ -50,7 +50,7 @@ def test_newton_multiple_root():
     method.validate_input()
     result = method.execute().get("result", {})
 
-    assert abs(result["root"] - 1) < 1.8e-6
+    assert abs(result["value"] - 1) < 1.8e-6
 
 
 # ============================================================
@@ -150,14 +150,12 @@ def test_newton_nan():
 # ============================================================
 
 def test_newton_missing_x0():
-    method = NumericalMethod(
-        method="nonlinear",
-        input_data={
-            "mode": "function",
-            "function": "x**2 - 2",
-            "calculation_mode": "newton",
-        },
-    )
-
-    with pytest.raises(ValidationError):
-        method.validate_input()
+    with pytest.raises(ConstructionError):
+        NumericalMethod(
+            method="nonlinear",
+            input_data={
+                "mode": "function",
+                "function": "x**2 - 2",
+                "calculation_mode": "newton",
+            },
+        )

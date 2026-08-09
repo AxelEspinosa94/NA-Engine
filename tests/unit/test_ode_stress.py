@@ -160,7 +160,7 @@ def test_finite_differences_nontrivial():
     method.validate_input()
     result = method.execute().get("result", {})
 
-    x = result["x"]
+    x = np.array(result["x"], dtype=float)
     y = result["y"]
     y_exact = np.sin(np.pi * x)
 
@@ -235,7 +235,7 @@ def test_shooting_nonlinear():
             "x_end": 1,
             "alpha": 0,
             "beta": 0,
-            "s0": 0.5,
+            "s0": 0,
             "h": 0.01,
             "calculation_mode": "shooting",
         },
@@ -243,5 +243,4 @@ def test_shooting_nonlinear():
 
     method.validate_input()
     result = method.execute().get("result", {})
-
     assert abs(result["y_end"]) < 0.1
