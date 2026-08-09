@@ -3,7 +3,7 @@ import pandas as pd
 import pytest
 
 from core.base_method import NumericalMethod
-from core.exceptions import ValidationError
+from core.exceptions import ValidationError, ConstructionError, ExecutionError
 
 
 def test_romberg_x2():
@@ -89,7 +89,7 @@ def test_romberg_rejects_table_mode():
     """
     df = pd.DataFrame({"x": [0, 1], "f(x)": [0, 1]})
 
-    with pytest.raises(ValidationError):
+    with pytest.raises(ConstructionError):
         NumericalMethod(
             method="integration",
             input_data={
@@ -97,4 +97,4 @@ def test_romberg_rejects_table_mode():
                 "data": df,
                 "calculation_mode": "romberg",
             },
-        ).validate_input()
+        )

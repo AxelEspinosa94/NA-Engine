@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 from core.base_method import NumericalMethod
-from core.exceptions import ValidationError
+from core.exceptions import ValidationError, ConstructionError, ExecutionError
 
 
 def test_gauss_basic_x2():
@@ -92,7 +92,7 @@ def test_gauss_rejects_table_mode():
     """
     Gauss NO debe aceptar mode='table'.
     """
-    with pytest.raises(ValidationError):
+    with pytest.raises(ConstructionError):
         NumericalMethod(
             method="integration",
             input_data={
@@ -101,4 +101,4 @@ def test_gauss_rejects_table_mode():
                 "gauss_points": 4,
                 "calculation_mode": "gauss",
             },
-        ).validate_input()
+        )

@@ -6,6 +6,10 @@ def get_git_version():
             ["git", "describe", "--tags"],
             stderr=subprocess.STDOUT
         ).decode().strip()
-        return version
+
+        # cortar todo después del primer "-"
+        clean = version.split("-")[0]
+        return clean
+
     except Exception:
         return "dev"

@@ -26,5 +26,9 @@ RENDERER_META = {
     "markdown": {
         "caption": "### Expresión",
         "tooltip": "Contenido en formato Markdown."
-    }
+    },
+    "error": {
+        "caption": "### Error",
+        "tooltip": "Mensaje de error generado por el método."
+    },
 }

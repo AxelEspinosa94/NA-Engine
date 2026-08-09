@@ -28,7 +28,7 @@ def test_fixed_point_converges():
     )
 
     result = method.execute().get("result", {})
-    assert abs(result["root"] - 1.6180339887) < 1e-6
+    assert abs(result["value"] - 1.6180339887) < 1e-6
 
 
 # ============================================================
@@ -106,7 +106,7 @@ def test_fixed_point_missing_g():
 # ============================================================
 
 def test_fixed_point_missing_x0():
-    with pytest.raises(ValidationError):
+    with pytest.raises(ConstructionError):
         NumericalMethod(
             method="nonlinear",
             input_data={
@@ -115,7 +115,7 @@ def test_fixed_point_missing_x0():
                 "g": "sqrt(2)",
                 "calculation_mode": "fixed_point",
             },
-        ).validate_input()
+        )
 
 
 # ============================================================

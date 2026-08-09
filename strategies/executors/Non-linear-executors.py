@@ -153,8 +153,14 @@ class NonLinearExecutor:
         xs, ys = [], []
 
         for i in range(1, max_iter + 1):
-            fx = f(x)
-            fpx = fprime(x)
+            try:
+                fx = f(x)
+                fpx = fprime(x)
+            except Exception as e:
+                raise ExecutionError(f"Newton method failed during function evaluation: {e}")
+
+            if not np.isfinite(fx):
+                raise ExecutionError("Newton method failed: f(x) is not finite.")
 
             if abs(fpx) < 1e-14 or not np.isfinite(fpx):
                 raise ExecutionError("Newton method failed: derivative is zero or invalid.")

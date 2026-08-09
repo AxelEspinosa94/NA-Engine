@@ -44,16 +44,11 @@ class NumericalDerivative:
         # ───────────────────────────────────────────────
         # Validate y only for partial derivatives
         # ───────────────────────────────────────────────
-        if self.calculation_mode == "partial_y":
+        if self.calculation_mode in ["partial_x", "partial_y"]:
             try:
                 self.y = float(input_data.get("y"))
             except Exception:
                 raise ConstructionError("y must be a valid float for partial derivatives.")
-        elif self.calculation_mode == "partial_x":
-            try:
-                self.x = float(input_data.get("x"))
-            except Exception:
-                raise ConstructionError("x must be a valid float for partial derivatives.")    
         else:
             self.y = None
 

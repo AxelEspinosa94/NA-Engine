@@ -91,17 +91,6 @@ def register_integration_callbacks(app):
         if not method or not fn_expr or a is None or b is None or n is None:
             return no_update
 
-        # Construir DataFrame desde función
-        try:
-            df = _build_function_dataframe(fn_expr, a, b, n)
-        except Exception as e:
-            return contract.resolve(method, {
-                "status":     "error",
-                "error_type": "InputError",
-                "message":    str(e),
-                "context":    {},
-            })
-
         # Construir input_data para NumericalMethod
         input_data = {
             "mode": "function",

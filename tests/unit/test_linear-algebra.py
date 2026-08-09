@@ -42,7 +42,7 @@ def test_missing_matrix_A():
     )
 
 def test_matrix_A_not_2d():
-    with pytest.raises(ConstructionError):
+    with pytest.raises(ValidationError):
         NumericalMethod(
             method="linear_algebra",
             input_data={
@@ -50,7 +50,7 @@ def test_matrix_A_not_2d():
                 "calculation_mode": "determinant",
                 "calculation_type": "matrix_operations"
         }
-    )
+    ).validate_input()
 
 def test_matrix_A_contains_nan():
     method = NumericalMethod(
@@ -140,7 +140,7 @@ def test_determinant():
     method.validate_input()
     result = method.execute()
     
-    assert pytest.approx(result.get("result").get("value"), rel=1e-10) == -2.0
+    assert pytest.approx(result.get("result").get("determinant"), rel=1e-10) == -2.0
 
 
 def test_inverse():
@@ -159,7 +159,7 @@ def test_inverse():
     result = method.execute()
 
     expected = np.linalg.inv(np.array(A))
-    assert np.allclose(result.get("result").get("value"), expected)
+    assert np.allclose(result.get("result").get("inverse"), expected)
 
 
 def test_gauss_solver():
