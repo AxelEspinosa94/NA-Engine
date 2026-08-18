@@ -1,9 +1,29 @@
+import os
 from dash import html, dcc
+
+# Importar layouts de módulos
+from app.utils.layout_catalog_loader import load_component
+from app.utils.catalog_loader import load_catalog
+
+#base = os.path.dirname(__file__)
+#path = os.path.join(base, "layout_catalog.json")
+#catalog = load_catalog("layout_catalog.json")
+#
+#sections = []
+#for module, path in catalog["modules"].items():
+#    component = load_component(path)
+#    sections.append(
+#        html.Section(
+#            id=f"section-{module}",
+#            className="section",
+#            children=[component]
+#        )
+#    )
 
 # Importar layouts de módulos
 from .home_layout import home_layout
 from .interpolation_layout import interpolation_section
-from .integration_layout import integration_section
+from .integration.integration_layout import integration_section
 from .linear_algebra_layout import linear_algebra_section
 from .numerical_derivative_layout import derivative_section
 from .non_linear_layout import nonlinear_section
