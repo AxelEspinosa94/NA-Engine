@@ -10,33 +10,6 @@ from core.contract import UIContract
 from core.exceptions import ValidationError, InputError
 
 
-# ============================================================
-# Helpers
-# ============================================================
-
-def _build_function_dataframe(fn_expr: str, a: float, b: float, n: int) -> pd.DataFrame:
-    """
-    Construye un DataFrame evaluando f(x) en n+1 puntos entre [a, b].
-    """
-    if not fn_expr:
-        raise InputError("Debes ingresar una función f(x).")
-
-    if n <= 0:
-        raise InputError("n debe ser un entero positivo.")
-
-    xs = np.linspace(float(a), float(b), int(n) + 1)
-
-    def safe_eval(expr, x):
-        try:
-            return float(eval(expr, {"__builtins__": {}}, {"x": x, "np": np}))
-        except Exception as e:
-            raise InputError(f"Error evaluando f(x): {e}")
-
-    ys = [safe_eval(fn_expr, x) for x in xs]
-
-    return pd.DataFrame({"x": xs, "y": ys})
-
-
 def _build_mode_area(method: str, mode: str):
     return True
 
