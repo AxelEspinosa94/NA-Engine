@@ -1,13 +1,12 @@
 # app/callbacks/derivative_callbacks.py
 
-import pandas as pd
 import numpy as np
-from dash import Input, Output, State, callback, html, dcc
-from dash import no_update
+import pandas as pd
+from dash import Input, Output, State, callback, dcc, html, no_update
 
 from core.base_method import NumericalMethod
 from core.contract import UIContract
-from core.exceptions import ValidationError, InputError
+from core.exceptions import InputError, ValidationError
 
 contract = UIContract()
 
@@ -85,23 +84,29 @@ def register_derivative_callbacks(app):
             nm = NumericalMethod("numerical_derivative", input_data)
             nm.validate_input()
         except Exception as e:
-            return contract.resolve(method, {
-                "status":     "error",
-                "error_type": "ValidationError",
-                "message":    str(e),
-                "context":    input_data,
-            })
+            return contract.resolve(
+                method,
+                {
+                    "status": "error",
+                    "error_type": "ValidationError",
+                    "message": str(e),
+                    "context": input_data,
+                },
+            )
 
         # Ejecución
         try:
             outcome = nm.execute()
         except Exception as e:
-            return contract.resolve(method, {
-                "status":     "error",
-                "error_type": "ExecutionError",
-                "message":    str(e),
-                "context":    input_data,
-            })
+            return contract.resolve(
+                method,
+                {
+                    "status": "error",
+                    "error_type": "ExecutionError",
+                    "message": str(e),
+                    "context": input_data,
+                },
+            )
 
         # Render final
         return contract.resolve(method, outcome)

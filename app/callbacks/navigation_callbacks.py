@@ -1,5 +1,6 @@
 from dash import Input, Output, State
 
+
 def register_navigation_callbacks(app):
 
     # Secciones en el mismo orden que los Outputs
@@ -27,7 +28,6 @@ def register_navigation_callbacks(app):
         "tab-odes",
         "tab-docs",
         "tab-about",
-
         # Home Dashboard
         "home-start-btn",
         "go-interpolation",
@@ -51,9 +51,8 @@ def register_navigation_callbacks(app):
         "tab-odes": 6,
         "tab-docs": 7,
         "tab-about": 8,
-
         # Home Dashboard
-        "home-start-btn": 1,   # Comenzar → Interpolación
+        "home-start-btn": 1,  # Comenzar → Interpolación
         "go-interpolation": 1,
         "go-integration": 2,
         "go-linear-algebra": 3,

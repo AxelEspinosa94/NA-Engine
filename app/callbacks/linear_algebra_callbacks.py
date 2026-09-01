@@ -3,10 +3,10 @@
 import base64
 import io
 import re
+
 import numpy as np
 import pandas as pd
-
-from dash import html, dcc, no_update
+from dash import dcc, html, no_update
 from dash.dependencies import Input, Output, State
 
 from core.base_method import NumericalMethod
@@ -18,6 +18,7 @@ contract = UIContract()
 # ═══════════════════════════════════════════════════════════════
 # REGISTER CALLBACKS
 # ═══════════════════════════════════════════════════════════════
+
 
 def register_linear_algebra_callbacks(app):
 
@@ -36,7 +37,7 @@ def register_linear_algebra_callbacks(app):
 
     # ============================================================
     # FILTER CALCULATION MODES BASED ON CALCULATION TYPE
-    # ============================================================    
+    # ============================================================
     @app.callback(
         Output("la-calculation-mode", "options"),
         Output("la-calculation-mode", "value"),
@@ -47,22 +48,22 @@ def register_linear_algebra_callbacks(app):
     def filter_calculation_modes(calc_type, current_value):
 
         MATRIX_MODES = [
-            {"label": "Determinant",        "value": "determinant"},
-            {"label": "Inverse",            "value": "inverse"},
-            {"label": "Norm",               "value": "norm"},
-            {"label": "Condition Number",   "value": "condition_number"},
-            {"label": "Transpose",          "value": "transpose"},
-            {"label": "Rank",               "value": "rank"},
+            {"label": "Determinant", "value": "determinant"},
+            {"label": "Inverse", "value": "inverse"},
+            {"label": "Norm", "value": "norm"},
+            {"label": "Condition Number", "value": "condition_number"},
+            {"label": "Transpose", "value": "transpose"},
+            {"label": "Rank", "value": "rank"},
         ]
 
         SYSTEM_MODES = [
-            {"label": "Gauss",              "value": "gauss"},
-            {"label": "Gauss-Jordan",       "value": "gauss_jordan"},
-            {"label": "LU",                 "value": "lu"},
-            {"label": "Cholesky",           "value": "cholesky"},
-            {"label": "QR",                 "value": "qr"},
-            {"label": "Jacobi",             "value": "jacobi"},
-            {"label": "Gauss-Seidel",       "value": "gauss_seidel"},
+            {"label": "Gauss", "value": "gauss"},
+            {"label": "Gauss-Jordan", "value": "gauss_jordan"},
+            {"label": "LU", "value": "lu"},
+            {"label": "Cholesky", "value": "cholesky"},
+            {"label": "QR", "value": "qr"},
+            {"label": "Jacobi", "value": "jacobi"},
+            {"label": "Gauss-Seidel", "value": "gauss_seidel"},
         ]
 
         # Select correct list
@@ -79,7 +80,6 @@ def register_linear_algebra_callbacks(app):
 
         return options, current_value, b
 
-
     # ============================================================
     # RUN LINEAR ALGEBRA
     # ============================================================
@@ -94,8 +94,16 @@ def register_linear_algebra_callbacks(app):
         State("la-upload", "contents"),
         State("la-upload", "filename"),
     )
-    def run_linear_algebra(n_clicks, calc_type, mode, input_mode,
-                           table_A, vector_b, upload_contents, upload_filename):
+    def run_linear_algebra(
+        n_clicks,
+        calc_type,
+        mode,
+        input_mode,
+        table_A,
+        vector_b,
+        upload_contents,
+        upload_filename,
+    ):
 
         if not n_clicks:
             return no_update
@@ -111,7 +119,9 @@ def register_linear_algebra_callbacks(app):
                 try:
                     A = [[float(row[col]) for col in row] for row in table_A]
                 except Exception:
-                    return html.Div("Invalid numeric values in matrix A.", className="error")
+                    return html.Div(
+                        "Invalid numeric values in matrix A.", className="error"
+                    )
 
             if calc_type == "ec-system":
                 if not vector_b:
@@ -120,7 +130,9 @@ def register_linear_algebra_callbacks(app):
                 try:
                     b = [float(x) for x in re.split(r"[,\s|]+", vector_b.strip())]
                 except Exception:
-                    return html.Div("Invalid numeric values in vector b.", className="error")
+                    return html.Div(
+                        "Invalid numeric values in vector b.", className="error"
+                    )
 
         # UPLOAD MODE
         elif input_mode == "upload":
@@ -159,6 +171,7 @@ def register_linear_algebra_callbacks(app):
 # UPLOAD PARSER
 # ═══════════════════════════════════════════════════════════════
 
+
 def _build_dataframe_from_upload(contents, filename):
     """
     Returns:
@@ -169,7 +182,7 @@ def _build_dataframe_from_upload(contents, filename):
     if contents is None:
         return None, None
 
-    content_type, content_string = contents.split(',')
+    content_type, content_string = contents.split(",")
     decoded = base64.b64decode(content_string)
 
     # ───────────────────────────────────────────────
@@ -218,6 +231,7 @@ def _build_dataframe_from_upload(contents, filename):
 # ═══════════════════════════════════════════════════════════════
 # LINEAR SYSTEM PARSER (TXT)
 # ═══════════════════════════════════════════════════════════════
+
 
 def _parse_linear_system_txt(text: str):
     """
