@@ -1,7 +1,6 @@
 # app/tooltips/ode.py
 
 TOOLTIPS = {
-
     # ───────────────────────────────────────────────
     # Selector de método
     # ───────────────────────────────────────────────
@@ -10,7 +9,6 @@ TOOLTIPS = {
         "Los métodos IVP avanzan paso a paso desde x₀, mientras que Shooting y "
         "Diferencias Finitas resuelven problemas de frontera (BVP)."
     ),
-
     # ───────────────────────────────────────────────
     # Modo de entrada
     # ───────────────────────────────────────────────
@@ -18,7 +16,6 @@ TOOLTIPS = {
         "Elige si deseas ingresar una función f(x, y) para un IVP o un sistema "
         "de ecuaciones diferenciales. Los sistemas requieren un vector inicial y₀."
     ),
-
     # ───────────────────────────────────────────────
     # Función f(x, y)
     # ───────────────────────────────────────────────
@@ -26,7 +23,6 @@ TOOLTIPS = {
         "Ingresa la ecuación diferencial en forma f(x, y). Ejemplo: x + y. "
         "NA‑Engine interpreta esta función usando sintaxis de Python."
     ),
-
     # ───────────────────────────────────────────────
     # Sistema de ecuaciones
     # ───────────────────────────────────────────────
@@ -36,7 +32,6 @@ TOOLTIPS = {
         "y1' = y2\n"
         "y2' = -y1"
     ),
-
     # ───────────────────────────────────────────────
     # Campos IVP
     # ───────────────────────────────────────────────
@@ -48,7 +43,6 @@ TOOLTIPS = {
         "Paso de integración. Valores pequeños aumentan la precisión pero "
         "incrementan el costo computacional."
     ),
-
     # ───────────────────────────────────────────────
     # Vector inicial para sistemas
     # ───────────────────────────────────────────────
@@ -56,7 +50,6 @@ TOOLTIPS = {
         "Vector inicial para sistemas de ecuaciones. Ejemplo: 1, 0, -2. "
         "Debe contener un valor por cada ecuación del sistema."
     ),
-
     # ───────────────────────────────────────────────
     # Shooting (BVP)
     # ───────────────────────────────────────────────
@@ -67,7 +60,6 @@ TOOLTIPS = {
         "Pendiente inicial s₀ usada para disparar la solución en el método Shooting. "
         "NA‑Engine ajusta s₀ para cumplir la condición en x_end."
     ),
-
     # ───────────────────────────────────────────────
     # Diferencias finitas (BVP)
     # ───────────────────────────────────────────────
@@ -78,7 +70,6 @@ TOOLTIPS = {
         "Número de subdivisiones del intervalo. A mayor n, mayor precisión "
         "pero mayor costo computacional."
     ),
-
     # ───────────────────────────────────────────────
     # Botón de ejecución
     # ───────────────────────────────────────────────

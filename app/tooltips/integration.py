@@ -3,7 +3,6 @@
 # ============================================================
 
 TOOLTIPS = {
-
     # ───────────────────────────────────────────────
     # Selector de método
     # ───────────────────────────────────────────────
@@ -16,7 +15,6 @@ TOOLTIPS = {
         "• Romberg: extrapolación de Richardson sobre Trapecio.\n"
         "• Gauss-Legendre: cuadratura de alta precisión con puntos óptimos."
     ),
-
     # ───────────────────────────────────────────────
     # Modo de entrada (siempre función)
     # ───────────────────────────────────────────────
@@ -24,7 +22,6 @@ TOOLTIPS = {
         "El módulo trabaja únicamente con funciones analíticas f(x). "
         "No admite tablas ni datos discretos."
     ),
-
     # ───────────────────────────────────────────────
     # Función f(x)
     # ───────────────────────────────────────────────
@@ -36,7 +33,6 @@ TOOLTIPS = {
         "• log(x + 1)\n\n"
         "Puedes usar funciones de Python: sin, cos, exp, log, sqrt."
     ),
-
     # ───────────────────────────────────────────────
     # Intervalo [a, b]
     # ───────────────────────────────────────────────
@@ -44,12 +40,10 @@ TOOLTIPS = {
         "Extremo izquierdo del intervalo de integración.\n\n"
         "Debe ser menor que b para métodos estándar."
     ),
-
     "integr-b": (
         "Extremo derecho del intervalo de integración.\n\n"
         "Si a > b, el resultado será negativo (integración invertida)."
     ),
-
     # ───────────────────────────────────────────────
     # Número de subintervalos (n)
     # ───────────────────────────────────────────────
@@ -60,7 +54,6 @@ TOOLTIPS = {
         "• Simpson 3/8: n debe ser múltiplo de 3.\n\n"
         "Valores grandes de n aumentan la precisión pero también el costo."
     ),
-
     # ───────────────────────────────────────────────
     # Puntos de Gauss-Legendre
     # ───────────────────────────────────────────────
@@ -71,7 +64,6 @@ TOOLTIPS = {
         "• 4 puntos o más: excelente precisión para funciones suaves.\n\n"
         "Los puntos y pesos se calculan automáticamente."
     ),
-
     # ───────────────────────────────────────────────
     # Botón Calcular
     # ───────────────────────────────────────────────

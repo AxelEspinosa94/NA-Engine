@@ -3,7 +3,6 @@
 # ============================================================
 
 TOOLTIPS = {
-
     # ───────────────────────────────────────────────
     # Selector de método
     # ───────────────────────────────────────────────
@@ -15,7 +14,6 @@ TOOLTIPS = {
         "• Secante: rápido, no requiere derivada.\n"
         "• Punto Fijo: requiere g(x) tal que x = g(x) converja."
     ),
-
     # ───────────────────────────────────────────────
     # Modo de entrada (siempre función)
     # ───────────────────────────────────────────────
@@ -23,7 +21,6 @@ TOOLTIPS = {
         "El módulo trabaja únicamente con funciones analíticas f(x). "
         "No admite tablas ni datos discretos."
     ),
-
     # ───────────────────────────────────────────────
     # Función f(x)
     # ───────────────────────────────────────────────
@@ -35,7 +32,6 @@ TOOLTIPS = {
         "• exp(x) - 3*x\n\n"
         "Puedes usar funciones de Python: sin, cos, exp, log, sqrt."
     ),
-
     # ───────────────────────────────────────────────
     # Valor inicial x0
     # ───────────────────────────────────────────────
@@ -45,7 +41,6 @@ TOOLTIPS = {
         "• Punto Fijo también depende fuertemente de x0.\n"
         "• Bisección y Falsa Posición no usan x0."
     ),
-
     # ───────────────────────────────────────────────
     # Función g(x) — Punto Fijo
     # ───────────────────────────────────────────────
@@ -56,7 +51,6 @@ TOOLTIPS = {
         "• |g'(x)| < 1 cerca de la raíz para garantizar convergencia.\n\n"
         "Ejemplo: g(x) = 0.5*(x + 5/x)."
     ),
-
     # ───────────────────────────────────────────────
     # Valor inicial x1 — Secante
     # ───────────────────────────────────────────────
@@ -65,7 +59,6 @@ TOOLTIPS = {
         "La secante usa f(x0) y f(x1) para aproximar la derivada.\n"
         "Si x0 y x1 están muy cerca, la convergencia mejora."
     ),
-
     # ───────────────────────────────────────────────
     # Intervalo [a, b] — Bisección y Falsa Posición
     # ───────────────────────────────────────────────
@@ -73,17 +66,14 @@ TOOLTIPS = {
         "Extremo izquierdo del intervalo.\n\n"
         "Debe cumplirse f(a) * f(b) < 0 para garantizar una raíz dentro."
     ),
-
     "nonlin-b": (
         "Extremo derecho del intervalo.\n\n"
         "Si f(a) y f(b) tienen el mismo signo, Bisección y Falsa Posición no funcionan."
     ),
-
     "nonlin-interval": (
         "Intervalo [a, b] donde se busca la raíz.\n\n"
         "Debe cumplirse f(a) * f(b) < 0 para garantizar una raíz dentro."
     ),
-
     # ───────────────────────────────────────────────
     # Botón Calcular
     # ───────────────────────────────────────────────
