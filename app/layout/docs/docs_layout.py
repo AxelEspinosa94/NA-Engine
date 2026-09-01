@@ -4,6 +4,6 @@ from app.utils.LayoutEngine import LayoutEngine
 
 base = os.path.dirname(__file__)
 
-lE = LayoutEngine(base=base, module="integration")
+lE = LayoutEngine(base=base, module="docs")
 
-integration_section = lE.build()
+docs_section = lE.build()

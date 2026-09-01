@@ -7,7 +7,7 @@
         "derivative": "app.layout.numerical_derivative_layout.derivative_section",
         "nonlinear": "app.layout.non_linear_layout.nonlinear_section",
         "odes": "app.layout.ode_layout.ode_section",
-        "docs": "app.layout.docs_layout.docs_section",
+        "docs": "app.layout.docs.docs_layout.docs_section",
         "about": "app.layout.about_layout.about_section"
     }
 }
