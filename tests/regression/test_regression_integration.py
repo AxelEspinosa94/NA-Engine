@@ -3,12 +3,14 @@ import pytest
 
 from core.base_method import NumericalMethod
 
+# These tests are not suitable for Gauss due to its inhability
+# to handle singularities and non-elementary functions.
 METHODS = [
     "trapezoid_composite",
     "simpson_1_3",
     "simpson_3_8",
     "romberg",
-    #    "gauss", # These tests are not suitable for Gauss due to its inhability to handle singularities and non-elementary functions.
+    # "gauss",
     "clenshaw_curtis",
 ]
 

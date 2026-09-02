@@ -213,10 +213,10 @@ class InterpolationExecutor:
         d = y[k + 1] / hk - M[k + 1] * hk / 6
 
         return (
-            f"S(x) en [{x[k]:.4g}, {x[k+1]:.4g}] =\n"
-            f"  {a:.4g} * (x - {x[k+1]:.4g})³\n"
+            f"S(x) en [{x[k]:.4g}, {x[k + 1]:.4g}] =\n"
+            f"  {a:.4g} * (x - {x[k + 1]:.4g})³\n"
             f"+ {b:.4g} * (x - {x[k]:.4g})³\n"
-            f"+ {c:.4g} * (x - {x[k+1]:.4g})\n"
+            f"+ {c:.4g} * (x - {x[k + 1]:.4g})\n"
             f"+ {d:.4g} * (x - {x[k]:.4g})"
         )
 

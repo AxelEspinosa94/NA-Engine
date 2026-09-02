@@ -77,4 +77,5 @@ check-format:
 
 lint:
 	@echo "Running flake8..."
-	$(PY) -m flake8 .
+	$(PY) -m flake8 app core strategies tests
+

@@ -94,7 +94,8 @@ class NumericalDerivative:
                 continue
             if t not in allowed_vars:
                 raise ConstructionError(
-                    f"Invalid variable '{t}' in function. Allowed variables: {allowed_vars}."
+                    f"Invalid variable '{t}' in function."
+                    f" Allowed variables: {allowed_vars}."
                 )
 
     def _normalize_function(self):

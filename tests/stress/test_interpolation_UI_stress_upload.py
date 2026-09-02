@@ -1,4 +1,3 @@
-# tests/stress/test_interpolation_upload.py
 import base64
 import io
 
@@ -43,7 +42,11 @@ def encode_excel(df: pd.DataFrame) -> str:
     buffer = io.BytesIO()
     df.to_excel(buffer, index=False)
     encoded = base64.b64encode(buffer.getvalue()).decode()
-    return f"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{encoded}"
+    output = (
+        "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,"
+        f"{encoded}"
+    )
+    return output
 
 
 def encode_json(df: pd.DataFrame) -> str:

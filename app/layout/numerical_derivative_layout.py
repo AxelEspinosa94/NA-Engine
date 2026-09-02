@@ -19,9 +19,7 @@ derivative_section = html.Div(
             className="module-header",
             children=[
                 html.H2("Derivación Numérica"),
-                html.P(
-                    "Derivadas de primer, segundo y tercer orden, Richardson y parciales."
-                ),
+                html.P("First and Higher Order Derivatives and Partial Derivatives"),
             ],
         ),
         # ───────────────────────────────────────────────

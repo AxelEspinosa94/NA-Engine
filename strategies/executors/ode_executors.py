@@ -165,7 +165,7 @@ class ODEExecutor:
             local = {"x": x, "np": np}
             local["y"] = y_vec[idx]
             for i in range(n):
-                local[f"y{i+1}"] = y_vec[i]
+                local[f"y{i + 1}"] = y_vec[i]
             return float(eval(expr, {"__builtins__": {}}, local))
 
         xs, ys = [x0], [y.copy()]

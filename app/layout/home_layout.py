@@ -64,9 +64,7 @@ home_layout = html.Div(
                     className="module-card",
                     children=[
                         html.H3("Álgebra Lineal"),
-                        html.P(
-                            "Solución de sistemas de ecuaciones y Operaciones de Matrices"
-                        ),
+                        html.P("Solution to Linear Systems and Matrix Operations"),
                         html.Button(
                             "Ir al módulo",
                             id="go-linear-algebra",

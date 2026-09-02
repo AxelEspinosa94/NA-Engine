@@ -2,7 +2,7 @@ from dash import html
 
 from app.version import get_git_version
 
-from .about_layout import about_section
+from .about.about_layout import about_section
 from .docs.docs_layout import docs_section
 
 # Importar layouts de módulos

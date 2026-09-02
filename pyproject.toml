@@ -5,25 +5,3 @@ line_length = 88
 [tool.black]
 line-length = 88
 target-version = ['py312']
-
-[flake8]
-max-line-length = 100
-exclude = [
-    "scripts/",
-    "app/tooltips/",
-    "core/base_method_legacy.py",
-    ".git",
-    ".venv",
-    "build",
-    "dist",
-    "docs",
-    "notebooks",
-    "*.md",
-    "*.txt",
-    "*.json",
-    "*.yml",
-    "*.yaml",
-    "*.ipynb",
-    "*.cfg",
-    "*.ini"
-]

@@ -19,9 +19,7 @@ nonlinear_section = html.Div(
             className="module-header",
             children=[
                 html.H2("Ecuaciones No Lineales"),
-                html.P(
-                    "Métodos de Bisección, Falsa Posición, Secante, Newton y Punto Fijo."
-                ),
+                html.P("Bisection, Regula Falsi, Secant, Newton and Fixed Point."),
             ],
         ),
         # ───────────────────────────────────────────────
