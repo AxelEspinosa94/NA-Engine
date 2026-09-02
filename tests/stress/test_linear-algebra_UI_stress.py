@@ -191,7 +191,7 @@ def encode_upload(text: str):
 
 
 def test_upload_txt_matrix():
-    txt = "1 2 3\n4 5 6\n7 8 9"
+    # txt = "1 2 3\n4 5 6\n7 8 9"
 
     nm = NumericalMethod(
         "linear_algebra",
@@ -210,8 +210,8 @@ def test_upload_txt_matrix():
 
 
 def test_upload_txt_system():
-    txt = "3x + 2y = 5\nx - y = 1"
-    #contents = encode_upload(txt)
+    # txt = "3x + 2y = 5\nx - y = 1"
+    # contents = encode_upload(txt)
 
     # Expected matrix
     A = [[3, 2], [1, -1]]

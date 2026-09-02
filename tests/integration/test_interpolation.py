@@ -4,6 +4,8 @@ from dash import html
 
 from core.base_method import NumericalMethod
 from core.contract import UIContract
+from core.exceptions import ValidationError
+
 
 contract = UIContract()
 
@@ -37,11 +39,6 @@ def test_lagrange_result_tiene_valor(lagrange_outcome):
     outcome, _ = lagrange_outcome
     # el executor de lagrange debería devolver algo reconocible
     assert "value" in outcome["result"]
-
-
-# tests/integration/test_interpolation.py  (continuación)
-from core.exceptions import ValidationError
-
 
 # helper para aplanar el árbol de componentes Dash
 def _flatten_children(component):

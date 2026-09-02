@@ -79,7 +79,7 @@ def test_negative_h():
 
 def test_partial_requires_y():
     with pytest.raises(ConstructionError):
-        method = NumericalMethod(
+        NumericalMethod(
             method="numerical_derivative",
             input_data={
                 "function": "x*y",

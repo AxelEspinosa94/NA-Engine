@@ -1,4 +1,4 @@
-from dash import Input, Output, State
+from dash import Input, Output, State, no_update
 
 from core.base_method import NumericalMethod
 from core.contract import UIContract

@@ -1,5 +1,6 @@
 import importlib
 
+
 def load_component(path):
     """
     path: "layout.integration.components.integr_method.integr_method"

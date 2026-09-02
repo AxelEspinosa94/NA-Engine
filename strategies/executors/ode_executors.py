@@ -202,7 +202,7 @@ class ODEExecutor:
         x0 = float(instance.x0)
         x_end = float(instance.x_end)
         alpha = float(instance.alpha)
-        #beta = float(instance.beta)
+        # beta = float(instance.beta)
         s0 = float(instance.s0)
         h = float(instance.h)
 
@@ -401,7 +401,7 @@ class ODEExecutor:
         x, y = x1, y1
 
         while x < x_end:
-            #f_prev = self._eval(f, xs[-2], ys[-2])
+            # f_prev = self._eval(f, xs[-2], ys[-2])
             f_curr = self._eval(f, x, y)
 
             # Adams–Moulton 2 (implicit)

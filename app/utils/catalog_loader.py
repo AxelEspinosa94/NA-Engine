@@ -1,5 +1,6 @@
 import json
 
+
 def load_catalog(path):
     """
     Load the method catalog from a JSON file.

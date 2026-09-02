@@ -136,6 +136,7 @@ def test_normalize_construction_error():
     assert result["message"] == "invalid constructor state"
     assert result["context"]["method"] == "interpolation"
 
+
 def test_construction_error_is_not_validation_error():
     exc = ConstructionError("bad structure")
     result = ErrorNormalizer.normalize(exc, "ode", {})
