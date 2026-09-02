@@ -1,10 +1,11 @@
-import sys
 import os
+import sys
 
 # Ensure project root is in path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import pandas as pd
+
 from core.base_method import NumericalMethod
 from core.contract import UIContract
 
@@ -19,7 +20,7 @@ MODES = [
 ]
 
 # Choose mode to test
-mode = MODES[2]   # Newton by default — change index to test others
+mode = MODES[2]  # Newton by default — change index to test others
 
 """
 Smoke test for nonlinear equation solvers.
@@ -32,7 +33,7 @@ Ensures:
 print(f"\n=== SMOKE TEST: {mode.upper()} ===\n")
 
 # Base function
-func = "x**2 - 5"   # root ≈ sqrt(5)
+func = "x**2 - 5"  # root ≈ sqrt(5)
 
 # Base input
 input_data = {

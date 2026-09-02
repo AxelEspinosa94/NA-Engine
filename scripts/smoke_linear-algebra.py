@@ -1,11 +1,12 @@
 # scripts/smoke_linear_algebra.py
-import sys
 import os
+import sys
 
 # Ensure project root is in the path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import numpy as np
+
 from core.base_method import NumericalMethod
 from core.contract import UIContract
 
@@ -33,7 +34,7 @@ Constructor → Validator → Executor → Renderer → UIContract
 input_det = {
     "A": [[1, 2], [3, 4]],
     "calculation_mode": "determinant",
-    "calculation_type": "matrix_operations"
+    "calculation_type": "matrix_operations",
 }
 
 nm_det = NumericalMethod("linear_algebra", input_det)
@@ -56,7 +57,7 @@ input_gauss = {
     "A": [[3, 2], [1, 2]],
     "b": [5, 5],
     "calculation_mode": "gauss",
-    "calculation_type": "ec-system"
+    "calculation_type": "ec-system",
 }
 
 nm_gauss = NumericalMethod("linear_algebra", input_gauss)
@@ -76,12 +77,10 @@ print(payload_gauss.children[0].children if payload_gauss.children else "empty")
 # ============================================================
 
 input_lu = {
-    "A": [[2, 1, 1],
-          [4, -6, 0],
-          [-2, 7, 2]],
+    "A": [[2, 1, 1], [4, -6, 0], [-2, 7, 2]],
     "b": [5, -2, 9],
     "calculation_mode": "lu",
-    "calculation_type": "ec-system"
+    "calculation_type": "ec-system",
 }
 
 nm_lu = NumericalMethod("linear_algebra", input_lu)
@@ -104,7 +103,7 @@ input_qr = {
     "A": [[1, 1], [1, -1]],
     "b": [2, 0],
     "calculation_mode": "qr",
-    "calculation_type": "ec-system"
+    "calculation_type": "ec-system",
 }
 
 nm_qr = NumericalMethod("linear_algebra", input_qr)
@@ -127,7 +126,7 @@ input_chol = {
     "A": [[4, 2], [2, 3]],
     "b": [6, 7],
     "calculation_mode": "cholesky",
-    "calculation_type": "ec-system"
+    "calculation_type": "ec-system",
 }
 
 nm_chol = NumericalMethod("linear_algebra", input_chol)
