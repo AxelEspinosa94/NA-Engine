@@ -5,7 +5,8 @@
         "simpson_1_3",
         "simpson_3_8",
         "romberg",
-        "gauss"
+        "gauss",
+        "clenshaw_curtis"
     ],
     "trapezoid_simple": {
       "executor": "strategies.executors.integration.methods.simpson_trap.integrate_rule"
@@ -24,5 +25,8 @@
     },
     "gauss": {
       "executor": "strategies.executors.integration.methods.gauss.gauss_legendre"
+    },
+    "clenshaw_curtis": {
+      "executor": "strategies.executors.integration.methods.clenshaw_curtis.clenshaw_curtis"
     }
 }

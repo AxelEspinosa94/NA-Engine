@@ -1,5 +1,6 @@
-import pandas as pd
 import numpy as np
+import pandas as pd
+
 
 # =========================================================
 # PAYLOAD BUILDER (UNIFIES OUTPUT LIKE INTERPOLATION)
@@ -30,5 +31,5 @@ def build_payload(instance, value):
         "a": float(a),
         "b": float(b),
         "n": instance.n,
-        "calculation_mode": mode
+        "calculation_mode": mode,
     }
