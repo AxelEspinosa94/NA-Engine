@@ -1,5 +1,6 @@
 from core.exceptions import ValidationError
 
+
 def _validate_gauss_points(input_data):
     n = input_data.get("n")
     gp = input_data.get("gauss_points", 2)

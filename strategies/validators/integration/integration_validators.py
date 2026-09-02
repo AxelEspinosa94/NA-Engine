@@ -1,8 +1,9 @@
 import os
 
-from core.exceptions import ValidationError
-from app.utils.rule_loader import load_rule
 from app.utils.catalog_loader import load_catalog
+from app.utils.rule_loader import load_rule
+from core.exceptions import ValidationError
+
 
 class IntegrationValidator:
 
@@ -22,7 +23,7 @@ class IntegrationValidator:
             raise ValidationError("Unsupported calculation_mode.")
 
         rules = self.catalog.get(calculation_mode).get("rules")
-        if isinstance(rules, str):#rule can be a single string or a list of strings
+        if isinstance(rules, str):  # rule can be a single string or a list of strings
             rules = [rules]  # Convert to list for uniform processing
         for r in rules:
             # Load the custom validation rule
