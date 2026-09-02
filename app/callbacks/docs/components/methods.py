@@ -1,5 +1,6 @@
 # app/callbacks/docs/components.py
 
+
 def load_methods(module: str):
     if module is None:
         return []
@@ -12,20 +13,20 @@ def load_methods(module: str):
             {"label": "Richardson", "value": "richardson"},
             {"label": "Partial Derivatives", "value": "partial-derivatives"},
             {"label": "Second Derivative", "value": "second-derivative"},
-            {"label": "Third Derivative", "value": "third-derivative"}
+            {"label": "Third Derivative", "value": "third-derivative"},
         ],
         "integration": [
             {"label": "Trapezoid", "value": "trapezoid"},
             {"label": "Simpson", "value": "simpson"},
             {"label": "Romberg", "value": "romberg"},
             {"label": "Gauss-Legendre", "value": "gauss-legendre"},
-            {"label": "Clenshaw-Curtis", "value": "clenshaw-curtis"}
+            {"label": "Clenshaw-Curtis", "value": "clenshaw-curtis"},
         ],
         "interpolation": [
             {"label": "Lagrange", "value": "lagrange"},
             {"label": "Newton", "value": "newton"},
             {"label": "Hermite", "value": "hermite"},
-            {"label": "Splines", "value": "spline_cubic"}
+            {"label": "Splines", "value": "spline_cubic"},
         ],
         "linear_algebra": [
             {"label": "Determinant", "value": "determinant"},
@@ -40,14 +41,14 @@ def load_methods(module: str):
             {"label": "Cholesky", "value": "cholesky"},
             {"label": "QR", "value": "qr"},
             {"label": "Jacobi", "value": "jacobi"},
-            {"label": "Gauss-Seidel", "value": "gauss-seidel"}
+            {"label": "Gauss-Seidel", "value": "gauss-seidel"},
         ],
         "nonlinear": [
             {"label": "Bisection", "value": "bisection"},
             {"label": "Regula Falsi", "value": "false_position"},
             {"label": "Newton-Raphson", "value": "newton-raphson"},
             {"label": "Secant", "value": "secant"},
-            {"label": "Fixed Point", "value": "fixed_point"}
+            {"label": "Fixed Point", "value": "fixed_point"},
         ],
         "ode": [
             {"label": "Euler", "value": "euler"},
@@ -58,8 +59,8 @@ def load_methods(module: str):
             {"label": "Shooting", "value": "shooting"},
             {"label": "Diferencias Finitas", "value": "finite-differences-bvp"},
             {"label": "Adams–Bashforth", "value": "adams-bashforth"},
-            {"label": "Adams–Moulton 2", "value": "adams-moulton-2"}
-        ]
+            {"label": "Adams–Moulton 2", "value": "adams-moulton-2"},
+        ],
     }
 
     return mapping.get(module, [])

@@ -4,11 +4,7 @@ from abc import ABC
 from typing import Any, Dict, Protocol, TypedDict
 
 from core.error_normalizer import ErrorNormalizer
-from core.exceptions import (
-    CatalogLoadError,
-    MethodNotFoundError,
-    ValidationError,
-)
+from core.exceptions import CatalogLoadError, MethodNotFoundError, ValidationError
 from core.registry import MethodRegistry
 
 logger = logging.getLogger(__name__)
