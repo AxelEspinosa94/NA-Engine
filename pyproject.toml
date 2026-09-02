@@ -8,27 +8,21 @@ target-version = ['py312']
 
 [flake8]
 max-line-length = 100
-exclude =
-    scripts/
-
-exclude = '''
-(
-    core/base_method_legacy.py
-    scripts/
-    app/tooltips/
-| \.git
-| \.venv
-| build
-| dist
-| docs
-| notebooks
-| .*\.md
-| .*\.txt
-| .*\.json
-| .*\.yml
-| .*\.yaml
-| .*\.ipynb
-| .*\.cfg
-| .*\.ini
-)
-'''
+exclude = 
+    scripts/,
+    app/tooltips/,
+    core/base_method_legacy.py,
+    .git,
+    .venv,
+    build,
+    dist,
+    docs,
+    notebooks,
+    *.md,
+    *.txt,
+    *.json,
+    *.yml,
+    *.yaml,
+    *.ipynb,
+    *.cfg,
+    *.ini
