@@ -1,12 +1,13 @@
 import numpy as np
 import pytest
-from core.base_method import NumericalMethod
-from core.exceptions import ConstructionError,ValidationError, ExecutionError
 
+from core.base_method import NumericalMethod
+from core.exceptions import ConstructionError, ExecutionError, ValidationError
 
 # ============================================================
 # Convergencia básica
 # ============================================================
+
 
 def test_newton_converges_basic():
     method = NumericalMethod(
@@ -34,6 +35,7 @@ def test_newton_converges_basic():
 # Convergencia con raíz múltiple
 # ============================================================
 
+
 def test_newton_multiple_root():
     method = NumericalMethod(
         method="nonlinear",
@@ -57,6 +59,7 @@ def test_newton_multiple_root():
 # Derivada cero → debe fallar en ejecución
 # ============================================================
 
+
 def test_newton_derivative_zero():
     method = NumericalMethod(
         method="nonlinear",
@@ -75,9 +78,11 @@ def test_newton_derivative_zero():
     assert response["status"] == "error"
     assert response["error_type"] == "ExecutionError"
 
+
 # ============================================================
 # Divergencia → debe fallar en ejecución
 # ============================================================
+
 
 def test_newton_diverges():
     method = NumericalMethod(
@@ -104,6 +109,7 @@ def test_newton_diverges():
 # max_iter insuficiente → debe fallar en ejecución
 # ============================================================
 
+
 def test_newton_max_iter_exceeded():
     method = NumericalMethod(
         method="nonlinear",
@@ -128,6 +134,7 @@ def test_newton_max_iter_exceeded():
 # NaN / infinito → debe fallar en ejecución
 # ============================================================
 
+
 def test_newton_nan():
     method = NumericalMethod(
         method="nonlinear",
@@ -148,6 +155,7 @@ def test_newton_nan():
 # ============================================================
 # Validación: falta x0
 # ============================================================
+
 
 def test_newton_missing_x0():
     with pytest.raises(ConstructionError):

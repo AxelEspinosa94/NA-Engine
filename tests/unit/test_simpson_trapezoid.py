@@ -1,12 +1,13 @@
 import numpy as np
 import pytest
-from core.base_method import NumericalMethod
-from core.exceptions import ValidationError, ConstructionError, ExecutionError
 
+from core.base_method import NumericalMethod
+from core.exceptions import ConstructionError, ExecutionError, ValidationError
 
 # ============================================================
 # TRAPECIO SIMPLE
 # ============================================================
+
 
 def test_trapezoid_simple_x2():
     """
@@ -48,6 +49,7 @@ def test_trapezoid_simple_rejects_wrong_n():
 # TRAPECIO COMPUESTO
 # ============================================================
 
+
 def test_trapezoid_composite_x2():
     """
     ∫₀¹ x² dx = 1/3
@@ -64,12 +66,13 @@ def test_trapezoid_composite_x2():
     )
 
     result = method.execute().get("result", {})
-    assert abs(result["value"] - 1/3) < 1.7e-3  # trapecio compuesto es O(h^2)
+    assert abs(result["value"] - 1 / 3) < 1.7e-3  # trapecio compuesto es O(h^2)
 
 
 # ============================================================
 # SIMPSON 1/3
 # ============================================================
+
 
 def test_simpson_1_3_x2():
     """
@@ -88,7 +91,7 @@ def test_simpson_1_3_x2():
     )
 
     result = method.execute().get("result", {})
-    assert abs(result["value"] - 1/3) < 1e-12
+    assert abs(result["value"] - 1 / 3) < 1e-12
 
 
 def test_simpson_1_3_rejects_odd_n():
@@ -112,6 +115,7 @@ def test_simpson_1_3_rejects_odd_n():
 # SIMPSON 3/8
 # ============================================================
 
+
 def test_simpson_3_8_x2():
     """
     Simpson 3/8 es exacto para polinomios hasta grado 3.
@@ -129,7 +133,7 @@ def test_simpson_3_8_x2():
     )
 
     result = method.execute().get("result", {})
-    assert abs(result["value"] - 1/3) < 1e-12
+    assert abs(result["value"] - 1 / 3) < 1e-12
 
 
 def test_simpson_3_8_rejects_non_multiple_of_3():

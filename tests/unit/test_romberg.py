@@ -3,7 +3,7 @@ import pandas as pd
 import pytest
 
 from core.base_method import NumericalMethod
-from core.exceptions import ValidationError, ConstructionError, ExecutionError
+from core.exceptions import ConstructionError, ExecutionError, ValidationError
 
 
 def test_romberg_x2():
@@ -22,7 +22,7 @@ def test_romberg_x2():
     )
 
     result = method.execute().get("result", {})
-    assert abs(result["value"] - 1/3) < 1e-10
+    assert abs(result["value"] - 1 / 3) < 1e-10
 
 
 def test_romberg_sin():
@@ -80,7 +80,7 @@ def test_romberg_higher_n_stable():
     )
 
     result = method.execute().get("result", {})
-    assert abs(result["value"] - 1/3) < 1e-12
+    assert abs(result["value"] - 1 / 3) < 1e-12
 
 
 def test_romberg_rejects_table_mode():

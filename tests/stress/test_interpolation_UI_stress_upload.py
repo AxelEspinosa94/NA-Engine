@@ -1,18 +1,21 @@
 # tests/stress/test_interpolation_upload.py
-import pytest
 import base64
 import io
+
 import numpy as np
 import pandas as pd
+import pytest
+from dash import html
+
+from app.callbacks.interpolation_callbacks import _build_dataframe_from_upload
 from core.base_method import NumericalMethod
 from core.contract import UIContract
-from core.exceptions import ValidationError, InputError
-from app.callbacks.interpolation_callbacks import _build_dataframe_from_upload
-from dash import html
+from core.exceptions import InputError, ValidationError
 
 contract = UIContract()
 
 # ── Helpers ─────────────────────────────────────────────────────────────────
+
 
 def make_df(n: int, method: str) -> pd.DataFrame:
     x = np.linspace(0, 10, n)
@@ -49,6 +52,7 @@ def encode_json(df: pd.DataFrame) -> str:
 
 
 # ── Formatos ─────────────────────────────────────────────────────────────────
+
 
 @pytest.mark.parametrize("method", ["lagrange", "newton", "spline_cubic"])
 def test_upload_csv(method):
@@ -92,6 +96,7 @@ def test_upload_hermite_csv():
 
 # ── Volumen ──────────────────────────────────────────────────────────────────
 
+
 @pytest.mark.parametrize("n", [50, 200, 500])
 def test_upload_volumen_csv(n):
     """CSV con n filas debe parsearse completo."""
@@ -101,6 +106,7 @@ def test_upload_volumen_csv(n):
 
 
 # ── Errores controlados ───────────────────────────────────────────────────────
+
 
 def test_upload_none_contents():
     """Sin archivo debe lanzar ValidationError."""
@@ -125,7 +131,9 @@ def test_upload_columnas_faltantes():
 
 def test_upload_hermite_sin_dy():
     """CSV sin columna dy para Hermite debe lanzar ValidationError."""
-    df = pd.DataFrame({"x": np.linspace(0, 10, 10), "y": np.sin(np.linspace(0, 10, 10))})
+    df = pd.DataFrame(
+        {"x": np.linspace(0, 10, 10), "y": np.sin(np.linspace(0, 10, 10))}
+    )
     with pytest.raises(InputError):
         _build_dataframe_from_upload("hermite", encode_csv(df), "data.csv")
 
@@ -140,6 +148,7 @@ def test_upload_columnas_extra_ignoradas():
 
 # ── Full process ──────────────────────────────────────────────────────────────
 
+
 @pytest.mark.parametrize("method", ["lagrange", "newton", "spline_cubic"])
 @pytest.mark.parametrize("n", [20, 100])
 def test_full_process_upload(method, n):
@@ -148,9 +157,9 @@ def test_full_process_upload(method, n):
     df = _build_dataframe_from_upload(method, encode_csv(df_original), "data.csv")
 
     input_data = {
-        "mode":             "table",
-        "data":             df,
-        "xk":               5.0,
+        "mode": "table",
+        "data": df,
+        "xk": 5.0,
         "calculation_mode": method,
     }
     nm = NumericalMethod("interpolation", input_data)
