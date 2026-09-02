@@ -1,5 +1,5 @@
 # core/contract.py
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 from dash import dcc, html
 

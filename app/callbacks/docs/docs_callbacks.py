@@ -1,9 +1,4 @@
-# callbacks/docs_callbacks.py
-
-import os
-
-import markdown
-from dash import Input, Output, State, dcc, no_update
+from dash import Input, Output, State, dcc
 
 from app.callbacks.docs.components.methods import load_methods
 

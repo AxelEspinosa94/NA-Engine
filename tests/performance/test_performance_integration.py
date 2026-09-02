@@ -1,10 +1,8 @@
 import time
 
-import numpy as np
 import pytest
 
 from core.base_method import NumericalMethod
-from core.exceptions import ConstructionError, ExecutionError, ValidationError
 
 # Métodos soportados
 METHODS = [

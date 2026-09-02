@@ -1,12 +1,11 @@
 import base64
-import io
 
 import numpy as np
 import pytest
 
 from core.base_method import NumericalMethod
 from core.contract import UIContract
-from core.exceptions import ConstructionError, ExecutionError, ValidationError
+from core.exceptions import ConstructionError
 
 contract = UIContract()
 
@@ -193,7 +192,6 @@ def encode_upload(text: str):
 
 def test_upload_txt_matrix():
     txt = "1 2 3\n4 5 6\n7 8 9"
-    contents = encode_upload(txt)
 
     nm = NumericalMethod(
         "linear_algebra",
@@ -213,7 +211,7 @@ def test_upload_txt_matrix():
 
 def test_upload_txt_system():
     txt = "3x + 2y = 5\nx - y = 1"
-    contents = encode_upload(txt)
+    #contents = encode_upload(txt)
 
     # Expected matrix
     A = [[3, 2], [1, -1]]

@@ -1,12 +1,9 @@
-# app/callbacks/linear_algebra_callbacks.py
-
 import base64
 import io
 import re
 
-import numpy as np
 import pandas as pd
-from dash import dcc, html, no_update
+from dash import html, no_update
 from dash.dependencies import Input, Output, State
 
 from core.base_method import NumericalMethod

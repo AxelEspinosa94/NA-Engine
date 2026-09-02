@@ -4,7 +4,6 @@ from dash import html
 
 from core.base_method import NumericalMethod
 from core.contract import UIContract
-from core.exceptions import ConstructionError, ExecutionError, ValidationError
 
 contract = UIContract()
 

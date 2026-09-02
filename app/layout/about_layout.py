@@ -19,10 +19,10 @@ about_section = html.Div(
             children=[
                 html.H3("Versión"),
                 html.P(
-                    """
-                NA‑Engine utiliza versionado semántico (SemVer). 
-                La versión actual corresponde al último tag registrado en el repositorio.
-                """
+                    (
+                        "NA‑Engine utiliza versionado semántico (SemVer).\n"
+                        "La versión actual corresponde al último tag registrado en el repositorio."
+                    )
                 ),
                 html.Div(
                     id="about-version-display",

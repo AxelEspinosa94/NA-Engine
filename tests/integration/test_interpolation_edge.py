@@ -1,6 +1,5 @@
 # tests/integration/test_interpolation.py
 import pandas as pd
-import pytest
 
 from core.base_method import NumericalMethod
 from core.exceptions import ValidationError

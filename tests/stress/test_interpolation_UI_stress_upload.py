@@ -10,7 +10,7 @@ from dash import html
 from app.callbacks.interpolation_callbacks import _build_dataframe_from_upload
 from core.base_method import NumericalMethod
 from core.contract import UIContract
-from core.exceptions import InputError, ValidationError
+from core.exceptions import InputError
 
 contract = UIContract()
 

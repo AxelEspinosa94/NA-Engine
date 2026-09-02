@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 
 from core.base_method import NumericalMethod
-from core.exceptions import ConstructionError, ExecutionError, ValidationError
+from core.exceptions import ConstructionError, ValidationError
 
 # ============================================================
 # VALIDATION TESTS

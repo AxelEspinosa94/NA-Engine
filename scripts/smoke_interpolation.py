@@ -1,9 +1,7 @@
-# scripts/smoke_contract.py
-import json
 import os
 import sys
 
-# Asegura que la raíz del proyecto esté en el path
+# Ensures root's project is in the path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import pandas as pd
 

@@ -1,6 +1,4 @@
 import json
-import os
-
 
 def load_catalog(path):
     """

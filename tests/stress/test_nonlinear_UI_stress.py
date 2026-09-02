@@ -1,11 +1,8 @@
-# tests/stress/test_non_linear_stress.py
-
 import numpy as np
 import pytest
 
 from core.base_method import NumericalMethod
 from core.contract import UIContract
-from core.exceptions import ConstructionError, ExecutionError, ValidationError
 
 contract = UIContract()
 

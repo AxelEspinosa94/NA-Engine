@@ -1,11 +1,5 @@
-import os
+from dash import html
 
-from dash import dcc, html
-
-from app.utils.catalog_loader import load_catalog
-
-# Importar layouts de módulos
-from app.utils.layout_catalog_loader import load_component
 from app.version import get_git_version
 
 from .about_layout import about_section

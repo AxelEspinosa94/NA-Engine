@@ -1,5 +1,3 @@
-# scripts/smoke_ode.py
-
 import os
 import sys
 

@@ -1,11 +1,8 @@
-# scripts/smoke_linear_algebra.py
 import os
 import sys
 
 # Ensure project root is in the path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-import numpy as np
 
 from core.base_method import NumericalMethod
 from core.contract import UIContract

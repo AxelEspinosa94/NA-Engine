@@ -1,4 +1,4 @@
-from dash import dcc, html
+from dash import html
 
 home_layout = html.Div(
     id="home-container",

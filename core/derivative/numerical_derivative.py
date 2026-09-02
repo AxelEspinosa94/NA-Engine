@@ -1,7 +1,5 @@
 import re
 
-import numpy as np
-
 from core.exceptions import ConstructionError
 
 

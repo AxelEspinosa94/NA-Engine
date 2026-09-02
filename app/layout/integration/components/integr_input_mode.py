@@ -1,14 +1,9 @@
-from typing import Any, Dict, List
+from typing import Dict, List
 
-from dash import dcc, html
+from dash import html
 
 from app.tooltips import get_tooltip
-from core.ui.styled_components import (
-    styled_button,
-    styled_dropdown,
-    styled_input,
-    styled_radioitems,
-)
+from core.ui.styled_components import styled_radioitems
 from core.ui.tooltips import Tooltip
 
 

@@ -1,8 +1,5 @@
 import os
 
-import numpy as np
-import pandas as pd
-
 from app.utils.catalog_loader import load_catalog
 from app.utils.rule_loader import load_rule
 from core.exceptions import ExecutionError

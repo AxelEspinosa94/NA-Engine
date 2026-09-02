@@ -1,6 +1,3 @@
-# tests/unit/test_contract.py
-from unittest.mock import MagicMock
-
 import pytest
 from dash import html
 

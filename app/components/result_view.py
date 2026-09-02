@@ -1,4 +1,3 @@
-# app/components/result_view.py
 import plotly.graph_objects as go
 from dash import dash_table, dcc, html
 

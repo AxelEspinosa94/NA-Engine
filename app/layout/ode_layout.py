@@ -1,4 +1,4 @@
-from dash import dcc, html
+from dash import html
 
 from app.tooltips import get_tooltip
 from core.ui.styled_components import (

@@ -1,4 +1,4 @@
-from dash import Input, Output, callback
+from dash import Input, Output
 
 
 def register_theme_callbacks(app):

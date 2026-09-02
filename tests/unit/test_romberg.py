@@ -3,7 +3,7 @@ import pandas as pd
 import pytest
 
 from core.base_method import NumericalMethod
-from core.exceptions import ConstructionError, ExecutionError, ValidationError
+from core.exceptions import ConstructionError
 
 
 def test_romberg_x2():

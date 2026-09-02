@@ -1,12 +1,7 @@
-# app/callbacks/integration_callbacks.py
-
-import numpy as np
-import pandas as pd
-from dash import Input, Output, State, callback, dcc, html, no_update
+from dash import Input, Output, State
 
 from core.base_method import NumericalMethod
 from core.contract import UIContract
-from core.exceptions import InputError, ValidationError
 
 
 def _build_mode_area(method: str, mode: str):

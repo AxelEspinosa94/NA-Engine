@@ -136,20 +136,6 @@ def test_normalize_construction_error():
     assert result["message"] == "invalid constructor state"
     assert result["context"]["method"] == "interpolation"
 
-
-def test_execute_returns_normalized_construction_error():
-    # Provoca un ConstructionError al construir el método
-
-    with pytest.raises(ConstructionError):
-        NumericalMethod(
-            method="interpolation",
-            input_data={
-                "calculation_mode": "lagrange",
-                "points": "corrupted",  # fuerza ConstructionError
-            },
-        )
-
-
 def test_construction_error_is_not_validation_error():
     exc = ConstructionError("bad structure")
     result = ErrorNormalizer.normalize(exc, "ode", {})

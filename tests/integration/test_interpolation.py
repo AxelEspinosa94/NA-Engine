@@ -1,4 +1,3 @@
-# tests/integration/test_interpolation.py
 import pandas as pd
 import pytest
 from dash import html

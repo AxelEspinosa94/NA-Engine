@@ -1,4 +1,4 @@
-from dash import Input, Output, State
+from dash import Input, Output
 
 
 def register_navigation_callbacks(app):

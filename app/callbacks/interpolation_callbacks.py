@@ -1,16 +1,14 @@
-# app/callbacks/interpolation_callbacks.py
 import base64
 import io
 
 import numpy as np
 import pandas as pd
 import sympy as sp
-from dash import Input, Output, State, callback, dash_table, dcc, html, no_update
+from dash import Input, Output, State, no_update
 
 from core.base_method import NumericalMethod
 from core.contract import UIContract
-from core.exceptions import InputError, ValidationError
-from core.ui.styled_components import styled_input
+from core.exceptions import InputError
 
 
 def _build_dataframe_from_function(

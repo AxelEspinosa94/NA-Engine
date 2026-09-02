@@ -40,7 +40,7 @@ def _simp_1_3(x, y):
     n = len(x) - 1
     h = (x[-1] - x[0]) / n
     odd = y[1:n:2].sum()
-    even = y[2 : n - 1 : 2].sum()
+    even = y[2:n-1:2].sum()
     return h / 3 * (y[0] + y[-1] + 4 * odd + 2 * even)
 
 
