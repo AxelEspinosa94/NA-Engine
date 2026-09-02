@@ -1,5 +1,6 @@
 from dash import html
 
+
 class Tooltip:
     def __init__(self, text):
         self.text = text
@@ -9,6 +10,6 @@ class Tooltip:
             className="na-tooltip",
             children=[
                 html.Span(className="na-tooltip-icon"),  # iconito ℹ️
-                html.Span(self.text, className="na-tooltip-content")
-            ]
+                html.Span(self.text, className="na-tooltip-content"),
+            ],
         )

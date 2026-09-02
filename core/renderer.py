@@ -1,13 +1,16 @@
-
 from __future__ import annotations
+
 from typing import Any, Callable, Dict, List, Tuple, Union
+
 import numpy as np
 
 from core.RENDERER_META import RENDERER_META
 
+
 def vector_to_latex(vec):
-        body = " \\\\ ".join(str(x) for x in vec)
-        return f"\\begin{{pmatrix}} {body} \\end{{pmatrix}}"
+    body = " \\\\ ".join(str(x) for x in vec)
+    return f"\\begin{{pmatrix}} {body} \\end{{pmatrix}}"
+
 
 def matrix_to_latex(matrix):
     # Convertir a arreglo 2D normal
@@ -79,7 +82,7 @@ class Renderer:
             (("Q", "R"), "matrix_group"),
             (("x", "y"), "plot"),
             (("x_nodes", "y_nodes"), "table"),
-#            ("table", "table"),
+            #            ("table", "table"),
             ("markdown", "markdown"),
             ("expression", "markdown"),
             ("solution", "vector"),
@@ -98,17 +101,23 @@ class Renderer:
                     # plot(x,y)
                     if renderer_type == "plot":
                         blocks.append(
-                            type_dispatch["plot"](result["x"], result["y"], label="curve")
+                            type_dispatch["plot"](
+                                result["x"], result["y"], label="curve"
+                            )
                         )
                         continue
 
-                    #table(x_nodes, y_nodes)
+                    # table(x_nodes, y_nodes)
                     if renderer_type == "table":
                         blocks.append(
-                            type_dispatch["table"]({
-                                "columns": ["x", "y"],
-                                "rows": list(zip(result["x_nodes"], result["y_nodes"]))
-                            })
+                            type_dispatch["table"](
+                                {
+                                    "columns": ["x", "y"],
+                                    "rows": list(
+                                        zip(result["x_nodes"], result["y_nodes"])
+                                    ),
+                                }
+                            )
                         )
                         continue
 
@@ -129,7 +138,9 @@ class Renderer:
                     # plot(x,y)
                     if renderer_type == "plot":
                         blocks.append(
-                            type_dispatch["plot"](result["x"], result["y"], label="curve")
+                            type_dispatch["plot"](
+                                result["x"], result["y"], label="curve"
+                            )
                         )
                         continue
 
@@ -149,17 +160,10 @@ class Renderer:
 
         # 6. If we detected blocks → return multi‑block payload
         if blocks:
-            return {
-                "type": "multi",
-                "blocks": blocks
-            }
+            return {"type": "multi", "blocks": blocks}
 
         # 7. Fallback
-        return {
-            "type": "raw",
-            "data": result
-        }
-
+        return {"type": "raw", "data": result}
 
     # ============================================================
     # Scalar Renderer
@@ -172,15 +176,16 @@ class Renderer:
             "label": label,
             "value": float(value),
             "caption": meta["caption"],
-            "tooltip": meta["tooltip"]
+            "tooltip": meta["tooltip"],
         }
-
 
     # ============================================================
     # Vector Renderer
     # ============================================================
 
-    def render_vector(self, vector: Union[List[Any], np.ndarray], label: str = "vector") -> Dict[str, Any]:
+    def render_vector(
+        self, vector: Union[List[Any], np.ndarray], label: str = "vector"
+    ) -> Dict[str, Any]:
         """Render a 1D list or NumPy array."""
         meta = RENDERER_META["vector"]
         latex = vector_to_latex(vector)
@@ -190,14 +195,14 @@ class Renderer:
             "latex": latex,
             "values": list(map(float, vector)),
             "caption": meta["caption"],
-            "tooltip": meta["tooltip"]
+            "tooltip": meta["tooltip"],
         }
 
     # ============================================================
     # Matrix Renderer
     # ============================================================
     def render_matrix_expression(self, matrix, label="matrix"):
-        latex = matrix_to_latex(matrix) 
+        latex = matrix_to_latex(matrix)
         meta = RENDERER_META["matrix"]
         return {
             "type": "matrix_expression",
@@ -205,7 +210,7 @@ class Renderer:
             "latex": latex,
             "values": np.array(matrix).tolist(),
             "caption": meta["caption"],
-            "tooltip": meta["tooltip"]
+            "tooltip": meta["tooltip"],
         }
 
     # ============================================================
@@ -223,7 +228,7 @@ class Renderer:
             "type": "matrix_group",
             "caption": meta["caption"],
             "tooltip": meta["tooltip"],
-            "matrices": {}
+            "matrices": {},
         }
 
         for key in ["L", "U", "P"]:
@@ -242,7 +247,6 @@ class Renderer:
             payload["solution_latex"] = vector_to_latex(sol)
 
         return payload
-
 
     # ============================================================
     # Table Renderer
@@ -266,14 +270,16 @@ class Renderer:
             "columns": columns,
             "rows": rows,
             "caption": meta["caption"],
-            "tooltip": meta["tooltip"]
+            "tooltip": meta["tooltip"],
         }
 
     # ============================================================
     # Plot Renderer
     # ============================================================
 
-    def render_plot(self, x: List[Any], y: List[Any], label: str = "plot") -> Dict[str, Any]:
+    def render_plot(
+        self, x: List[Any], y: List[Any], label: str = "plot"
+    ) -> Dict[str, Any]:
         """Render a curve defined by x and y arrays."""
         meta = RENDERER_META["plot"]
         return {
@@ -282,7 +288,7 @@ class Renderer:
             "x": list(map(float, x)),
             "y": list(map(float, y)),
             "caption": meta["caption"],
-            "tooltip": meta["tooltip"]
+            "tooltip": meta["tooltip"],
         }
 
     # ============================================================
@@ -292,12 +298,12 @@ class Renderer:
     def render_markdown(self, content: str) -> Dict[str, Any]:
         """Render markdown content."""
         meta = RENDERER_META["markdown"]
-        
+
         return {
             "type": "markdown",
             "content": content,
             "caption": meta["caption"],
-            "tooltip": meta["tooltip"]
+            "tooltip": meta["tooltip"],
         }
 
     # ============================================================
@@ -312,5 +318,5 @@ class Renderer:
             "message": result.get("error", "Unknown error"),
             "details": result.get("details", None),
             "caption": meta["caption"],
-            "tooltip": meta["tooltip"]
+            "tooltip": meta["tooltip"],
         }

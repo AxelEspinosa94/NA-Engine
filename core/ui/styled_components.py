@@ -1,5 +1,6 @@
 from dash import dcc, html
 
+
 def styled_input(id, placeholder="", type="text", size="md", **kwargs):
     size_class = {
         "sm": "na-input-sm",
@@ -70,7 +71,9 @@ def input_with_tooltip(id, placeholder, tooltip_text, type="text", size="md", **
     return html.Div(
         className="na-input-wrapper",
         children=[
-            styled_input(id=id, placeholder=placeholder, type=type, size=size, **kwargs),
+            styled_input(
+                id=id, placeholder=placeholder, type=type, size=size, **kwargs
+            ),
             html.Div(tooltip_text, className="na-tooltip"),
         ],
     )

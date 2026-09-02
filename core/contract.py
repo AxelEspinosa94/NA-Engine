@@ -1,9 +1,12 @@
 # core/contract.py
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
+
+from dash import dcc, html
+
 from app.components.result_view import build_result_view
 from core.renderer import Renderer
 from core.ui.tooltips import Tooltip
-from dash import html, dcc
+
 
 class UIContract:
     def __init__(self, renderer: Renderer | None = None) -> None:
@@ -11,13 +14,16 @@ class UIContract:
 
     def resolve(self, calculation_mode: str, outcome: Dict[str, Any]) -> html.Div:
         if outcome.get("status") == "error":
-            payload = self.renderer.render(calculation_mode, {
-                "error": outcome.get("message", "Unknown error"),
-                "details": {
-                    "error_type": outcome.get("error_type"),
-                    "context":    outcome.get("context"),
+            payload = self.renderer.render(
+                calculation_mode,
+                {
+                    "error": outcome.get("message", "Unknown error"),
+                    "details": {
+                        "error_type": outcome.get("error_type"),
+                        "context": outcome.get("context"),
+                    },
                 },
-            })
+            )
             return build_result_view(payload)
 
         payload = self.renderer.render(calculation_mode, outcome.get("result", {}))
@@ -63,23 +69,27 @@ class UIContract:
         caption = payload.get("caption", "Gráfica")
         tooltip = payload.get("tooltip", "")
         # Curva del polinomio
-        fig.add_trace(go.Scatter(
-            x=payload["x"],
-            y=payload["y"],
-            mode="lines",
-            name="P(x)",
-            line=dict(color="#dec6e5", width=2),
-        ))
+        fig.add_trace(
+            go.Scatter(
+                x=payload["x"],
+                y=payload["y"],
+                mode="lines",
+                name="P(x)",
+                line=dict(color="#dec6e5", width=2),
+            )
+        )
 
         # Nodos originales del df
         if "x_nodes" in payload and "y_nodes" in payload:
-            fig.add_trace(go.Scatter(
-                x=payload["x_nodes"],
-                y=payload["y_nodes"],
-                mode="markers",
-                name="Nodos",
-                marker=dict(color="#e5c07b", size=8, symbol="circle"),
-            ))
+            fig.add_trace(
+                go.Scatter(
+                    x=payload["x_nodes"],
+                    y=payload["y_nodes"],
+                    mode="markers",
+                    name="Nodos",
+                    marker=dict(color="#e5c07b", size=8, symbol="circle"),
+                )
+            )
 
         fig.update_layout(
             template="plotly_dark",
@@ -89,14 +99,19 @@ class UIContract:
             legend=dict(orientation="h", y=-0.2),
         )
 
-        return html.Div([
-            html.Div(className="label-with-tooltip", children=[
-                dcc.Markdown(caption, className="result-explanation"),
-                Tooltip(tooltip).render() if tooltip else None,
-            ]),
-            dcc.Graph(figure=fig, className="result-plot"),
-        ])
-    
+        return html.Div(
+            [
+                html.Div(
+                    className="label-with-tooltip",
+                    children=[
+                        dcc.Markdown(caption, className="result-explanation"),
+                        Tooltip(tooltip).render() if tooltip else None,
+                    ],
+                ),
+                dcc.Graph(figure=fig, className="result-plot"),
+            ]
+        )
+
     # ------------------------------------------------------------------
     # Builders de bloques individuales
     # ------------------------------------------------------------------
@@ -105,17 +120,19 @@ class UIContract:
         caption = payload.get("caption", "Resultado")
         tooltip = payload.get("tooltip", "")
         value = payload.get("value", None)
-        md = (
-            f"$$f(x_k) = \\boxed{{{float(value):.6g}}}$$\n\n"
-            f"Método: **{method}**"
+        md = f"$$f(x_k) = \\boxed{{{float(value):.6g}}}$$\n\n" f"Método: **{method}**"
+        return html.Div(
+            [
+                html.Div(
+                    className="label-with-tooltip",
+                    children=[
+                        dcc.Markdown(caption, className="result-explanation"),
+                        Tooltip(tooltip).render() if tooltip else None,
+                    ],
+                ),
+                dcc.Markdown(md, className="result-explanation", mathjax=True),
+            ]
         )
-        return html.Div([
-            html.Div(className="label-with-tooltip", children=[
-                dcc.Markdown(caption, className="result-explanation"),
-                Tooltip(tooltip).render() if tooltip else None,
-            ]),
-            dcc.Markdown(md, className="result-explanation", mathjax=True),
-        ])
 
     def _block_expression(self, payload: Dict[str, Any]) -> html.Div:
         caption = payload.get("caption", "Resultado")
@@ -124,14 +141,18 @@ class UIContract:
 
         md = f"```\n{expression}\n```"
 
-        return html.Div([
-            html.Div(className="label-with-tooltip", children=[
-                dcc.Markdown(caption, className="result-explanation"),
-                Tooltip(tooltip).render() if tooltip else None,
-            ]),
-            dcc.Markdown(md, className="result-expression"),
-        ])
-
+        return html.Div(
+            [
+                html.Div(
+                    className="label-with-tooltip",
+                    children=[
+                        dcc.Markdown(caption, className="result-explanation"),
+                        Tooltip(tooltip).render() if tooltip else None,
+                    ],
+                ),
+                dcc.Markdown(md, className="result-expression"),
+            ]
+        )
 
     def _block_table(self, payload: Dict[str, Any]) -> html.Div:
         caption = payload.get("caption", "Tabla de resultados")
@@ -140,13 +161,18 @@ class UIContract:
         rows = payload.get("rows", [])
 
         p = {"type": "table", "columns": columns, "rows": rows}
-        return html.Div([
-            html.Div(className="label-with-tooltip", children=[
-                dcc.Markdown(caption, className="result-explanation"),
-                Tooltip(tooltip).render() if tooltip else None,
-            ]),
-            build_result_view(p),
-        ])
+        return html.Div(
+            [
+                html.Div(
+                    className="label-with-tooltip",
+                    children=[
+                        dcc.Markdown(caption, className="result-explanation"),
+                        Tooltip(tooltip).render() if tooltip else None,
+                    ],
+                ),
+                build_result_view(p),
+            ]
+        )
 
     def _block_matrix_expression(self, payload: Dict[str, Any]) -> html.Div:
         caption = payload.get("caption", "Matriz")
@@ -155,13 +181,18 @@ class UIContract:
 
         md = f"$$\n{expression}\n$$"
 
-        return html.Div([
-            html.Div(className="label-with-tooltip", children=[
-                dcc.Markdown(caption, className="result-explanation"),
-                Tooltip(tooltip).render() if tooltip else None,
-            ]),
-            dcc.Markdown(md, className="result-expression", mathjax=True),
-        ])
+        return html.Div(
+            [
+                html.Div(
+                    className="label-with-tooltip",
+                    children=[
+                        dcc.Markdown(caption, className="result-explanation"),
+                        Tooltip(tooltip).render() if tooltip else None,
+                    ],
+                ),
+                dcc.Markdown(md, className="result-expression", mathjax=True),
+            ]
+        )
 
     def _block_matrix_group(self, payload: Dict[str, Any]) -> html.Div:
         caption = payload.get("caption", "Matrices")
@@ -174,15 +205,22 @@ class UIContract:
                 matrix_name = key.replace("_latex", "")
                 expression = matrix
                 md = f"$$\n{matrix_name} = {expression}\n$$"
-                blocks.append(dcc.Markdown(md, className="result-expression", mathjax=True))
+                blocks.append(
+                    dcc.Markdown(md, className="result-expression", mathjax=True)
+                )
 
-        return html.Div([
-            html.Div(className="label-with-tooltip", children=[
-                dcc.Markdown(caption, className="result-explanation"),
-                Tooltip(tooltip).render() if tooltip else None,
-            ]),
-            html.Div(blocks, className="matrix-group"),
-        ])
+        return html.Div(
+            [
+                html.Div(
+                    className="label-with-tooltip",
+                    children=[
+                        dcc.Markdown(caption, className="result-explanation"),
+                        Tooltip(tooltip).render() if tooltip else None,
+                    ],
+                ),
+                html.Div(blocks, className="matrix-group"),
+            ]
+        )
 
     def _block_solution(self, payload: Dict[str, Any]) -> html.Div:
         caption = payload.get("caption", "Solución")
@@ -191,10 +229,15 @@ class UIContract:
 
         md = f"$$\n\\text{{Solución: }} {solution}\n$$"
 
-        return html.Div([
-            html.Div(className="label-with-tooltip", children=[
-                dcc.Markdown(caption, className="result-explanation"),
-                Tooltip(tooltip).render() if tooltip else None,
-            ]),
-            dcc.Markdown(md, className="result-expression", mathjax=True),
-        ])
+        return html.Div(
+            [
+                html.Div(
+                    className="label-with-tooltip",
+                    children=[
+                        dcc.Markdown(caption, className="result-explanation"),
+                        Tooltip(tooltip).render() if tooltip else None,
+                    ],
+                ),
+                dcc.Markdown(md, className="result-expression", mathjax=True),
+            ]
+        )

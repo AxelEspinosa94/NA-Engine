@@ -1,5 +1,7 @@
-import numpy as np
 import re
+
+import numpy as np
+
 from core.exceptions import ConstructionError
 
 
@@ -48,7 +50,9 @@ class NumericalDerivative:
             try:
                 self.y = float(input_data.get("y"))
             except Exception:
-                raise ConstructionError("y must be a valid float for partial derivatives.")
+                raise ConstructionError(
+                    "y must be a valid float for partial derivatives."
+                )
         else:
             self.y = None
 
@@ -70,7 +74,6 @@ class NumericalDerivative:
         # ───────────────────────────────────────────────
         self._normalize_function()
         self._validate_function_variables()
-        
 
     # ============================================================
     # Helper: validate allowed variables in function
@@ -78,11 +81,13 @@ class NumericalDerivative:
     def _validate_function_variables(self):
         tokens = re.findall(r"[a-zA-Z_]+", self.function)
 
-        allowed_vars = {"x"} if self.calculation_mode not in ["partial_x", "partial_y"] else {"x", "y"}
+        allowed_vars = (
+            {"x"}
+            if self.calculation_mode not in ["partial_x", "partial_y"]
+            else {"x", "y"}
+        )
 
-        allowed_funcs = {
-            "np", "sin", "cos", "tan", "exp", "log", "sqrt"
-        }
+        allowed_funcs = {"np", "sin", "cos", "tan", "exp", "log", "sqrt"}
 
         for t in tokens:
             if t in allowed_funcs:
@@ -93,7 +98,6 @@ class NumericalDerivative:
                 raise ConstructionError(
                     f"Invalid variable '{t}' in function. Allowed variables: {allowed_vars}."
                 )
-
 
     def _normalize_function(self):
         """
