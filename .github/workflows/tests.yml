@@ -99,6 +99,14 @@ jobs:
       - name: Run integration tests
         run: pytest tests/integration -q
 
+      - name: Run stress tests
+        run: pytest tests/stress -q
+
+      - name: Run performance tests
+        run: pytest tests/performance -q
+      
+      - name: Run regression tests
+        run: pytest tests/regression -q
 
   # ───────────────────────────────────────────────
   # QA — Full tests (multiplatform + stress)
@@ -134,6 +142,11 @@ jobs:
       - name: Run stress tests
         run: pytest tests/stress -vv -s --tb=long --full-trace
 
+      - name: Run performance tests
+        run: pytest tests/performance -vv -s --tb=long --full-trace
+
+      - name: Run regression tests
+        run: pytest tests/regression -vv -s --tb=long --full-trace
 
   # ───────────────────────────────────────────────
   # MAIN — Final validation before release
