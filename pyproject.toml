@@ -1,0 +1,26 @@
+[tool.isort]
+profile = "black"
+
+[tool.black]
+line-length = 88
+target-version = ['py312']
+
+exclude = '''
+(
+    core/base_method_legacy.py
+| \.git
+| \.venv
+| build
+| dist
+| docs
+| notebooks
+| .*\.md
+| .*\.txt
+| .*\.json
+| .*\.yml
+| .*\.yaml
+| .*\.ipynb
+| .*\.cfg
+| .*\.ini
+)
+'''
