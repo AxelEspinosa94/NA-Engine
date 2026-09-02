@@ -1,5 +1,6 @@
 import importlib
 
+
 def load_rule(path: str):
     """
     path example:

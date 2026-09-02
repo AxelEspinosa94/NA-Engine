@@ -1,9 +1,10 @@
+import importlib
 import json
 import os
-import importlib
 
-from core.ui.tooltips import Tooltip
 from app.tooltips import get_tooltip
+from core.ui.tooltips import Tooltip
+
 
 def load_component(path):
     """
