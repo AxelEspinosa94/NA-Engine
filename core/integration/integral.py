@@ -1,7 +1,10 @@
+from typing import Any, Dict
+
 import numpy as np
-from typing import Dict, Any
-from .builder import build_function, build_grid
+
 from core.exceptions import ConstructionError
+
+from .builder import build_function, build_grid
 
 
 class Integral:
@@ -53,5 +56,6 @@ class Integral:
         self.x, self.y = build_grid(self.f, self.interval, self.n)
 
         if np.any(np.isnan(self.y)):
-            raise ConstructionError("Function evaluation produced NaN values on the interval.")
-
+            raise ConstructionError(
+                "Function evaluation produced NaN values on the interval."
+            )
