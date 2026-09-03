@@ -3,7 +3,6 @@
 # ============================================================
 
 TOOLTIPS = {
-
     # ───────────────────────────────────────────────
     # Selector de método
     # ───────────────────────────────────────────────
@@ -14,7 +13,6 @@ TOOLTIPS = {
         "• Hermite: interpola valores y derivadas.\n"
         "• Splines Cúbicos: curvas suaves por tramos, excelente estabilidad."
     ),
-
     # ───────────────────────────────────────────────
     # Modo de entrada
     # ───────────────────────────────────────────────
@@ -24,7 +22,6 @@ TOOLTIPS = {
         "• Tabla manual: ingresa puntos (x, y) directamente.\n"
         "• Subir archivo: carga datos desde .csv o .txt."
     ),
-
     # ───────────────────────────────────────────────
     # Función f(x)
     # ───────────────────────────────────────────────
@@ -36,19 +33,16 @@ TOOLTIPS = {
         "• exp(-x)\n\n"
         "Puedes usar funciones de Python: sin, cos, exp, log, sqrt."
     ),
-
     # ───────────────────────────────────────────────
     # Rango [a, b]
     # ───────────────────────────────────────────────
     "interp-a": (
         "Extremo izquierdo del rango donde se generarán los puntos de interpolación."
     ),
-
     "interp-b": (
         "Extremo derecho del rango.\n\n"
         "El sistema generará n puntos equiespaciados entre a y b."
     ),
-
     # ───────────────────────────────────────────────
     # Número de puntos
     # ───────────────────────────────────────────────
@@ -57,7 +51,6 @@ TOOLTIPS = {
         "• Más puntos → mayor precisión pero polinomios más inestables.\n"
         "• Splines no sufren inestabilidad por muchos puntos."
     ),
-
     # ───────────────────────────────────────────────
     # Upload de archivo
     # ───────────────────────────────────────────────
@@ -68,7 +61,6 @@ TOOLTIPS = {
         "• .txt — valores separados por espacios o comas\n\n"
         "El sistema detecta automáticamente el formato."
     ),
-
     # ───────────────────────────────────────────────
     # Tabla manual
     # ───────────────────────────────────────────────
@@ -78,7 +70,6 @@ TOOLTIPS = {
         "• Puedes eliminar filas.\n"
         "• Se requiere al menos 2 puntos para interpolar."
     ),
-
     # ───────────────────────────────────────────────
     # Valor a evaluar (xk)
     # ───────────────────────────────────────────────
@@ -86,7 +77,6 @@ TOOLTIPS = {
         "Punto donde deseas evaluar el polinomio o spline interpolante.\n\n"
         "Ejemplo: si xk = 1.5, el sistema calcula P(1.5)."
     ),
-
     # ───────────────────────────────────────────────
     # Botón Calcular
     # ───────────────────────────────────────────────

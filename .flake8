@@ -1,0 +1,26 @@
+[flake8]
+max-line-length = 88
+ignore = 
+    E203,
+    W503,
+    E704,
+exclude =
+    .venv,
+    venv,
+    .NA-venv,
+    app/tooltips/,
+    scripts/,
+    core/base_method_legacy.py,
+    .git,
+    build,
+    dist,
+    docs,
+    notebooks,
+    *.md,
+    *.txt,
+    *.json,
+    *.yml,
+    *.yaml,
+    *.ipynb,
+    *.cfg,
+    *.ini

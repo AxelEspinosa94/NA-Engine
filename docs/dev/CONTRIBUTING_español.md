@@ -40,7 +40,8 @@ NA‑Engine utiliza un flujo de trabajo basado en ramas para mantener orden, est
 
 ### Ramas principales
 - **main** → Código estable y versiones liberadas.
-- **develop** → Integración de nuevas funcionalidades antes del release.
+- **qa** → Control de calidad y validación
+- **dev** → Integración de nuevas funcionalidades antes del release.
 
 ### Ramas de trabajo
 - **feature/** → Nuevas funcionalidades.

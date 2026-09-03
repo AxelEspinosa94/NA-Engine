@@ -1,7 +1,10 @@
-from typing import Dict, Any
+from typing import Any, Dict
+
 import numpy as np
-import sympy as sp
+
 from core.exceptions import ConstructionError
+
+from .builder import build_function, build_grid
 
 
 class Integral:
@@ -46,18 +49,13 @@ class Integral:
             raise ConstructionError("Function mode requires positive integer n.")
 
         # Build sympy function
-        x = sp.symbols("x")
-        try:
-            f_sym = sp.sympify(self.func_str)
-        except Exception as e:
-            raise ConstructionError(f"Invalid function expression: {e}")
-        self.f = sp.lambdify(x, f_sym, "numpy")
+        self.f = build_function(self.func_str)
 
         # Build uniform grid for composite rules
         a, b = self.interval
-        self.x = np.linspace(a, b, self.n + 1)
-        self.y = self.f(self.x)
+        self.x, self.y = build_grid(self.f, self.interval, self.n)
 
         if np.any(np.isnan(self.y)):
-            raise ConstructionError("Function evaluation produced NaN values on the interval.")
-
+            raise ConstructionError(
+                "Function evaluation produced NaN values on the interval."
+            )

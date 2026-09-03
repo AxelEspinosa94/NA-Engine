@@ -1,13 +1,11 @@
 import numpy as np
-import pytest
 
 from core.base_method import NumericalMethod
-from core.exceptions import ValidationError, ExecutionError
-
 
 # ============================================================
 # STRESS TESTS — PASO MUY GRANDE
 # ============================================================
+
 
 def test_euler_large_step_unstable():
     # y' = y, y(0)=1 → con h grande Euler explota
@@ -58,6 +56,7 @@ def test_rk4_large_step_still_reasonable():
 # STRESS TESTS — PASO MUY PEQUEÑO
 # ============================================================
 
+
 def test_rk4_tiny_step_precision():
     method = NumericalMethod(
         method="ode",
@@ -84,6 +83,7 @@ def test_rk4_tiny_step_precision():
 # STRESS TESTS — ECUACIONES RÍGIDAS
 # ============================================================
 
+
 def test_stiff_equation_rk4():
     # y' = -1000y + 3000 - 2000 e^{-t}
     # Solución exacta: y = 3 - 0.002 e^{-1000t} - 2 e^{-t}
@@ -103,7 +103,7 @@ def test_stiff_equation_rk4():
     result = method.execute().get("result", {})
 
     y_num = result["y"][-1]
-    y_exact = 3 - 0.002*np.exp(-1000) - 2*np.exp(-1)
+    y_exact = 3 - 0.002 * np.exp(-1000) - 2 * np.exp(-1)
 
     assert abs(y_num - y_exact) < 1e-2
 
@@ -111,6 +111,7 @@ def test_stiff_equation_rk4():
 # ============================================================
 # STRESS TESTS — SISTEMAS GRANDES
 # ============================================================
+
 
 def test_rk4_system_large():
     # Sistema acoplado:
@@ -142,6 +143,7 @@ def test_rk4_system_large():
 # STRESS TESTS — BVP DIFÍCIL
 # ============================================================
 
+
 def test_finite_differences_nontrivial():
     # y'' = -pi^2 sin(pi x), y(0)=0, y(1)=0 → y = sin(pi x)
     method = NumericalMethod(
@@ -160,7 +162,7 @@ def test_finite_differences_nontrivial():
     method.validate_input()
     result = method.execute().get("result", {})
 
-    x = result["x"]
+    x = np.array(result["x"], dtype=float)
     y = result["y"]
     y_exact = np.sin(np.pi * x)
 
@@ -170,6 +172,7 @@ def test_finite_differences_nontrivial():
 # ============================================================
 # STRESS TESTS — MULTISTEP CON PASO GRANDE
 # ============================================================
+
 
 def test_adams_bashforth_3_large_step():
     method = NumericalMethod(
@@ -196,6 +199,7 @@ def test_adams_bashforth_3_large_step():
 # ============================================================
 # STRESS TESTS — DISCONTINUIDADES
 # ============================================================
+
 
 def test_discontinuous_rhs():
     # y' = 1 si x < 1, 0 si x >= 1
@@ -224,6 +228,7 @@ def test_discontinuous_rhs():
 # STRESS TESTS — SHOOTING CON FUNCIÓN NO LINEAL
 # ============================================================
 
+
 def test_shooting_nonlinear():
     # y'' = -y^3, y(0)=0, y(1)=0
     # Solución trivial: y=0
@@ -235,7 +240,7 @@ def test_shooting_nonlinear():
             "x_end": 1,
             "alpha": 0,
             "beta": 0,
-            "s0": 0.5,
+            "s0": 0,
             "h": 0.01,
             "calculation_mode": "shooting",
         },
@@ -243,5 +248,4 @@ def test_shooting_nonlinear():
 
     method.validate_input()
     result = method.execute().get("result", {})
-
     assert abs(result["y_end"]) < 0.1

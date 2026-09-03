@@ -1,5 +1,5 @@
-import numpy as np
 from core.exceptions import ConstructionError
+
 
 class ODE:
     """
@@ -24,7 +24,7 @@ class ODE:
     def __init__(self, input_data):
         if not isinstance(input_data, dict):
             raise ConstructionError("input_data must be a dictionary.")
-        
+
         self.input_data = input_data
 
         # ------------------------------------------------------------
@@ -63,7 +63,15 @@ class ODE:
         # ------------------------------------------------------------
         # 5. Structural validation per mode
         # ------------------------------------------------------------
-        if mode in {"euler", "heun", "rk2", "rk4", "adams_bashforth_2", "adams_bashforth_3", "adams_moulton_2"}:
+        if mode in {
+            "euler",
+            "heun",
+            "rk2",
+            "rk4",
+            "adams_bashforth_2",
+            "adams_bashforth_3",
+            "adams_moulton_2",
+        }:
             self._validate_ivp()
 
         elif mode == "rk4_system":
@@ -84,7 +92,12 @@ class ODE:
         if not isinstance(self.f, str):
             raise ConstructionError("IVP requires 'function' as a string.")
 
-        for field, name in [(self.x0, "x0"), (self.y0, "y0"), (self.x_end, "x_end"), (self.h, "h")]:
+        for field, name in [
+            (self.x0, "x0"),
+            (self.y0, "y0"),
+            (self.x_end, "x_end"),
+            (self.h, "h"),
+        ]:
             if field is None:
                 raise ConstructionError(f"Missing '{name}' for IVP.")
             try:
@@ -104,7 +117,9 @@ class ODE:
             raise ConstructionError("'y0' must be a list for system ODEs.")
 
         if len(self.y0) != len(self.system):
-            raise ConstructionError("Length of 'y0' must match number of system equations.")
+            raise ConstructionError(
+                "Length of 'y0' must match number of system equations."
+            )
 
         for field, name in [(self.x0, "x0"), (self.x_end, "x_end"), (self.h, "h")]:
             if field is None:

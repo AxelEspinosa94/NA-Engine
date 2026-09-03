@@ -1,13 +1,13 @@
 {
+  "integration": {
+    "classConstructor": "core.integration.integral.Integral",
+    "classInputValidator": "strategies.validators.integration.integration_validators.IntegrationValidator",
+    "classExecutor": "strategies.executors.integration.integration_executors.IntegrationExecutor"
+  },
   "interpolation": {
     "classConstructor": "core.interpolation.interpolation.Interpolation",
     "classInputValidator": "strategies.validators.interpolation_validators.InterpolationValidator",
     "classExecutor": "strategies.executors.interpolation_executors.InterpolationExecutor"
-  },
-  "integration": {
-    "classConstructor": "core.integration.integral.Integral",
-    "classInputValidator": "strategies.validators.integration_validators.IntegrationValidator",
-    "classExecutor": "strategies.executors.integration_executors.IntegrationExecutor"
   },
   "nonlinear": {
     "classConstructor": "core.nonlinear.Non-linear-base.NonLinearEquation",

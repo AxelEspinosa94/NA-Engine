@@ -1,18 +1,29 @@
+from typing import Any, Dict
+
 import numpy as np
-from typing import Dict, Any
+
 from core.exceptions import ValidationError
 
 
 class LinearAlgebraValidator:
 
     SYSTEM_MODES = [
-        "gauss", "gauss_jordan", "lu", "cholesky", "qr",
-        "jacobi", "gauss_seidel"
+        "gauss",
+        "gauss_jordan",
+        "lu",
+        "cholesky",
+        "qr",
+        "jacobi",
+        "gauss_seidel",
     ]
 
     MATRIX_MODES = [
-        "determinant", "inverse", "norm",
-        "condition_number", "transpose", "rank"
+        "determinant",
+        "inverse",
+        "norm",
+        "condition_number",
+        "transpose",
+        "rank",
     ]
 
     def validate(self, input_data: Dict[str, Any]):
@@ -61,7 +72,9 @@ class LinearAlgebraValidator:
 
             b = input_data.get("b")
             if b is None:
-                raise ValidationError("Vector b is required for solving linear systems.")
+                raise ValidationError(
+                    "Vector b is required for solving linear systems."
+                )
 
             b = np.array(b, dtype=float)
 

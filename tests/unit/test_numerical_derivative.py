@@ -2,12 +2,12 @@ import numpy as np
 import pytest
 
 from core.base_method import NumericalMethod
-from core.exceptions import ValidationError, ExecutionError
-
+from core.exceptions import ConstructionError, ValidationError
 
 # ============================================================
 # VALIDATION TESTS
 # ============================================================
+
 
 def test_missing_calculation_mode():
     method = NumericalMethod(
@@ -24,48 +24,42 @@ def test_missing_calculation_mode():
 
 
 def test_invalid_function_string():
-    method = NumericalMethod(
-        method="numerical_derivative",
-        input_data={
-            "function": "",
-            "x": 1.0,
-            "h": 1e-4,
-            "calculation_mode": "forward",
-        },
-    )
-
-    with pytest.raises(ValidationError):
-        method.validate_input()
+    with pytest.raises(ConstructionError):
+        NumericalMethod(
+            method="numerical_derivative",
+            input_data={
+                "function": "",
+                "x": 1.0,
+                "h": 1e-4,
+                "calculation_mode": "forward",
+            },
+        )
 
 
 def test_invalid_x_type():
-    method = NumericalMethod(
-        method="numerical_derivative",
-        input_data={
-            "function": "x**2",
-            "x": "nope",
-            "h": 1e-4,
-            "calculation_mode": "forward",
-        },
-    )
-
-    with pytest.raises(ValidationError):
-        method.validate_input()
+    with pytest.raises(ConstructionError):
+        NumericalMethod(
+            method="numerical_derivative",
+            input_data={
+                "function": "x**2",
+                "x": "nope",
+                "h": 1e-4,
+                "calculation_mode": "forward",
+            },
+        )
 
 
 def test_invalid_h_type():
-    method = NumericalMethod(
-        method="numerical_derivative",
-        input_data={
-            "function": "x**2",
-            "x": 1.0,
-            "h": "nope",
-            "calculation_mode": "forward",
-        },
-    )
-
-    with pytest.raises(ValidationError):
-        method.validate_input()
+    with pytest.raises(ConstructionError):
+        NumericalMethod(
+            method="numerical_derivative",
+            input_data={
+                "function": "x**2",
+                "x": 1.0,
+                "h": "nope",
+                "calculation_mode": "forward",
+            },
+        )
 
 
 def test_negative_h():
@@ -84,39 +78,36 @@ def test_negative_h():
 
 
 def test_partial_requires_y():
-    method = NumericalMethod(
-        method="numerical_derivative",
-        input_data={
-            "function": "x*y",
-            "x": 1.0,
-            "h": 1e-4,
-            "calculation_mode": "partial_x",
-        },
-    )
-
-    with pytest.raises(ValidationError):
-        method.validate_input()
+    with pytest.raises(ConstructionError):
+        NumericalMethod(
+            method="numerical_derivative",
+            input_data={
+                "function": "x*y",
+                "x": 1.0,
+                "h": 1e-4,
+                "calculation_mode": "partial_x",
+            },
+        )
 
 
 def test_invalid_richardson_order():
-    method = NumericalMethod(
-        method="numerical_derivative",
-        input_data={
-            "function": "x**2",
-            "x": 1.0,
-            "h": 1e-4,
-            "calculation_mode": "richardson",
-            "richardson_order": -2,
-        },
-    )
-
-    with pytest.raises(ValidationError):
-        method.validate_input()
+    with pytest.raises(ConstructionError):
+        NumericalMethod(
+            method="numerical_derivative",
+            input_data={
+                "function": "x**2",
+                "x": 1.0,
+                "h": 1e-4,
+                "calculation_mode": "richardson",
+                "richardson_order": -2,
+            },
+        )
 
 
 # ============================================================
 # EXECUTION TESTS
 # ============================================================
+
 
 def test_forward_derivative():
     method = NumericalMethod(
@@ -133,7 +124,7 @@ def test_forward_derivative():
     result = method.execute().get("result", {})
 
     expected = 2 * 2.0  # derivative of x^2 at x=2
-    assert np.allclose(result["derivative"], expected, atol=1e-4)
+    assert np.allclose(result["value"], expected, atol=1e-4)
 
 
 def test_backward_derivative():
@@ -151,14 +142,14 @@ def test_backward_derivative():
     result = method.execute().get("result", {})
 
     expected = 3 * 1.0**2
-    assert np.allclose(result["derivative"], expected, atol=5e-4)
+    assert np.allclose(result["value"], expected, atol=5e-4)
 
 
 def test_central_derivative():
     method = NumericalMethod(
         method="numerical_derivative",
         input_data={
-            "function": "np.sin(x)",
+            "function": "sin(x)",
             "x": np.pi / 4,
             "h": 1e-4,
             "calculation_mode": "central",
@@ -169,14 +160,14 @@ def test_central_derivative():
     result = method.execute().get("result", {})
 
     expected = np.cos(np.pi / 4)
-    assert np.allclose(result["derivative"], expected, atol=1e-6)
+    assert np.allclose(result["value"], expected, atol=1e-6)
 
 
 def test_richardson_derivative():
     method = NumericalMethod(
         method="numerical_derivative",
         input_data={
-            "function": "np.exp(x)",
+            "function": "exp(x)",
             "x": 1.0,
             "h": 1e-3,
             "calculation_mode": "richardson",
@@ -186,9 +177,8 @@ def test_richardson_derivative():
 
     method.validate_input()
     result = method.execute().get("result", {})
-
     expected = np.exp(1.0)
-    assert np.allclose(result["derivative"], expected, atol=1e-6)
+    assert np.allclose(result["value"], expected, atol=1e-6)
 
 
 def test_second_forward():
@@ -206,14 +196,14 @@ def test_second_forward():
     result = method.execute().get("result", {})
 
     expected = 6 * 2.0  # second derivative of x^3
-    assert np.allclose(result["second_derivative"], expected, atol=1e-3)
+    assert np.allclose(result["value"], expected, atol=1e-3)
 
 
 def test_second_central():
     method = NumericalMethod(
         method="numerical_derivative",
         input_data={
-            "function": "np.sin(x)",
+            "function": "sin(x)",
             "x": np.pi / 3,
             "h": 1e-4,
             "calculation_mode": "second_central",
@@ -224,7 +214,7 @@ def test_second_central():
     result = method.execute().get("result", {})
 
     expected = -np.sin(np.pi / 3)
-    assert np.allclose(result["second_derivative"], expected, atol=1e-4)
+    assert np.allclose(result["value"], expected, atol=1e-4)
 
 
 def test_third_forward():
@@ -242,7 +232,7 @@ def test_third_forward():
     result = method.execute().get("result", {})
 
     expected = 24 * 1.0  # third derivative of x^4
-    assert np.allclose(result["third_derivative"], expected, atol=1e-2)
+    assert np.allclose(result["value"], expected, atol=1e-2)
 
 
 def test_partial_x():
@@ -252,6 +242,7 @@ def test_partial_x():
             "function": "x*y",
             "x": 3.0,
             "y": 4.0,
+            "akakakaka": 30,
             "h": 1e-4,
             "calculation_mode": "partial_x",
         },
@@ -261,7 +252,7 @@ def test_partial_x():
     result = method.execute().get("result", {})
 
     expected = 4.0  # ∂/∂x (x*y) = y
-    assert np.allclose(result["partial_x"], expected, atol=1e-6)
+    assert np.allclose(result["value"], expected, atol=1e-6)
 
 
 def test_partial_y():
@@ -280,4 +271,4 @@ def test_partial_y():
     result = method.execute().get("result", {})
 
     expected = 3.0  # ∂/∂y (x*y) = x
-    assert np.allclose(result["partial_y"], expected, atol=1e-6)
+    assert np.allclose(result["value"], expected, atol=1e-6)

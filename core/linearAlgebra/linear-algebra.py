@@ -1,5 +1,7 @@
 import numpy as np
+
 from core.exceptions import ConstructionError
+
 
 class LinearAlgebra:
     """
@@ -11,11 +13,15 @@ class LinearAlgebra:
         self.calculation_type = input_data.get("calculation_type")
         # "calculation_type" can be either "matrix_operations" or "ec-system"
         if self.calculation_type not in ("matrix_operations", "ec-system"):
-            raise ConstructionError("Invalid calculation_type for Linear Algebra module.")
+            raise ConstructionError(
+                "Invalid calculation_type for Linear Algebra module."
+            )
 
         # Required for all operations
         if "A" not in input_data:
-            raise ConstructionError("Matrix A is required for linear algebra operations.")
+            raise ConstructionError(
+                "Matrix A is required for linear algebra operations."
+            )
 
         # Convert A safely
         try:

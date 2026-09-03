@@ -1,19 +1,19 @@
-# app/callbacks/interpolation_callbacks.py
-import pandas as pd
-import numpy as np
-import sympy as sp
 import base64
 import io
-from dash import Input, Output, State, callback, html, dcc, dash_table
-from dash import no_update
 
-from core.ui.styled_components import styled_input
+import numpy as np
+import pandas as pd
+import sympy as sp
+from dash import Input, Output, State, no_update
 
 from core.base_method import NumericalMethod
 from core.contract import UIContract
-from core.exceptions import ValidationError, InputError
+from core.exceptions import InputError
 
-def _build_dataframe_from_function(method: str, fn_expr: str, a: float, b: float, n: int) -> pd.DataFrame:
+
+def _build_dataframe_from_function(
+    method: str, fn_expr: str, a: float, b: float, n: int
+) -> pd.DataFrame:
     """
     Construye un DataFrame evaluando una función f(x) en n puntos entre [a, b].
     Si el método es hermite, también calcula f'(x).
@@ -54,7 +54,10 @@ def _build_dataframe_from_function(method: str, fn_expr: str, a: float, b: float
     # Métodos normales
     return pd.DataFrame({"x": xs, "y": ys})
 
-def _build_dataframe_from_upload(method: str, contents: str, filename: str) -> pd.DataFrame:
+
+def _build_dataframe_from_upload(
+    method: str, contents: str, filename: str
+) -> pd.DataFrame:
     """
     Construye un DataFrame a partir de un archivo cargado vía dcc.Upload.
     Soporta CSV, TXT, Excel, JSON.
@@ -63,7 +66,7 @@ def _build_dataframe_from_upload(method: str, contents: str, filename: str) -> p
     if contents is None:
         raise InputError("No se ha cargado ningún archivo.")
 
-    content_type, content_string = contents.split(',')
+    content_type, content_string = contents.split(",")
     decoded = base64.b64decode(content_string)
 
     # Detectar tipo de archivo
@@ -72,7 +75,9 @@ def _build_dataframe_from_upload(method: str, contents: str, filename: str) -> p
             df = pd.read_csv(io.StringIO(decoded.decode("utf-8")))
 
         elif filename.endswith(".txt"):
-            df = pd.read_csv(io.StringIO(decoded.decode("utf-8")), sep=None, engine="python")
+            df = pd.read_csv(
+                io.StringIO(decoded.decode("utf-8")), sep=None, engine="python"
+            )
 
         elif filename.endswith(".xlsx") or filename.endswith(".xls"):
             df = pd.read_excel(io.BytesIO(decoded))
@@ -98,7 +103,18 @@ def _build_dataframe_from_upload(method: str, contents: str, filename: str) -> p
 
     return df
 
-def _build_dataframe(method: str, mode: str, table_data=None, fn_expr=None, a=None, b=None, n=None, upload_contents=None, upload_filename=None):
+
+def _build_dataframe(
+    method: str,
+    mode: str,
+    table_data=None,
+    fn_expr=None,
+    a=None,
+    b=None,
+    n=None,
+    upload_contents=None,
+    upload_filename=None,
+):
     if mode == "table":
         columns = ["x", "y", "dy"] if method == "hermite" else ["x", "y"]
         df = pd.DataFrame(table_data)
@@ -113,28 +129,42 @@ def _build_dataframe(method: str, mode: str, table_data=None, fn_expr=None, a=No
 
     raise NotImplementedError(f"Modo '{mode}' no implementado.")
 
+
 def _build_mode_area(method: str, mode: str):
     return {
-        "function": {"interp-mode-function": False, "interp-mode-upload": True, "interp-mode-table": True},
-        "upload":   {"interp-mode-function": True,  "interp-mode-upload": False, "interp-mode-table": True},
-        "table":    {"interp-mode-function": True,  "interp-mode-upload": True,  "interp-mode-table": False},
+        "function": {
+            "interp-mode-function": False,
+            "interp-mode-upload": True,
+            "interp-mode-table": True,
+        },
+        "upload": {
+            "interp-mode-function": True,
+            "interp-mode-upload": False,
+            "interp-mode-table": True,
+        },
+        "table": {
+            "interp-mode-function": True,
+            "interp-mode-upload": True,
+            "interp-mode-table": False,
+        },
     }[mode]
 
 
 contract = UIContract()
 
+
 def register_interpolation_callbacks(app):
 
     # ── Callback 1: construye el formulario ─────────────────────────────────────
     @app.callback(
-        Output("interp-mode-function",  "hidden"),
-        Output("interp-mode-upload",  "hidden"),
-        Output("interp-mode-table",  "hidden"),
-        Output("interp-mode-card",   "hidden"),
-        Output("interp-xk-card",     "hidden"),
-        Output("interp-btn-card",    "hidden"),
-        Input("interp-method",       "value"),
-        Input("interp-input-mode",   "value"),
+        Output("interp-mode-function", "hidden"),
+        Output("interp-mode-upload", "hidden"),
+        Output("interp-mode-table", "hidden"),
+        Output("interp-mode-card", "hidden"),
+        Output("interp-xk-card", "hidden"),
+        Output("interp-btn-card", "hidden"),
+        Input("interp-method", "value"),
+        Input("interp-input-mode", "value"),
         prevent_initial_call=True,
     )
     def build_input_area(method, mode):
@@ -142,18 +172,25 @@ def register_interpolation_callbacks(app):
             return [], True, True, True
         else:
             area = _build_mode_area(method, mode)
-            return area["interp-mode-function"], area["interp-mode-upload"], area["interp-mode-table"], False, False, False
+            return (
+                area["interp-mode-function"],
+                area["interp-mode-upload"],
+                area["interp-mode-table"],
+                False,
+                False,
+                False,
+            )
         return no_update, no_update, no_update, no_update
 
     # ── Callback 2: ejecuta el cálculo ──────────────────────────────────────────
     @app.callback(
         Output("interp-result-area", "children"),
-        Input("interp-run-btn",      "n_clicks"),
-        State("interp-method",       "value"),
-        State("interp-input-mode",   "value"),
-        State("interp-xk",           "value"),
+        Input("interp-run-btn", "n_clicks"),
+        State("interp-method", "value"),
+        State("interp-input-mode", "value"),
+        State("interp-xk", "value"),
         # table mode
-        State("interp-table",        "data"),
+        State("interp-table", "data"),
         State("interp-fn", "value"),
         State("interp-a", "value"),
         State("interp-b", "value"),
@@ -162,33 +199,50 @@ def register_interpolation_callbacks(app):
         State("interp-upload", "filename"),
         prevent_initial_call=True,
     )
-    def run_interpolation(n_clicks, method, mode, xk, 
-                    table_data=None, fn_expr=None, a=None, b=None, n=None, upload_contents=None, upload_filename=None):
+    def run_interpolation(
+        n_clicks,
+        method,
+        mode,
+        xk,
+        table_data=None,
+        fn_expr=None,
+        a=None,
+        b=None,
+        n=None,
+        upload_contents=None,
+        upload_filename=None,
+    ):
         if not method or xk is None:
-            #return html.P("Completa todos los campos.", className="result-warning")
+            # return html.P("Completa todos los campos.", className="result-warning")
             return no_update
 
         try:
             df = _build_dataframe(
-                method, mode,
+                method,
+                mode,
                 table_data=table_data,
                 fn_expr=fn_expr,
-                a=a, b=b, n=n,
+                a=a,
+                b=b,
+                n=n,
                 upload_contents=upload_contents,
-                upload_filename=upload_filename
+                upload_filename=upload_filename,
             )
         except Exception as e:
-            return contract.resolve(method, {
-                "status":     "error",
-                "error_type": "InputError",
-                "message":    f"Error al construir el DataFrame: {e}",
-                "context":    {},
-            })
+            return contract.resolve(
+                method,
+                {
+                    "status": "error",
+                    "error_type": "InputError",
+                    "message": f"Error al construir el DataFrame: {e}",
+                    "context": {},
+                },
+            )
 
         input_data = {
-            "mode":             "table",
-            "data":             df,
-            "xk":               float(xk),
+            "mode": "table",
+            "data": df,
+            "xk": float(xk),
             "calculation_mode": method,
         }
 
@@ -196,16 +250,19 @@ def register_interpolation_callbacks(app):
             nm = NumericalMethod("interpolation", input_data)
             nm.validate_input()
         except InputError as e:
-            return contract.resolve(method, {
-                "status":     "error",
-                "error_type": "InputError",
-                "message":    str(e),
-                "context":    input_data,
-            })
+            return contract.resolve(
+                method,
+                {
+                    "status": "error",
+                    "error_type": "InputError",
+                    "message": str(e),
+                    "context": input_data,
+                },
+            )
 
         outcome = nm.execute()
         return contract.resolve(method, outcome)
-    
+
     # ── Callback 3: agrega filas a la tabla ──────────────────────────────────────────
     @app.callback(
         Output("interp-table", "data"),

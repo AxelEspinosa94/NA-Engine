@@ -68,11 +68,6 @@ This makes the engine highly testable, maintainable, and easy to extend.
 - **Server‑side integration tests** via GitHub Actions  
 - **Local UI interaction tests** using `dash.testing`  
 
-> Los entornos de pruebas son híbridos:  
-> - Los **unit tests** se ejecutan localmente sobre los métodos numéricos.  
-> - Los **integration tests** corren en GitHub Actions para validar el pipeline completo.  
-> - Las pruebas de UI se ejecutan localmente con `dash.testing` durante el MVP.
-
 ---
 
 # 📁 Repository Structure
@@ -181,26 +176,26 @@ Builds Dash components based on payload type.
 # 🧪 Testing Strategy
 
 ### 1. Local Unit Tests (pytest)
-Validan:
-- Correctitud  
-- Estabilidad numérica  
-- Precisión  
-- Comportamiento determinista  
-- Stress tests con DataFrames grandes  
+Validate:
+- Correctiveness 
+- Numerical Stability
+- Precision  
+- Deterministic Behaviour
+- Stress tests with big DataFrames
 
 ### 2. Integration Tests (GitHub Actions)
-Validan:
-- Pipeline completo  
-- Consistencia entre módulos  
-- Manejo de errores  
-- Estabilidad del renderer  
+Validate:
+- Complete Pipeline
+- Consistency among modules
+- Error Management
+- Renderer Stability
 
 ### 3. UI Interaction Tests (dash.testing)
-Validan:
-- Comportamiento dinámico  
+Validate:
+- Dynamic Behaviour
 - Callbacks  
-- Renderizado  
-- Manejo de tablas y uploads  
+- Renderization 
+- Uploads and Table Management
 
 ---
 
@@ -217,6 +212,13 @@ Validan:
 ---
 
 # Release Notes
+
+### v0.2.0 — Stage 5 Minor 2: Integral, Documentation and About Refactoring into Catalog-based approach + Clenshaw-Curtis Quadrature addition in Integration Module
+- Catalog-based UI for Integration, Documentation, and About modules
+- New Clenshaw–Curtis Quadrature method
+- Unified content/layout separation
+- Improved renderer compatibility
+- Foundation for upcoming ODE/BVP catalog migration
 
 ### v0.1.5 — Stage 5 Patch 2: Unified Output Renderer + Matrix LaTeX + Header Upgrade
 - Unified output rendering system with multi-block support.

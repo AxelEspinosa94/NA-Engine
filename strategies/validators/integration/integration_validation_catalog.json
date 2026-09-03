@@ -1,0 +1,35 @@
+{
+    "supported_modes": [
+        "trapezoid_simple",
+        "trapezoid_composite",
+        "simpson_1_3",
+        "simpson_3_8",
+        "romberg",
+        "gauss",
+        "clenshaw_curtis"
+    ],
+    "trapezoid_simple": {
+      "rules": "strategies.validators.integration.rules.common_rules._validate_n_for_mode"
+    },
+    "trapezoid_composite": {
+      "rules": "strategies.validators.integration.rules.common_rules._validate_n_for_mode"
+    },
+    "simpson_1_3": {
+      "rules": "strategies.validators.integration.rules.common_rules._validate_n_for_mode"
+    },
+    "simpson_3_8": {
+      "rules": "strategies.validators.integration.rules.common_rules._validate_n_for_mode"
+    },
+    "romberg": {
+      "rules": "strategies.validators.integration.rules.common_rules._validate_n_for_mode"
+    },
+    "gauss": {
+      "rules": [
+        "strategies.validators.integration.rules.common_rules._validate_n_for_mode",
+        "strategies.validators.integration.rules.gauss._validate_gauss_points"
+        ]
+    },
+    "clenshaw_curtis": {
+      "rules": "strategies.validators.integration.rules.common_rules._validate_n_for_mode"
+    }
+}

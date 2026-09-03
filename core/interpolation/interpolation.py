@@ -1,7 +1,9 @@
-import pandas as pd
+from typing import Any, Dict
+
 import numpy as np
+import pandas as pd
 import sympy as sp
-from typing import Dict, Any
+
 from core.exceptions import ConstructionError
 
 
@@ -33,7 +35,9 @@ class Interpolation:
         # Spline-specific ordering
         if self.calculation_mode == "spline_cubic":
             if self.df.shape[1] != 2:
-                raise ConstructionError("Spline requires exactly 2 columns: x and f(x).")
+                raise ConstructionError(
+                    "Spline requires exactly 2 columns: x and f(x)."
+                )
             self.df = self.df.sort_values(by=self.df.columns[0]).reset_index(drop=True)
 
     # ---------------------------------------------------------
@@ -82,7 +86,9 @@ class Interpolation:
         step = input_data.get("step")
 
         if func_str is None or interval is None or step is None:
-            raise ConstructionError("Function mode requires 'function', 'interval', and 'step'.")
+            raise ConstructionError(
+                "Function mode requires 'function', 'interval', and 'step'."
+            )
 
         x = sp.symbols("x")
 
@@ -101,11 +107,7 @@ class Interpolation:
         fx = [float(f.subs(x, val)) for val in xs]
         fpx = [float(fprime.subs(x, val)) for val in xs]
 
-        return pd.DataFrame({
-            "x": xs,
-            "f(x)": fx,
-            "f'(x)": fpx
-        })
+        return pd.DataFrame({"x": xs, "f(x)": fx, "f'(x)": fpx})
 
     def _build_hermite_from_table(self, input_data):
         df = input_data.get("data")
@@ -114,6 +116,8 @@ class Interpolation:
             raise ConstructionError("Data must be a pandas DataFrame.")
 
         if df.shape[1] != 3:
-            raise ConstructionError("Hermite table must have 3 columns: x, f(x), f'(x).")
+            raise ConstructionError(
+                "Hermite table must have 3 columns: x, f(x), f'(x)."
+            )
 
         return df.sort_values(by=df.columns[0]).reset_index(drop=True)
