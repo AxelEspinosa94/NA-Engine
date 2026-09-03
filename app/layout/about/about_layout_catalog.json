@@ -1,0 +1,103 @@
+{
+    "custom_module": "about",
+
+    "header_contents": {
+        "h2": "About NA‑Engine",
+        "p": "General information, version details, credits, and development notes."
+    },
+
+    "version_card_title": "Version",
+    "version_card_description": [
+        "NA‑Engine uses semantic versioning (SemVer).",
+        "The current version corresponds to the latest tag registered in the repository."
+    ],
+
+    "changelog_title": "Changelog",
+    "changelog_items": [
+        "v0.1.2 — Added VERSIONING.md and release automation.",
+        "v0.1.0 — Added documentation module and theory renderer.",
+        "v0.0.x — Core architecture, UI, numerical modules."
+    ],
+
+    "credits_title": "Credits",
+    "credits_description": [
+        "Developed by Axel Espinosa, M. Sc.",
+        "License: MIT"
+    ],
+
+    "documentation_title": "Documentation",
+    "documentation_description": [
+        "NA‑Engine includes integrated theoretical documentation.",
+        "You can access it from the 'Theory Documentation' section."
+    ],
+
+    "project_notes_title": "Project Notes",
+    "project_notes_description": [
+        "NA‑Engine is a modular and extensible tool for numerical analysis.",
+        "Built with Python 3.12 and Dash.",
+        "Its architecture separates UI, validation, execution, and rendering to ensure maintainability and scalability."
+    ],
+
+    "badges": [
+        {
+            "label": "Python-3.12",
+            "color": "blue",
+            "logo": "python"
+        },
+        {
+            "label": "Framework-Dash",
+            "color": "0099ff",
+            "logo": "plotly"
+        },
+        {
+            "label": "License-MIT",
+            "color": "green",
+            "logo": "open-source-initiative"
+        }
+    ],
+
+    "layout_structure": [
+        "badges",
+        "version_card",
+        "changelog",
+        "credits",
+        "documentation",
+        "project_notes"
+    ],
+
+    "component_map": {
+        "header": "app.layout.about.components.about_header.build_header",
+        "badges": "app.layout.about.components.about_badges.build_badges",
+        "version_card": "app.layout.about.components.about_version_card.build_version_card",
+        "changelog": "app.layout.about.components.about_changelog.build_changelog",
+        "credits": "app.layout.about.components.about_credits.build_credits",
+        "documentation": "app.layout.about.components.about_documentation.build_documentation",
+        "project_notes": "app.layout.about.components.about_project_notes.build_project_notes"
+    },
+
+    "component_params": {
+        "badges": {
+            "badges": "badges"
+        },
+        "version_card": {
+            "title": "version_card_title",
+            "description": "version_card_description"
+        },
+        "changelog": {
+            "title": "changelog_title",
+            "items": "changelog_items"
+        },
+        "credits": {
+            "title": "credits_title",
+            "description": "credits_description"
+        },
+        "documentation": {
+            "title": "documentation_title",
+            "description": "documentation_description"
+        },
+        "project_notes": {
+            "title": "project_notes_title",
+            "description": "project_notes_description"
+        }
+    }
+}

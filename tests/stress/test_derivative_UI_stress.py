@@ -1,14 +1,15 @@
 # tests/stress/test_derivative_stress.py
 
-import pytest
 import numpy as np
+import pytest
+
 from core.base_method import NumericalMethod
 from core.contract import UIContract
 
 contract = UIContract()
 
 # Mark entire module as pending until Stage 4 is complete
-#pytestmark = pytest.mark.pending
+# pytestmark = pytest.mark.pending
 
 
 MODES = [
@@ -26,6 +27,7 @@ MODES = [
 # ============================================================
 # Helper: build NumericalMethod safely
 # ============================================================
+
 
 def run_nm(mode, fn, x, h, y=None, richardson_order=None):
     input_data = {
@@ -50,6 +52,7 @@ def run_nm(mode, fn, x, h, y=None, richardson_order=None):
 # Stress Test 1 — Large x values
 # ============================================================
 
+
 @pytest.mark.parametrize("mode", MODES)
 def test_large_x(mode):
     fn = "x**3 - 4*x + 10"
@@ -67,6 +70,7 @@ def test_large_x(mode):
 # ============================================================
 # Stress Test 2 — Very small h (precision stress)
 # ============================================================
+
 
 @pytest.mark.parametrize("mode", MODES)
 def test_small_h(mode):
@@ -86,6 +90,7 @@ def test_small_h(mode):
 # Stress Test 3 — Very large h (instability stress)
 # ============================================================
 
+
 @pytest.mark.parametrize("mode", MODES)
 def test_large_h(mode):
     fn = "np.exp(x) - np.log(x)"
@@ -103,6 +108,7 @@ def test_large_h(mode):
 # ============================================================
 # Stress Test 4 — Highly oscillatory function
 # ============================================================
+
 
 @pytest.mark.parametrize("mode", MODES)
 def test_oscillatory(mode):
@@ -122,6 +128,7 @@ def test_oscillatory(mode):
 # Stress Test 5 — Partial derivatives with mixed variables
 # ============================================================
 
+
 @pytest.mark.parametrize("mode", ["partial_x", "partial_y"])
 def test_partial_mixed(mode):
     fn = "x*y + np.sin(x*y) + y**3"
@@ -139,6 +146,7 @@ def test_partial_mixed(mode):
 # Stress Test 6 — Richardson with high order
 # ============================================================
 
+
 @pytest.mark.parametrize("p", [2, 4, 6, 8])
 def test_richardson_high_order(p):
     fn = "np.cos(x)"
@@ -154,6 +162,7 @@ def test_richardson_high_order(p):
 # ============================================================
 # Stress Test 7 — Randomized inputs (Monte Carlo stress)
 # ============================================================
+
 
 def test_randomized_inputs():
     np.random.seed(42)

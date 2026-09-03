@@ -1,12 +1,13 @@
 import numpy as np
 import pytest
-from core.base_method import NumericalMethod
-from core.exceptions import ValidationError, ExecutionError
 
+from core.base_method import NumericalMethod
+from core.exceptions import ConstructionError
 
 # ============================================================
 # Convergencia básica
 # ============================================================
+
 
 def test_bisection_basic():
     method = NumericalMethod(
@@ -24,12 +25,13 @@ def test_bisection_basic():
     method.validate_input()
     result = method.execute().get("result", {})
 
-    assert abs(result["root"] - np.sqrt(2)) < 1e-6
+    assert abs(result["value"] - np.sqrt(2)) < 1e-6
 
 
 # ============================================================
 # No hay cambio de signo → falla en ejecución
 # ============================================================
+
 
 def test_bisection_no_sign_change():
     method = NumericalMethod(
@@ -50,10 +52,10 @@ def test_bisection_no_sign_change():
     assert response["error_type"] == "ExecutionError"
 
 
-
 # ============================================================
 # Intervalo invertido → falla en ejecución
 # ============================================================
+
 
 def test_bisection_reversed_interval():
     method = NumericalMethod(
@@ -78,24 +80,24 @@ def test_bisection_reversed_interval():
 # Intervalo inválido → falla en validación
 # ============================================================
 
-def test_bisection_invalid_interval():
-    method = NumericalMethod(
-        method="nonlinear",
-        input_data={
-            "mode": "function",
-            "function": "x - 1",
-            "interval": [1],  # inválido
-            "calculation_mode": "bisection",
-        },
-    )
 
-    with pytest.raises(ValidationError):
-        method.validate_input()
+def test_bisection_invalid_interval():
+    with pytest.raises(ConstructionError):
+        NumericalMethod(
+            method="nonlinear",
+            input_data={
+                "mode": "function",
+                "function": "x - 1",
+                "interval": [1],  # inválido
+                "calculation_mode": "bisection",
+            },
+        )
 
 
 # ============================================================
 # max_iter muy pequeño → falla en ejecución
 # ============================================================
+
 
 def test_bisection_max_iter():
     method = NumericalMethod(
@@ -122,6 +124,7 @@ def test_bisection_max_iter():
 # Tolerancia estricta
 # ============================================================
 
+
 def test_bisection_strict_tolerance():
     method = NumericalMethod(
         method="nonlinear",
@@ -138,12 +141,13 @@ def test_bisection_strict_tolerance():
     method.validate_input()
     result = method.execute().get("result", {})
 
-    assert abs(result["root"] - 1.3247179572447458) < 1e-10
+    assert abs(result["value"] - 1.3247179572447458) < 1e-10
 
 
 # ============================================================
 # Raíz exacta en el borde → falla en ejecución
 # ============================================================
+
 
 def test_bisection_root_at_boundary():
     method = NumericalMethod(
@@ -170,6 +174,7 @@ def test_bisection_root_at_boundary():
 # Función oscilante
 # ============================================================
 
+
 def test_bisection_oscillatory():
     method = NumericalMethod(
         method="nonlinear",
@@ -186,12 +191,13 @@ def test_bisection_oscillatory():
     method.validate_input()
     result = method.execute().get("result", {})
 
-    assert abs(result["root"] - np.pi) < 1e-6
+    assert abs(result["value"] - np.pi) < 1e-6
 
 
 # ============================================================
 # Función siempre positiva → falla en ejecución
 # ============================================================
+
 
 def test_bisection_always_positive():
     method = NumericalMethod(

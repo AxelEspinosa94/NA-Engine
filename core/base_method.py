@@ -1,18 +1,11 @@
-import json
-import logging
 import importlib
+import logging
 from abc import ABC
-from typing import Any, Dict, Protocol, TypedDict, List
+from typing import Any, Dict, Protocol, TypedDict
 
-from core.exceptions import (
-    MethodNotFoundError,
-    CatalogLoadError,
-    ValidationError,
-    ExecutionError,
-)
 from core.error_normalizer import ErrorNormalizer
+from core.exceptions import CatalogLoadError, MethodNotFoundError, ValidationError
 from core.registry import MethodRegistry
-
 
 logger = logging.getLogger(__name__)
 
@@ -50,12 +43,18 @@ class NumericalMethod(ABC):
         self.method_info: MethodInfo = self.catalog[method]
 
         try:
-            self.constructor_class = self._load_class(self.method_info["classConstructor"])
-            self.validator_class = self._load_class(self.method_info["classInputValidator"])
+            self.constructor_class = self._load_class(
+                self.method_info["classConstructor"]
+            )
+            self.validator_class = self._load_class(
+                self.method_info["classInputValidator"]
+            )
             self.executor_class = self._load_class(self.method_info["classExecutor"])
         except (KeyError, AttributeError, ModuleNotFoundError, ImportError) as e:
             logger.exception("Error loading classes for method '%s'.", method)
-            raise CatalogLoadError(f"Invalid class configuration for method '{method}'.") from e
+            raise CatalogLoadError(
+                f"Invalid class configuration for method '{method}'."
+            ) from e
 
         self.validator: ValidatorProtocol = self.validator_class()
         self.executor: ExecutorProtocol = self.executor_class()
@@ -79,15 +78,23 @@ class NumericalMethod(ABC):
         try:
             is_valid = self.validator.validate(self.input)
             if not is_valid:
-                logger.warning("Validation returned False for method '%s'.", self.method)
-                raise ValidationError(f"Input validation failed for method '{self.method}'.")
+                logger.warning(
+                    "Validation returned False for method '%s'.", self.method
+                )
+                raise ValidationError(
+                    f"Input validation failed for method '{self.method}'."
+                )
             logger.debug("Input validation passed for method '%s'.", self.method)
             return True
         except ValidationError:
             raise
         except Exception as e:
-            logger.exception("Unexpected error during validation for method '%s'.", self.method)
-            raise ValidationError(f"Unexpected error during validation for '{self.method}'.") from e
+            logger.exception(
+                "Unexpected error during validation for method '%s'.", self.method
+            )
+            raise ValidationError(
+                f"Unexpected error during validation for '{self.method}'."
+            ) from e
 
     def execute(self) -> Any:
         """
@@ -98,17 +105,12 @@ class NumericalMethod(ABC):
             logger.info("Executing method '%s'.", self.method)
             result = self.executor.run(self.method_instance)
             logger.debug("Execution completed for method '%s'.", self.method)
-            return {
-                "status": "success",
-                "result": result
-            }
+            return {"status": "success", "result": result}
         except Exception as e:
             logger.exception("Execution failed for method '%s'.", self.method)
             # Normalize and return the error instead of raising it
             return ErrorNormalizer.normalize(
-                exception=e,
-                method_name=self.method,
-                input_data=self.input
+                exception=e, method_name=self.method, input_data=self.input
             )
 
     def format_output(self, result: Any) -> Dict[str, Any]:

@@ -1,5 +1,5 @@
-
 import sympy as sp
+
 from core.exceptions import ConstructionError
 
 
@@ -65,7 +65,9 @@ class NonLinearEquation:
         # Initial values validation
         if self.calculation_mode in ["bisection", "false_position"]:
             if not isinstance(self.interval, (list, tuple)) or len(self.interval) != 2:
-                raise ConstructionError("Methods 'bisection' and 'false_position' require interval=[a, b].")
+                raise ConstructionError(
+                    "Methods 'bisection' and 'false_position' require interval=[a, b]."
+                )
 
             a, b = self.interval
             if not isinstance(a, (float, int)) or not isinstance(b, (float, int)):
@@ -74,12 +76,16 @@ class NonLinearEquation:
         if self.calculation_mode in ["secant"]:
             if self.x0 is None or self.x1 is None:
                 raise ConstructionError("Secant method requires x0 and x1.")
-            if not isinstance(self.x0, (float, int)) or not isinstance(self.x1, (float, int)):
+            if not isinstance(self.x0, (float, int)) or not isinstance(
+                self.x1, (float, int)
+            ):
                 raise ConstructionError("x0 and x1 must be numeric.")
 
         if self.calculation_mode in ["newton", "fixed_point"]:
             if self.x0 is None:
-                raise ConstructionError(f"Method '{self.calculation_mode}' requires x0.")
+                raise ConstructionError(
+                    f"Method '{self.calculation_mode}' requires x0."
+                )
             if not isinstance(self.x0, (float, int)):
                 raise ConstructionError("x0 must be numeric.")
 

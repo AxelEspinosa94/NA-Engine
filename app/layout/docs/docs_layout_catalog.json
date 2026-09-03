@@ -1,0 +1,47 @@
+{
+    "custom_module": "docs",
+    "supported_methods": [
+        "numerical_derivative",
+        "interpolation",
+        "integration",
+        "linear_algebra",
+        "nonlinear",
+        "ode"
+    ],
+    "component_map": {
+        "module_selector": "app.layout.docs.components.docs_module_selector.docs_module_selector",
+        "method_selector": "app.layout.docs.components.docs_method.docs_method_selector",
+        "run_button": "app.layout.docs.components.docs_button.docs_button"
+    },
+    "component_params": {
+        "module_selector": {
+            "options": "module_selector_options"
+        },
+        "method_selector": {
+            "options": "method_selector_options"
+        },
+        "input_mode": {
+            "options": "input_mode_selector_options"
+        }
+    },
+    "module_selector_options": [
+        {"label": "Derivadas", "value": "numerical_derivative"},
+        {"label": "Interpolación", "value": "interpolation"},
+        {"label": "Integración", "value": "integration"},
+        {"label": "Álgebra Lineal", "value": "linear_algebra"},
+        {"label": "Ecuaciones No Lineales", "value": "nonlinear"},
+        {"label": "Ecuaciones Diferenciales (ODE)", "value": "ode"}
+    ],
+    "method_selector_options": [],
+    "header_contents": {
+        "h2": "Theory Docs",
+        "p": "'The essence of mathematics is not to make simple things complicated, but to make complicated things simple.' - S. Gudder"
+    },
+    "layout_structure": [
+        "header",
+        "module_selector",
+        "method_selector",
+        "run_button",
+        "result_area"
+    ]
+}

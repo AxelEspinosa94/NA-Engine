@@ -1,9 +1,10 @@
 # tests/stress/test_integration_stress.py
-import pytest
 import numpy as np
+import pytest
+from dash import html
+
 from core.base_method import NumericalMethod
 from core.contract import UIContract
-from dash import html
 
 contract = UIContract()
 
@@ -18,20 +19,21 @@ METHODS = [
 
 # n razonables por método para STRESS (no accuracy)
 N_STRESS = {
-    "trapezoid_simple":    1,     # por definición
-    "trapezoid_composite": 300,   # suficientemente grande
-    "simpson_1_3":         300,   # suficientemente grande
-    "simpson_3_8":         300,   # múltiplo de 3
-    "romberg":             6,     # romberg explota con n grande
-    "gauss":               15,    # gauss estable y rápido
+    "trapezoid_simple": 1,  # por definición
+    "trapezoid_composite": 300,  # suficientemente grande
+    "simpson_1_3": 300,  # suficientemente grande
+    "simpson_3_8": 300,  # múltiplo de 3
+    "romberg": 6,  # romberg explota con n grande
+    "gauss": 15,  # gauss estable y rápido
 }
+
 
 def make_outcome(method: str, function: str, interval: list, n: int):
     input_data = {
-        "mode":             "function",
-        "function":         function,
-        "interval":         interval,
-        "n":                n,
+        "mode": "function",
+        "function": function,
+        "interval": interval,
+        "n": n,
         "calculation_mode": method,
     }
     nm = NumericalMethod("integration", input_data)
@@ -43,7 +45,8 @@ def make_outcome(method: str, function: str, interval: list, n: int):
 # STRESS: volumen de subintervalos (solo estabilidad)
 # ────────────────────────────────────────────────────────────────
 
-#@pytest.mark.pending
+
+# @pytest.mark.pending
 @pytest.mark.parametrize("method", METHODS)
 def test_volumen_stress(method):
     """El método debe soportar n grande sin explotar."""
@@ -57,7 +60,8 @@ def test_volumen_stress(method):
 # STRESS: determinismo
 # ────────────────────────────────────────────────────────────────
 
-#@pytest.mark.pending
+
+# @pytest.mark.pending
 @pytest.mark.parametrize("method", METHODS)
 def test_determinismo(method):
     """El mismo input debe producir el mismo output."""
@@ -71,7 +75,8 @@ def test_determinismo(method):
 # STRESS: intervalos negativos
 # ────────────────────────────────────────────────────────────────
 
-#@pytest.mark.pending
+
+# @pytest.mark.pending
 @pytest.mark.parametrize("method", METHODS)
 def test_intervalo_negativo(method):
     """Intervalos negativos deben funcionar sin explotar."""
@@ -84,7 +89,8 @@ def test_intervalo_negativo(method):
 # STRESS: intervalos unitarios
 # ────────────────────────────────────────────────────────────────
 
-#@pytest.mark.pending
+
+# @pytest.mark.pending
 @pytest.mark.parametrize("method", METHODS)
 def test_intervalo_unitario(method):
     """Intervalo de longitud 1 debe funcionar sin explotar."""
@@ -97,14 +103,18 @@ def test_intervalo_unitario(method):
 # STRESS: funciones sin primitiva elemental
 # ────────────────────────────────────────────────────────────────
 
-#@pytest.mark.pending
-@pytest.mark.parametrize("method", [
-    "trapezoid_composite",
-    "simpson_1_3",
-    "simpson_3_8",
-    "romberg",
-    "gauss",
-])
+
+# @pytest.mark.pending
+@pytest.mark.parametrize(
+    "method",
+    [
+        "trapezoid_composite",
+        "simpson_1_3",
+        "simpson_3_8",
+        "romberg",
+        "gauss",
+    ],
+)
 def test_funcion_sin_primitiva_gaussiana(method):
     """e^(-x²) debe producir un resultado o error controlado."""
     n = N_STRESS[method]
@@ -112,14 +122,17 @@ def test_funcion_sin_primitiva_gaussiana(method):
     assert outcome["status"] in ("success", "error")
 
 
-#@pytest.mark.pending
-@pytest.mark.parametrize("method", [
-    "trapezoid_composite",
-    "simpson_1_3",
-    "simpson_3_8",
-    "romberg",
-    "gauss",
-])
+# @pytest.mark.pending
+@pytest.mark.parametrize(
+    "method",
+    [
+        "trapezoid_composite",
+        "simpson_1_3",
+        "simpson_3_8",
+        "romberg",
+        "gauss",
+    ],
+)
 def test_funcion_sin_primitiva_sinc(method):
     """sin(x)/x debe producir resultado o error controlado."""
     n = N_STRESS[method]
@@ -127,11 +140,14 @@ def test_funcion_sin_primitiva_sinc(method):
     assert outcome["status"] in ("success", "error")
 
 
-#@pytest.mark.pending
-@pytest.mark.parametrize("method", [
-    "trapezoid_composite",
-    "simpson_1_3",
-])
+# @pytest.mark.pending
+@pytest.mark.parametrize(
+    "method",
+    [
+        "trapezoid_composite",
+        "simpson_1_3",
+    ],
+)
 def test_funcion_con_singularidad(method):
     """1/x debe producir error controlado, no crash."""
     n = N_STRESS[method]
@@ -143,7 +159,8 @@ def test_funcion_con_singularidad(method):
 # STRESS: estructura del resultado
 # ────────────────────────────────────────────────────────────────
 
-#@pytest.mark.pending
+
+# @pytest.mark.pending
 @pytest.mark.parametrize("method", METHODS)
 def test_estructura_resultado(method):
     """El resultado debe contener las claves esperadas."""
@@ -160,7 +177,8 @@ def test_estructura_resultado(method):
 # STRESS: UIContract
 # ────────────────────────────────────────────────────────────────
 
-#@pytest.mark.pending
+
+# @pytest.mark.pending
 @pytest.mark.parametrize("method", METHODS)
 def test_contract_devuelve_div(method):
     """UIContract debe devolver un html.Div válido."""
@@ -171,15 +189,15 @@ def test_contract_devuelve_div(method):
     assert result.children
 
 
-#@pytest.mark.pending
+# @pytest.mark.pending
 @pytest.mark.parametrize("method", METHODS)
 def test_contract_error_devuelve_div(method):
     """UIContract debe manejar errores sin explotar."""
     outcome = {
-        "status":     "error",
+        "status": "error",
         "error_type": "ValidationError",
-        "message":    "Test error",
-        "context":    {},
+        "message": "Test error",
+        "context": {},
     }
     result = contract.resolve(method, outcome)
     assert isinstance(result, html.Div)

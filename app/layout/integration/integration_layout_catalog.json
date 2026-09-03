@@ -1,0 +1,50 @@
+{
+    "custom_module": "integr",
+    "supported_methods": [
+        "trapezoid_simple",
+        "trapezoid_composite",
+        "simpson_1_3",
+        "simpson_3_8",
+        "romberg",
+        "gauss",
+        "clenshaw_curtis"
+    ],
+    "component_map": {
+        "method_selector": "app.layout.integration.components.integr_method.integr_method",
+        "input_mode": "app.layout.integration.components.integr_input_mode.integr_input_mode",
+        "input_area": [
+            "app.layout.integration.components.integr_input_area.integr_input_area",
+            "app.layout.integration.components.integr_gauss_points.integr_gauss_points"
+        ],
+        "run_button": "app.layout.integration.components.integr_btn.integr_run_btn"
+    },
+    "component_params": {
+        "method_selector": {
+            "options": "method_selector_options"
+        },
+        "input_mode": {
+            "options": "input_mode_selector_options"
+        }
+    },
+    "method_selector_options": [
+        {"label": "Simple Trapezoid",      "value": "trapezoid_simple"},
+        {"label": "Composite Trapezoid",   "value": "trapezoid_composite"},
+        {"label": "Simpson 1/3",          "value": "simpson_1_3"},
+        {"label": "Simpson 3/8",          "value": "simpson_3_8"},
+        {"label": "Romberg",              "value": "romberg"},
+        {"label": "Gauss-Legendre",       "value": "gauss"},
+        {"label": "Clenshaw-Curtis",      "value": "clenshaw_curtis"}
+    ],
+    "input_mode_selector_options": [{"label": "Function f(x)", "value": "function"}],
+    "header_contents": {
+        "h2": "Numerical Integration",
+        "p": "The integral is the soul of calculus, a bridge between the infinitesimal pieces of our world and the grand, continuous reality that we perceive every single day."
+    },
+    "layout_structure": [
+        "method_selector",
+        "input_mode",
+        "input_area",
+        "run_button",
+        "result_area"
+    ]
+}

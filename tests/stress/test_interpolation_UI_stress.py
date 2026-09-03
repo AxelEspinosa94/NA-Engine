@@ -1,18 +1,20 @@
 # tests/stress/test_interpolation_stress.py
-import pytest
 import numpy as np
 import pandas as pd
+import pytest
+from dash import html
+
 from core.base_method import NumericalMethod
 from core.contract import UIContract
-from dash import html
 
 contract = UIContract()
 
+
 def make_outcome(method, df, xk):
     input_data = {
-        "mode":             "table",
-        "data":             df,
-        "xk":               xk,
+        "mode": "table",
+        "data": df,
+        "xk": xk,
         "calculation_mode": method,
     }
     nm = NumericalMethod("interpolation", input_data)
@@ -21,6 +23,7 @@ def make_outcome(method, df, xk):
 
 
 # ── Volumen ─────────────────────────────────────────────────────────────────
+
 
 @pytest.mark.parametrize("n", [10, 50, 100])
 @pytest.mark.parametrize("method", ["lagrange", "newton", "spline_cubic"])
@@ -36,8 +39,8 @@ def test_volumen_muchos_nodos(n, method):
 @pytest.mark.parametrize("n", [10, 50])
 def test_volumen_hermite(n):
     """Hermite con n nodos y derivadas conocidas."""
-    x  = np.linspace(0, np.pi, n)
-    y  = np.sin(x)
+    x = np.linspace(0, np.pi, n)
+    y = np.sin(x)
     dy = np.cos(x)
     df = pd.DataFrame({"x": x, "y": y, "dy": dy})
     outcome = make_outcome("hermite", df, xk=np.pi / 4)
@@ -46,18 +49,22 @@ def test_volumen_hermite(n):
 
 # ── Precisión ────────────────────────────────────────────────────────────────
 
-@pytest.mark.parametrize("method,tol", [
-    ("lagrange",     1e-6),
-    ("newton",       1e-6),
-    ("spline_cubic", 1e-2),
-    ("hermite",      1e-1),
-])
+
+@pytest.mark.parametrize(
+    "method,tol",
+    [
+        ("lagrange", 1e-6),
+        ("newton", 1e-6),
+        ("spline_cubic", 1e-2),
+        ("hermite", 1e-1),
+    ],
+)
 def test_precision_polinomio_grado_2(method, tol):
     """Interpolar x² con nodos exactos debe dar resultado cercano al esperado."""
     x = np.linspace(0, 3, 20)
-    y = x ** 2
+    y = x**2
     xk = 1.5
-    expected = xk ** 2
+    expected = xk**2
 
     if method == "hermite":
         df = pd.DataFrame({"x": x, "y": y, "dy": 2 * x})
@@ -88,6 +95,7 @@ def test_precision_funcion_lineal(method):
 
 # ── Estabilidad ──────────────────────────────────────────────────────────────
 
+
 @pytest.mark.parametrize("method", ["lagrange", "newton"])
 def test_runge_grado_alto(method):
     """
@@ -96,7 +104,7 @@ def test_runge_grado_alto(method):
     no un bug. El método debe completar sin explotar.
     """
     x = np.linspace(-1, 1, 15)
-    y = 1 / (1 + 25 * x ** 2)
+    y = 1 / (1 + 25 * x**2)
     df = pd.DataFrame({"x": x, "y": y})
     outcome = make_outcome(method, df, xk=0.9)
     # No afirmamos precisión, solo que el proceso completa
@@ -122,11 +130,12 @@ def test_determinismo(method):
 
 # ── UIContract ───────────────────────────────────────────────────────────────
 
+
 @pytest.mark.parametrize("method", ["lagrange", "newton", "spline_cubic", "hermite"])
 def test_contract_devuelve_div(method):
     """El full process hasta html.Div no debe explotar."""
     x = np.array([0.0, 1.0, 2.0, 3.0])
-    y = x ** 2
+    y = x**2
 
     if method == "hermite":
         df = pd.DataFrame({"x": x, "y": y, "dy": 2 * x})
@@ -134,7 +143,7 @@ def test_contract_devuelve_div(method):
         df = pd.DataFrame({"x": x, "y": y})
 
     outcome = make_outcome(method, df, xk=1.5)
-    result  = contract.resolve(method, outcome)
+    result = contract.resolve(method, outcome)
     assert isinstance(result, html.Div)
     assert result.children  # no debe ser un Div vacío
 
@@ -143,10 +152,10 @@ def test_contract_devuelve_div(method):
 def test_contract_error_devuelve_div(method):
     """Un outcome de error también debe producir un html.Div limpio."""
     outcome = {
-        "status":     "error",
+        "status": "error",
         "error_type": "ValidationError",
-        "message":    "Test error",
-        "context":    {},
+        "message": "Test error",
+        "context": {},
     }
     result = contract.resolve(method, outcome)
     assert isinstance(result, html.Div)

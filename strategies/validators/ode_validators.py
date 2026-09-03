@@ -1,4 +1,5 @@
 import numbers
+
 from core.exceptions import ValidationError
 
 
@@ -77,7 +78,9 @@ class ODEValidator:
                 raise ValidationError("y0 must be a list for system ODEs.")
 
             if len(y0) != len(system):
-                raise ValidationError("Length of y0 must match number of system equations.")
+                raise ValidationError(
+                    "Length of y0 must match number of system equations."
+                )
 
             # numeric fields
             for key in ["x0", "x_end", "h"]:

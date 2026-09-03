@@ -1,6 +1,6 @@
 import json
 import os
-from typing import Dict, Any
+from typing import Any, Dict
 
 from core.exceptions import CatalogLoadError, MethodNotFoundError
 
@@ -22,10 +22,7 @@ class MethodRegistry:
         if cls._catalog_cache is not None:
             return cls._catalog_cache
 
-        catalog_path = os.path.join(
-            os.path.dirname(__file__),
-            "method_catalog.json"
-        )
+        catalog_path = os.path.join(os.path.dirname(__file__), "method_catalog.json")
 
         if not os.path.exists(catalog_path):
             raise CatalogLoadError(f"Catalog file not found at: {catalog_path}")

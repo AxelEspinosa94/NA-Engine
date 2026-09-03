@@ -13,6 +13,7 @@ The **Integration Module** of NA‑Engine provides numerical integration using s
 - **Simpson 3/8**
 - **Romberg**
 - **Gauss‑Legendre**
+- **Clenshaw-Curtis**
 
 The UI supports function‑based input and dynamically renders results including the numerical approximation, node table, plots, and method‑specific metadata.
 
@@ -44,6 +45,7 @@ The user chooses one of the available numerical integration methods:
 | **Simpson 3/8** | Cubic interpolation on triplets of intervals |
 | **Romberg** | Richardson extrapolation over trapezoid refinements |
 | **Gauss‑Legendre** | Gaussian quadrature with Legendre nodes |
+| **Clenshaw-Curtis** | Quadrature based on Chebyshev nodes |
 
 The selected method determines:
 
@@ -256,6 +258,78 @@ Even on an 8 GB RAM machine, Romberg becomes **CPU‑bound**, not memory‑bound
 - Exact for polynomials up to degree `2n − 1`  
 - Very high n (≥ 50) is unnecessary  
 - Increasing points increases accuracy, not stress  
+
+---
+
+### ### **Clenshaw–Curtis**
+
+| Property | Recommendation |
+|---------|----------------|
+| UI points | **8–20** |
+| Stress points | **20–40** |
+| Notes | Spectral accuracy; extremely stable; even‑N required |
+
+---
+
+#### **Clenshaw–Curtis Practical Guidance**
+
+- Accuracy improves **spectrally** (almost exponentially) as N increases  
+- Works best when the integrand is **smooth** on $[a,b]$
+- Requires **even N** because the integral uses only cosine modes $a_{2k}$
+- Increasing N increases accuracy, not stress — similar to Gauss  
+- For highly oscillatory functions, CC often outperforms Gauss with fewer points  
+- For smooth functions (polynomials, exponentials, trig), CC converges extremely fast  
+- Very high $N$ ($\geq 50$) is rarely needed; diminishing returns after $\approx 40$  
+- Clenshaw-Curtis is ideal for UI because the DCT‑I is stable and predictable  
+- Clenshaw-CurtisC is ideal for stress tests because the cost grows linearly and the transform is efficient  
+
+---
+
+#### **Recommended Usage**
+
+#### **UI / Normal Use**
+- **8–20 points**  
+  Perfect balance between speed and accuracy.  
+  Most smooth functions converge to machine precision in this range.
+
+#### **Stress Testing**
+- **20–40 points**  
+  Pushes the DCT‑I and cosine expansion harder.  
+  Still extremely stable — CC does not “blow up” like high‑order Newton–Cotes.
+
+#### **Avoid**
+- Odd N (breaks the cosine‑mode formula)  
+- N > 50 (no practical gain; slower without improving accuracy)  
+- Using CC for discontinuous functions (spectral ringing / Gibbs phenomenon)
+
+---
+
+#### **Why These Recommendations Work**
+
+Clenshaw–Curtis is a **spectral method**, meaning:
+
+$$
+\text{Error} \sim O\left(\frac{1}{N^p}\right) \quad \text{or even faster}
+$$
+
+for smooth functions.
+
+This is why:
+
+- Clenshaw-Curtis with **10 points** often matches Gauss with **20 points**  
+- Clenshaw-Curtis with **20 points** often matches composite Simpson with **200+ points**  
+- Clenshaw-Curtis with **40 points** is already near machine precision for most analytic functions  
+
+---
+
+### **Short Summary**
+
+- Exact for all cosine expansions up to mode $2N$  
+- Very high N (≥ 50) is unnecessary  
+- Increasing points increases accuracy, not stress  
+- Requires even N  
+- Spectral convergence for smooth functions  
+
 
 ---
 

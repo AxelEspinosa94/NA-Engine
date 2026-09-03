@@ -1,46 +1,221 @@
-name: Tests
+name: NA-Engine CI
 
 on:
   push:
-    branches: [main, develop]
+    branches:
+      - dev
+      - qa
+      - main
+      - feature/dev/**
+      - feature/qa/**
+      - feature/main/**
+      - fix/dev/**
+      - fix/qa/**
+      - fix/main/**
   pull_request:
-    branches: [main]
-
-env:
-  PYTEST_ADDOPTS: "--maxfail=1 --disable-warnings -q --color=yes"
-  CI: "true"
+    branches:
+      - dev
+      - qa
+      - main
+      - feature/dev/**
+      - feature/qa/**
+      - feature/main/**
+      - fix/dev/**
+      - fix/qa/**
+      - fix/main/**
 
 jobs:
-  test:
+
+  # ───────────────────────────────────────────────
+  # LINT — flake8 (independiente)
+  # ───────────────────────────────────────────────
+  lint:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-          cache: "pip"
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      #- name: Run unit tests
-      #  run: pytest tests/unit/ -v
+      - name: Run flake8
+        run: |
+          python -m flake8 .
 
-      #- name: Run integration tests
-      #  run: pytest tests/integration/ -v
 
-      #Tests unitarios se probaron en stage 2, 
-      #los de integración se probaron en stage 3, 
-      #por lo que no es necesario volver a correrlos en stage 4. 
-      #Solo se correrán los tests de estrés
+  # ───────────────────────────────────────────────
+  # COMMON — Formatting check (Black + isort)
+  # ───────────────────────────────────────────────
+  check-format:
+    needs: lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run Black + isort checks
+        run: |
+          python -m black --check core strategies app tests
+          python -m isort --check-only core strategies app tests
+
+
+  # ───────────────────────────────────────────────
+  # DEV — Fast tests (Linux only)
+  # ───────────────────────────────────────────────
+  dev-tests:
+    needs: check-format
+    if: startsWith(github.ref, 'refs/heads/dev') ||
+        startsWith(github.ref, 'refs/heads/feature/dev') ||
+        startsWith(github.ref, 'refs/heads/fix/dev')
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run unit tests
+        run: pytest tests/unit -q
+
+      - name: Run integration tests
+        run: pytest tests/integration -q
 
       - name: Run stress tests
+        run: pytest tests/stress -q
+
+      - name: Run performance tests
+        run: pytest tests/performance -q
+      
+      - name: Run regression tests
+        run: pytest tests/regression -q
+
+  # ───────────────────────────────────────────────
+  # QA — Full tests (multiplatform + stress)
+  # ───────────────────────────────────────────────
+  qa-tests:
+    needs: check-format
+    if: startsWith(github.ref, 'refs/heads/qa') ||
+        startsWith(github.ref, 'refs/heads/feature/qa') ||
+        startsWith(github.ref, 'refs/heads/fix/qa')
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python: ["3.12"]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install dependencies
         run: |
-          pytest tests/stress/ -vv -s --tb=long --full-trace --log-cli-level=DEBUG -m "pending" \
-            || [ $? -eq 5 ] && echo "No pending tests found — all modules complete." && exit 0
+          pip install -r requirements.txt
+
+      - name: Run unit tests
+        run: pytest tests/unit -q
+
+      - name: Run integration tests
+        run: pytest tests/integration -q
+
+      - name: Run stress tests
+        run: pytest tests/stress -vv -s --tb=long --full-trace
+
+      - name: Run performance tests
+        run: pytest tests/performance -vv -s --tb=long --full-trace
+
+      - name: Run regression tests
+        run: pytest tests/regression -vv -s --tb=long --full-trace
+
+  # ───────────────────────────────────────────────
+  # MAIN — Final validation before release
+  # ───────────────────────────────────────────────
+  main-tests:
+    needs: check-format
+    if: startsWith(github.ref, 'refs/heads/main') ||
+        startsWith(github.ref, 'refs/heads/feature/main') ||
+        startsWith(github.ref, 'refs/heads/fix/main')
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python: ["3.12"]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run full test suite
+        run: pytest -vv -s --tb=long --full-trace
+
+
+  # ───────────────────────────────────────────────
+  # AUTO-TAGGING — PATCH or MINOR based on PR label
+  # ───────────────────────────────────────────────
+  auto-tag:
+    needs: main-tests
+    if: github.event_name == 'pull_request' &&
+        github.event.pull_request.merged == true &&
+        startsWith(github.ref, 'refs/heads/main')
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Determine tag type
+        id: tagtype
+        run: |
+          if echo "${{ github.event.pull_request.labels }}" | grep -q "release:minor"; then
+            echo "type=minor" >> $GITHUB_OUTPUT
+          else
+            echo "type=patch" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Compute next version
+        id: version
+        run: |
+          CURRENT=$(git describe --tags --abbrev=0)
+          BASE=${CURRENT#v}
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$BASE"
+
+          if [ "${{ steps.tagtype.outputs.type }}" = "minor" ]; then
+            MINOR=$((MINOR+1))
+            PATCH=0
+          else
+            PATCH=$((PATCH+1))
+          fi
+
+          echo "next=v${MAJOR}.${MINOR}.${PATCH}" >> $GITHUB_OUTPUT
+
+      - name: Create and push tag
+        run: |
+          git tag -a "${{ steps.version.outputs.next }}" -m "Release ${{ steps.version.outputs.next }}"
+          git push origin "${{ steps.version.outputs.next }}"

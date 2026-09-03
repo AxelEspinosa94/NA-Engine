@@ -1,18 +1,14 @@
-# app/callbacks/nonlinear_callbacks.py
-
-import pandas as pd
-from dash import Input, Output, State, callback, html, dcc
-from dash import no_update
+from dash import Input, Output, State, no_update
 
 from core.base_method import NumericalMethod
 from core.contract import UIContract
-from core.exceptions import ValidationError, InputError, ExecutionError
 
 contract = UIContract()
 
 # ============================================================
 # Helpers
 # ============================================================
+
 
 def _build_base_area():
     """
@@ -94,7 +90,9 @@ def register_nonlinear_callbacks(app):
 
         # Método: Bisección / Falsa Posición → requiere intervalo
         if method in ["bisection", "false_position"]:
-            input_data["interval"] = [float(a), float(b)] if a is not None and b is not None else None
+            input_data["interval"] = (
+                [float(a), float(b)] if a is not None and b is not None else None
+            )
 
         # Método: Punto Fijo → requiere g(x)
         if method == "fixed_point":
@@ -105,23 +103,29 @@ def register_nonlinear_callbacks(app):
             nm = NumericalMethod("nonlinear", input_data)
             nm.validate_input()
         except Exception as e:
-            return contract.resolve(method, {
-                "status":     "error",
-                "error_type": "ValidationError",
-                "message":    str(e),
-                "context":    input_data,
-            })
+            return contract.resolve(
+                method,
+                {
+                    "status": "error",
+                    "error_type": "ValidationError",
+                    "message": str(e),
+                    "context": input_data,
+                },
+            )
 
         # Ejecución
         try:
             outcome = nm.execute()
         except Exception as e:
-            return contract.resolve(method, {
-                "status":     "error",
-                "error_type": "ExecutionError",
-                "message":    str(e),
-                "context":    input_data,
-            })
+            return contract.resolve(
+                method,
+                {
+                    "status": "error",
+                    "error_type": "ExecutionError",
+                    "message": str(e),
+                    "context": input_data,
+                },
+            )
 
         # Render final
         return contract.resolve(method, outcome)

@@ -1,15 +1,13 @@
-# tests/stress/test_non_linear_stress.py
-
-import pytest
 import numpy as np
+import pytest
+
 from core.base_method import NumericalMethod
-from core.exceptions import ConstructionError, ValidationError, ExecutionError
 from core.contract import UIContract
 
 contract = UIContract()
 
 # Mark entire module as pending until Stage 4 is complete
-#pytestmark = pytest.mark.pending
+# pytestmark = pytest.mark.pending
 
 MODES = [
     "bisection",
@@ -22,6 +20,7 @@ MODES = [
 # ============================================================
 # Helper to run NumericalMethod safely
 # ============================================================
+
 
 def run_nm(mode, fn, x0=None, x1=None, interval=None, g=None, tol=1e-6, max_iter=50):
     input_data = {
@@ -50,6 +49,7 @@ def run_nm(mode, fn, x0=None, x1=None, interval=None, g=None, tol=1e-6, max_iter
 # Stress Test 1 — Large intervals
 # ============================================================
 
+
 @pytest.mark.parametrize("mode", ["bisection", "false_position"])
 def test_large_interval(mode):
     fn = "x**3 - 10*x + 5"
@@ -64,6 +64,7 @@ def test_large_interval(mode):
 # ============================================================
 # Stress Test 2 — Very small tolerance
 # ============================================================
+
 
 @pytest.mark.parametrize("mode", MODES)
 def test_small_tolerance(mode):
@@ -84,6 +85,7 @@ def test_small_tolerance(mode):
 # Stress Test 3 — Highly oscillatory function
 # ============================================================
 
+
 @pytest.mark.parametrize("mode", MODES)
 def test_oscillatory(mode):
     fn = "np.sin(50*x)"
@@ -103,18 +105,22 @@ def test_oscillatory(mode):
 # Stress Test 4 — Newton near derivative zero
 # ============================================================
 
+
 def test_newton_derivative_zero():
     fn = "x**3"
     x0 = 0.0  # derivative = 0 → should raise ExecutionError
 
-    nm = NumericalMethod("nonlinear", {
-        "mode": "function",
-        "function": fn,
-        "calculation_mode": "newton",
-        "x0": x0,
-        "tol": 1e-6,
-        "max_iter": 50,
-    })
+    nm = NumericalMethod(
+        "nonlinear",
+        {
+            "mode": "function",
+            "function": fn,
+            "calculation_mode": "newton",
+            "x0": x0,
+            "tol": 1e-6,
+            "max_iter": 50,
+        },
+    )
 
     nm.validate_input()
 
@@ -123,25 +129,28 @@ def test_newton_derivative_zero():
     assert outcome["error_type"] == "ExecutionError"
 
 
-
 # ============================================================
 # Stress Test 5 — Secant with nearly equal f(x)
 # ============================================================
+
 
 def test_secant_near_zero_denominator():
     fn = "x**2 - 4"
     x0 = 2.0000001
     x1 = 2.0000002  # f(x0) ≈ f(x1), denominator small but not zero
 
-    nm = NumericalMethod("nonlinear", {
-        "mode": "function",
-        "function": fn,
-        "calculation_mode": "secant",
-        "x0": x0,
-        "x1": x1,
-        "tol": 1e-6,
-        "max_iter": 50,
-    })
+    nm = NumericalMethod(
+        "nonlinear",
+        {
+            "mode": "function",
+            "function": fn,
+            "calculation_mode": "secant",
+            "x0": x0,
+            "x1": x1,
+            "tol": 1e-6,
+            "max_iter": 50,
+        },
+    )
 
     nm.validate_input()
     outcome = nm.execute()
@@ -153,25 +162,28 @@ def test_secant_near_zero_denominator():
     assert abs(outcome.get("result").get("value") - 2.0) < 1e-3
 
 
-
 # ============================================================
 # Stress Test 6 — Fixed point divergence
 # ============================================================
+
 
 def test_fixed_point_divergence():
     fn = "np.cos(x)"
     g = "2*x"  # g'(x) = 2 → diverges
     x0 = 1.0
 
-    nm = NumericalMethod("nonlinear", {
-        "mode": "function",
-        "function": fn,
-        "calculation_mode": "fixed_point",
-        "g": g,
-        "x0": x0,
-        "tol": 1e-6,
-        "max_iter": 50,
-    })
+    nm = NumericalMethod(
+        "nonlinear",
+        {
+            "mode": "function",
+            "function": fn,
+            "calculation_mode": "fixed_point",
+            "g": g,
+            "x0": x0,
+            "tol": 1e-6,
+            "max_iter": 50,
+        },
+    )
 
     nm.validate_input()
 
@@ -183,6 +195,7 @@ def test_fixed_point_divergence():
 # ============================================================
 # Stress Test 7 — Randomized Monte Carlo stress
 # ============================================================
+
 
 def test_randomized_inputs():
     np.random.seed(42)

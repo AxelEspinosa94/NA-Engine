@@ -1,8 +1,7 @@
-# tests/unit/test_contract.py
 import pytest
-from unittest.mock import MagicMock
-from core.contract import UIContract
 from dash import html
+
+from core.contract import UIContract
 
 
 @pytest.fixture
@@ -12,10 +11,10 @@ def contract():
 
 def test_resolve_error(contract):
     outcome = {
-        "status":     "error",
+        "status": "error",
         "error_type": "ValidationError",
-        "message":    "Datos inválidos",
-        "context":    {"x": []},
+        "message": "Datos inválidos",
+        "context": {"x": []},
     }
     result = contract.resolve("lagrange", outcome)
     assert isinstance(result, html.Div)

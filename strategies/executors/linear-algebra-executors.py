@@ -1,4 +1,5 @@
 import numpy as np
+
 from core.exceptions import ExecutionError, ValidationError
 
 
@@ -18,7 +19,6 @@ class LinearAlgebraExecutor:
             "condition_number": lambda: self.condition_number(instance),
             "transpose": lambda: self.transpose(instance),
             "rank": lambda: self.rank(instance),
-
             # System solvers
             "gauss": lambda: self.gauss(instance),
             "gauss_jordan": lambda: self.gauss_jordan(instance),
@@ -30,7 +30,9 @@ class LinearAlgebraExecutor:
         }
 
         if mode not in dispatch:
-            raise ValidationError(f"Executor not implemented for calculation_mode '{mode}'.")
+            raise ValidationError(
+                f"Executor not implemented for calculation_mode '{mode}'."
+            )
 
         return dispatch[mode]()
 
@@ -81,7 +83,7 @@ class LinearAlgebraExecutor:
 
         x = np.zeros(n)
         for i in reversed(range(n)):
-            x[i] = (b[i] - np.dot(A[i, i + 1:], x[i + 1:])) / A[i, i]
+            x[i] = (b[i] - np.dot(A[i, i + 1 :], x[i + 1 :])) / A[i, i]
 
         return {"solution": x}
 
@@ -181,7 +183,7 @@ class LinearAlgebraExecutor:
             x_old = x.copy()
             for i in range(n):
                 s1 = np.dot(A[i, :i], x[:i])
-                s2 = np.dot(A[i, i + 1:], x_old[i + 1:])
+                s2 = np.dot(A[i, i + 1 :], x_old[i + 1 :])
                 x[i] = (b[i] - s1 - s2) / A[i, i]
 
             if np.linalg.norm(x - x_old) < tol:
