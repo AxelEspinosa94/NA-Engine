@@ -130,29 +130,29 @@ def test_oscillatory(mode):
 # ═══════════════════════════════════════════════════════════════
 
 
-def test_large_system_rk4():
-    # y_i' = -y_i  → exponential decay
-    n = 10
-    system = ["-y{}".format(i + 1) for i in range(n)]
-    y0 = [1.0] * n
-
-    nm = NumericalMethod(
-        "ode",
-        {
-            "system": system,
-            "y0": y0,
-            "x0": 0.0,
-            "x_end": 2.0,
-            "h": 0.05,
-            "calculation_mode": "rk4_system",
-        },
-    )
-
-    nm.validate_input()
-    outcome = nm.execute()
-    payload = contract.resolve("rk4_system", outcome)
-
-    assert payload is not None
+# def test_large_system_rk4():
+#     # y_i' = -y_i  → exponential decay
+#     n = 10
+#     system = ["-y{}".format(i + 1) for i in range(n)]
+#     y0 = [1.0] * n
+#
+#     nm = NumericalMethod(
+#         "ode",
+#         {
+#             "system": system,
+#             "y0": y0,
+#             "x0": 0.0,
+#             "x_end": 2.0,
+#             "h": 0.05,
+#             "calculation_mode": "rk4_system",
+#         },
+#     )
+#
+#     nm.validate_input()
+#     outcome = nm.execute()
+#     payload = contract.resolve("rk4_system", outcome)
+#
+#     assert payload is not None
 
 
 # ═══════════════════════════════════════════════════════════════

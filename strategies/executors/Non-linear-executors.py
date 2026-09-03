@@ -51,7 +51,6 @@ class NonLinearExecutor:
             "table": table,
             "x": xs,
             "y": ys,
-            "matrix": None,
             "vector": xs,
             "calculation_mode": instance.calculation_mode,
             "iterations": iters,

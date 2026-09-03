@@ -35,8 +35,8 @@ def test_large_matrix_determinant(n):
     result = nm.execute()
     result = result.get("result")
 
-    assert "value" in result
-    assert isinstance(result["value"], float)
+    assert "determinant" in result
+    assert isinstance(result.get("determinant"), float)
 
 
 @pytest.mark.parametrize("n", [50, 100])
@@ -84,7 +84,7 @@ def test_precision_inverse():
     result = nm.execute()
     result = result.get("result")
 
-    assert np.allclose(result["value"], expected, atol=1e-12)
+    assert np.allclose(result.get("inverse"), expected, atol=1e-12)
 
 
 def test_precision_qr():
@@ -206,7 +206,7 @@ def test_upload_txt_matrix():
     result = nm.execute()
     result = result.get("result")
 
-    assert "value" in result
+    assert "rank" in result
 
 
 def test_upload_txt_system():
