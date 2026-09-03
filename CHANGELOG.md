@@ -2,6 +2,40 @@
 
 ---
 
+## NA-Engine v0.2.0 — Stage 5 Minor 2: Integral, Documentation and About Refactoring into Catalog-based approach + Clenshaw-Curtis Quadrature addition in Integration Module
+**Release date:** 2026-09-02
+
+### Added
+- Catalog‑based architecture for:
+  - Integration module UI
+  - Documentation module (theory viewer)
+  - About module (project metadata, badges, changelog, credits)
+- Full refactor of Integration module layouts into declarative catalog format.
+- New Clenshaw–Curtis Quadrature method added to the Integration module.
+- New catalog-driven content loader for About section (header, badges, version, changelog, credits, notes).
+- New catalog-driven documentation renderer with multi-section support.
+- Unified catalog schema for future modules (ODE, BVP, Nonlinear, Linear Algebra).
+
+### Improved
+- Integration module UI now uses dynamic catalog-driven layouts, reducing hardcoded components.
+- Documentation module now supports structured multi-block theory pages with improved readability.
+- About module fully migrated to catalog-based rendering with component mapping and parameter injection.
+- Renderer compatibility improved for catalog-based modules (plot, table, expression, markdown).
+- Better separation of content and layout across all refactored modules.
+- Enhanced maintainability: modules now follow a consistent declarative pattern.
+
+### Notes
+This minor release completes the second phase of Stage 5, focusing on UI/UX modernization through catalog-driven architecture.
+Upcoming work will target:
+
+- Full migration of ODE/BVP modules to catalog-based layouts
+- Multi-curve plotting improvements for ODE systems
+- Export tools (PDF, LaTeX, CSV)
+- Full i18n migration (English/Spanish)
+- Stage 6: Advanced numerical methods (RKF45, Adams–Bashforth, Clenshaw–Curtis extensions)
+
+---
+
 ## NA-Engine v0.1.5 — Stage 5 Patch 2: Unified Output Renderer + Matrix LaTeX + Header Upgrade
 **Release date:** 2026-08-04
 
