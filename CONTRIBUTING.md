@@ -39,6 +39,7 @@ NA‑Engine uses a branch‑based workflow to maintain stability, clarity, and a
 
 ### Main branches
 - **main** → Stable code and released versions.
+- **qa** → Quality assurance and validation 
 - **develop** → Integration of new features before release.
 
 ### Working branches

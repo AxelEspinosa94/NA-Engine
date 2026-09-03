@@ -1,12 +1,13 @@
 import numpy as np
 import pytest
-from core.base_method import NumericalMethod
-from core.exceptions import ConstructionError,ValidationError, ExecutionError
 
+from core.base_method import NumericalMethod
+from core.exceptions import ConstructionError
 
 # ============================================================
 # Convergencia básica
 # ============================================================
+
 
 def test_newton_converges_basic():
     method = NumericalMethod(
@@ -27,12 +28,13 @@ def test_newton_converges_basic():
     # Luego ejecutamos
     result = method.execute().get("result", {})
 
-    assert abs(result["root"] - np.sqrt(2)) < 1e-8
+    assert abs(result["value"] - np.sqrt(2)) < 1e-8
 
 
 # ============================================================
 # Convergencia con raíz múltiple
 # ============================================================
+
 
 def test_newton_multiple_root():
     method = NumericalMethod(
@@ -50,12 +52,13 @@ def test_newton_multiple_root():
     method.validate_input()
     result = method.execute().get("result", {})
 
-    assert abs(result["root"] - 1) < 1.8e-6
+    assert abs(result["value"] - 1) < 1.8e-6
 
 
 # ============================================================
 # Derivada cero → debe fallar en ejecución
 # ============================================================
+
 
 def test_newton_derivative_zero():
     method = NumericalMethod(
@@ -75,9 +78,11 @@ def test_newton_derivative_zero():
     assert response["status"] == "error"
     assert response["error_type"] == "ExecutionError"
 
+
 # ============================================================
 # Divergencia → debe fallar en ejecución
 # ============================================================
+
 
 def test_newton_diverges():
     method = NumericalMethod(
@@ -104,6 +109,7 @@ def test_newton_diverges():
 # max_iter insuficiente → debe fallar en ejecución
 # ============================================================
 
+
 def test_newton_max_iter_exceeded():
     method = NumericalMethod(
         method="nonlinear",
@@ -128,6 +134,7 @@ def test_newton_max_iter_exceeded():
 # NaN / infinito → debe fallar en ejecución
 # ============================================================
 
+
 def test_newton_nan():
     method = NumericalMethod(
         method="nonlinear",
@@ -149,15 +156,14 @@ def test_newton_nan():
 # Validación: falta x0
 # ============================================================
 
-def test_newton_missing_x0():
-    method = NumericalMethod(
-        method="nonlinear",
-        input_data={
-            "mode": "function",
-            "function": "x**2 - 2",
-            "calculation_mode": "newton",
-        },
-    )
 
-    with pytest.raises(ValidationError):
-        method.validate_input()
+def test_newton_missing_x0():
+    with pytest.raises(ConstructionError):
+        NumericalMethod(
+            method="nonlinear",
+            input_data={
+                "mode": "function",
+                "function": "x**2 - 2",
+                "calculation_mode": "newton",
+            },
+        )

@@ -1,15 +1,15 @@
 # tests/integration/test_interpolation.py
-import pytest
 import pandas as pd
+
 from core.base_method import NumericalMethod
 from core.exceptions import ValidationError
 
 
 def make_nm(df, xk, calculation_mode="lagrange"):
     input_data = {
-        "mode":             "table",
-        "data":             df,
-        "xk":               xk,
+        "mode": "table",
+        "data": df,
+        "xk": xk,
         "calculation_mode": calculation_mode,
     }
     return NumericalMethod("interpolation", input_data)
@@ -18,6 +18,7 @@ def make_nm(df, xk, calculation_mode="lagrange"):
 # ---------------------------------------------------------------
 # Happy path (base para comparar contra los casos borde)
 # ---------------------------------------------------------------
+
 
 def test_lagrange_happy_path():
     nm = make_nm(
@@ -32,6 +33,7 @@ def test_lagrange_happy_path():
 # ---------------------------------------------------------------
 # x_eval fuera del rango de los nodos (extrapolación)
 # ---------------------------------------------------------------
+
 
 def test_lagrange_extrapolacion_izquierda():
     """xk menor que el mínimo de x — extrapolación por la izquierda."""
@@ -60,6 +62,7 @@ def test_lagrange_extrapolacion_derecha():
 # df con un solo punto
 # ---------------------------------------------------------------
 
+
 def test_lagrange_un_solo_punto():
     """Un único nodo no permite interpolación significativa."""
     nm = make_nm(
@@ -80,6 +83,7 @@ def test_lagrange_un_solo_punto():
 # df con puntos duplicados en x
 # ---------------------------------------------------------------
 
+
 def test_lagrange_x_duplicados():
     """Nodos repetidos en x causan división por cero en Lagrange."""
     nm = make_nm(
@@ -97,6 +101,7 @@ def test_lagrange_x_duplicados():
 # ---------------------------------------------------------------
 # xk exactamente igual a un nodo conocido
 # ---------------------------------------------------------------
+
 
 def test_lagrange_xk_igual_a_nodo():
     """Si xk coincide con un nodo, el resultado debe ser y de ese nodo."""

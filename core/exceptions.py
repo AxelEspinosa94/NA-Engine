@@ -1,5 +1,6 @@
 # core/exceptions.py
 
+
 class CatalogLoadError(Exception):
     pass
 
@@ -15,8 +16,10 @@ class ValidationError(Exception):
 class ExecutionError(Exception):
     pass
 
+
 class ConstructionError(Exception):
     pass
+
 
 class InputError(Exception):
     pass

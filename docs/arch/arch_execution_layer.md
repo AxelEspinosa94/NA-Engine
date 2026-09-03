@@ -1,15 +1,35 @@
-# Executor Layer
-
-## 1. Purpose
-
-The Executor is the layer where the numerical computation takes place. It receives a constructor instance (already validated) and runs the appropriate algorithm based
-on `calculation_mode`, returning a structured result dict.
-
-It is the only layer that performs mathematical work. All other layers are infrastructure around it.
 
 ---
 
-## 2. Interface
+# **Execution Layer Documentation**
+
+# **Table of Contents**
+
+-   [Purpose](#1-purpose)
+-   [Interface](#2-interface)
+-   [Internal Structure](#3-internal-structure)
+    -   [General Pattern Dispatcher by Calculation Mode](#31-dispatcher-by-calculation_mode)
+    -   [Helper Functions](#32-helper-functions)
+-   [Return Structure](#4-return-structure)
+-   [Error Handling](#5-error-handling)
+-   [Existing Executors](#6-existing-executors)
+-   [Executor Philosophy](#7-executor-philosophy)
+-   [Adding a New Method](#8-adding-a-new-method-new-method)
+-   [Adding a New Module](#9-adding-a-new-module-new-module)
+-   [What the Executor Does not do](#10-what-the-executor-does-not-do)
+-   [Summary](#11-summary)
+
+## **1. Purpose**
+
+The Execution Layer is where **numerical computation actually happens**.  
+It receives a fully constructed and validated method instance and executes the algorithm associated with its `calculation_mode`.
+
+It is the **only** layer that performs mathematical work.  
+All other layers (constructor, validator, renderer, UI contract) exist to support it.
+
+---
+
+## **2. Interface**
 
 All executors implement `ExecutorProtocol`:
 
@@ -18,21 +38,21 @@ class ExecutorProtocol(Protocol):
     def run(self, instance: Any) -> Any: ...
 ```
 
-`NumericalMethod` calls it as:
+`NumericalMethod` invokes it as:
 
 ```python
 result = self.executor.run(self.method_instance)
 ```
 
-Where `self.method_instance` is the constructor instance, which already holds all parsed and validated attributes (`self.df`, `self.xk`, `self.calculation_mode`, etc.).
+Where `self.method_instance` is the constructor instance containing all parsed and validated attributes (`df`, `xk`, `interval`, `n`, `calculation_mode`, etc.).
 
 ---
 
-## 3. Internal Structure
+## **3. Internal Structure**
 
-### 3.1 Dispatcher by `calculation_mode`
+### **3.1 Dispatcher by `calculation_mode`**
 
-`run()` dispatches to the correct private method via an internal dictionary:
+Each executor uses an internal dispatcher to route execution to the correct private method:
 
 ```python
 class <Module>Executor:
@@ -47,14 +67,21 @@ class <Module>Executor:
         return fn(instance)
 ```
 
-Each `_run_*` function is self-contained: it reads from the instance, performs the computation, and returns the result dict. Functions are not overloaded because each method has distinct algorithms and helper functions.
+Each `_run_<mode>()` is **self‑contained**:
 
-### 3.2 Helper functions
+- reads from the instance  
+- performs the numerical computation  
+- returns a structured result dict  
 
-Private helper methods support the `_run_*` functions for reusable sub-computations:
+Methods are not overloaded because each numerical technique has distinct algorithms and helper functions.
+
+---
+
+### **3.2 Helper Functions**
+
+Executors may define private helper functions for reusable sub‑computations:
 
 ```python
-# Interpolation examples
 def _lagrange_multiplier(self, df, i, xk) -> tuple: ...
 def _eval_lagrange(self, df, x) -> float: ...
 def _newton_expression(self, coef, x) -> str: ...
@@ -65,57 +92,50 @@ def _hermite_expression(self, Q, z, m) -> str: ...
 def _eval_hermite(self, Q, z, m, xk) -> float: ...
 ```
 
-Helpers are private and belong to the executor that uses them. They are not shared across executors.
+Helpers are **private** and belong exclusively to the executor that uses them.  
+They are not shared across modules.
 
 ---
 
-## 4. Return Structure
+## **4. Return Structure**
 
-Each `_run_*` method returns a dict. The keys vary by method, but the general structure for interpolation is:
+Each `_run_<mode>()` returns a dict.  
+The keys vary by method, but the general structure for interpolation is:
 
 ```python
 {
-    "value":      float,          # computed result at xk
-    "expression": str,            # symbolic polynomial expression
-    "table":      pd.DataFrame,   # input nodes used in the computation
-    "x":          list[float],    # x points for plotting the curve
-    "y":          list[float],    # y points for plotting the curve
-    "x_nodes":    list[float],    # original x node values
-    "y_nodes":    list[float],    # original y node values
+    "value":      float,
+    "expression": str,
+    "table":      pd.DataFrame,
+    "x":          list[float],
+    "y":          list[float],
+    "x_nodes":    list[float],
+    "y_nodes":    list[float],
 }
 ```
 
-Not all keys are required for every method. The keys present in the dict determine what `Renderer` and `UIContract` render — methods that return fewer keys produce fewer visual blocks with no changes to downstream layers.
+Other domains (integration, ODE, linear algebra, etc.) define their own key sets.
 
-**Key presence by interpolation method:**
+The contract is:
 
-| Key          | Lagrange | Newton | Splines | Hermite |
-|--------------|----------|--------|---------|---------|
-| `value`      | ✓        | ✓      | ✓       | ✓       |
-| `expression` | ✓        | ✓      | ✓       | ✓       |
-| `table`      | ✓        | ✓      | ✓       | ✓       |
-| `x`          | ✓        | ✓      | ✓       | ✓       |
-| `y`          | ✓        | ✓      | ✓       | ✓       |
-| `x_nodes`    | ✓        | ✓      | ✓       | ✓       |
-| `y_nodes`    | ✓        | ✓      | ✓       | ✓       |
+> **Whatever keys the executor returns, `UIContract._build_blocks()` will render them.**
 
-Other domains (integration, ODE) will define their own key sets. The contract is:
-**whatever keys are returned, `UIContract._build_blocks()` handles them.**
+Executors do not need to coordinate with the UI layer.
 
 ---
 
-## 5. Error Handling
+## **5. Error Handling**
 
-If the computation fails, the executor raises `ExecutionError`:
+Executors raise `ExecutionError` when a computation fails:
 
 ```python
 raise ExecutionError("Descriptive message about what failed")
 ```
 
-`NumericalMethod.execute()` wraps the executor call in a try/except and passes any exception to `ErrorNormalizer.normalize()`, which returns a structured error outcome instead of propagating the exception:
+`NumericalMethod.execute()` wraps the executor call:
 
 ```python
-def execute(self) -> Any:
+def execute(self):
     try:
         result = self.executor.run(self.method_instance)
         return {"status": "success", "result": result}
@@ -127,55 +147,190 @@ def execute(self) -> Any:
         )
 ```
 
-The executor itself never returns an error dict — it either returns a result dict or raises. The normalization is always handled by `NumericalMethod`.
+Executors **never** return error dicts — they raise exceptions.  
+Normalization is handled by `NumericalMethod`.
 
 ---
 
-## 6. Existing Executors
+## **6. Existing Executors**
 
-| Module        | Class                     | File                                                 |
-|---------------|---------------------------|------------------------------------------------------|
-| Interpolation | `InterpolationExecutor`   | `strategies/executors/interpolation_executors.py`    |
-| Integration   | `IntegrationExecutor`     | `strategies/executors/integration_executors.py`      |
-| ODE           | `ODEExecutor`             | `strategies/executors/ode_executors.py`              |
-| Linear Algebra Executors           | `LinearAlgebraExecutor`             | `strategies/executors/linear-algebra-executors.py`              |
-| Non Linear           | `NonLinearExecutor`             | `strategies/executors/Non-linear-executors.py`              |
-| Numerical Derivative           | `NumericalDerivativeExecutor`             | `strategies/executors/numerical-derivative-executors.py`              |
-
----
-
-## 7. What the Executor Does NOT Do
-
-- It does not validate input — that is the Validator's responsibility.
-- It does not parse or transform `input_data` — attributes are already set by the Constructor and available on the instance.
-- It does not render or format output for the UI — that is `Renderer` and `UIContract`'s responsibility.
-- It does not return error dicts — it raises `ExecutionError` and lets `NumericalMethod` normalize it.
+| Module            | Class                       | File Path                                                   |
+|-------------------|-----------------------------|-------------------------------------------------------------|
+| Interpolation     | `InterpolationExecutor`     | `strategies/executors/interpolation_executors.py`          |
+| Integration       | `IntegrationExecutor`       | `strategies/executors/integration_executors.py`            |
+| ODE               | `ODEExecutor`               | `strategies/executors/ode_executors.py`                    |
+| Linear Algebra    | `LinearAlgebraExecutor`     | `strategies/executors/linear_algebra_executors.py`         |
+| Non‑Linear        | `NonLinearExecutor`         | `strategies/executors/non_linear_executors.py`             |
+| Numerical Deriv.  | `NumericalDerivativeExecutor` | `strategies/executors/numerical_derivative_executors.py` |
 
 ---
 
-## 8. Extension Guide
+# **7. Executor Philosophy**
 
-When adding a new calculation mode to an existing executor:
+The Execution Layer follows three core principles:
 
-1. Add a new `_run_<mode>()` private method
-2. Add any necessary helper methods (`_eval_<mode>()`, `_<mode>_expression()`, etc.)
-3. Register the new mode in the `run()` dispatcher
-4. Return a dict with at minimum `"value"` and any keys relevant to the output
-5. Add the new `calculation_mode` value to the catalog or constructor as needed
+**1. One executor per module**
+Each numerical domain (interpolation, integration, ODE, etc.) has its own executor class.
 
-When adding a new module executor:
+This keeps algorithms isolated and prevents cross‑module coupling.
 
-1. Create `strategies/executors/<module>_executors.py`
-2. Define `class <Module>Executor` with a single `run()` method
-3. Add the dispatcher and `_run_*` methods
-4. Define the return dict structure for that domain
-5. Register the class path in `method_catalog.json`
+**2. One `_run_<mode>()` per method**
+Each numerical method is implemented as a private function:
+
+- `_run_simpson_1_3`
+- `_run_gauss_legendre`
+- `_run_clenshaw_curtis`
+- `_run_<new-method>`
+
+This ensures clarity, maintainability, and testability.
+
+**3. Dispatcher + helpers**
+The executor is structured as:
+
+```
+run() → dispatcher → _run_<mode>() → helpers → result dict
+```
+
+This pattern is consistent across all modules.
+
+---
+
+# **8. Adding a New Method (`<new-method>`)**
+
+When adding a new calculation mode to an existing module:
+
+**1. Add a private `_run_<new-method>()`**
+Example:
+
+```python
+def _run_<new-method>(self, instance):
+    ...
+    return {"value": result, ...}
+```
+
+**2. Add helper functions if needed**
+Example:
+
+```python
+def _eval_<new-method>(self, ...): ...
+```
+
+**3. Register the method in the dispatcher**
+
+```python
+dispatch = {
+    "simpson_1_3": self._run_simpson_1_3,
+    "clenshaw_curtis": self._run_clenshaw_curtis,
+    "<new-method>": self._run_<new-method>,
+}
+```
+
+**4. Ensure the Validator supports the new method**
+Add validation rules in:
+
+```
+strategies/validators/<module>/<module>_validation_catalog.json
+```
+
+**5. Add the method to `SUPPORTED_MODES`**
+Always append at the end:
+
+```json
+"supported_modes": [
+  "simpson_1_3",
+  "clenshaw_curtis",
+  "<new-method>"
+]
+```
+
+**6. Register the executor in `method_catalog.json`**
 
 ```json
 {
-  "<method>": {
+  "<new-method>": {
     "classExecutor": "strategies.executors.<module>_executors.<Module>Executor",
     ...
   }
 }
 ```
+
+---
+
+# **9. Adding a New Module (`<new-module>`)**
+
+When adding a new numerical domain:
+
+**1. Create the folder structure**
+
+```
+strategies/
+  executors/
+    <new-module>/
+      __init__.py
+      <new-module>_executors.py
+```
+
+**2. Create the executor class**
+
+```python
+class <NewModule>Executor:
+    def run(self, instance):
+        dispatch = {
+            "<new-method>": self._run_<new-method>,
+        }
+        ...
+```
+
+**3. Add validation rules**
+Create:
+
+```
+strategies/validators/<new-module>/
+    <new-module>_validators.py
+    <new-module>_validation_catalog.json
+```
+
+**4. Register the module in `method_catalog.json`**
+
+```json
+{
+  "<new-method>": {
+    "classConstructor": "strategies.constructors.<new-module>.<NewModule>Constructor",
+    "classInputValidator": "strategies.validators.<new-module>.<NewModule>Validator",
+    "classExecutor": "strategies.executors.<new-module>.<NewModule>Executor"
+  }
+}
+```
+
+**5. Add the new method to `SUPPORTED_MODES`**
+
+**6. Write unit tests for the new executor**
+
+---
+
+# **10. What the Executor Does NOT Do**
+
+- Does **not** validate input  
+- Does **not** parse or transform `input_data`  
+- Does **not** render UI output  
+- Does **not** return error dicts  
+- Does **not** modify the constructor instance  
+
+Executors **only** compute and return results.
+
+---
+
+# **11. Summary**
+
+The Execution Layer is:
+
+- modular  
+- scalable  
+- catalog‑driven  
+- easy to extend with `<new-module>` and `<new-method>`  
+- consistent across all numerical domains  
+- cleanly separated from validation and UI layers  
+
+This architecture ensures NA‑Engine remains maintainable, predictable, and ready for future numerical methods.
+
+---

@@ -1,0 +1,13 @@
+{
+    "modules": {
+        "home": "app.layout.home_layout.home_layout",
+        "interpolation": "app.layout.interpolation_layout.interpolation_section",
+        "integration": "app.layout.integration.integration_layout.integration_section",
+        "linear_algebra": "app.layout.linear_algebra_layout.linear_algebra_section",
+        "derivative": "app.layout.numerical_derivative_layout.derivative_section",
+        "nonlinear": "app.layout.non_linear_layout.nonlinear_section",
+        "odes": "app.layout.ode_layout.ode_section",
+        "docs": "app.layout.docs.docs_layout.docs_section",
+        "about": "app.layout.about.about_layout.about_section"
+    }
+}

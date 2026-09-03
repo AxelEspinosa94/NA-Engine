@@ -1,6 +1,5 @@
-# callbacks/ode_callbacks.py
+from dash import Input, Output, State, html
 
-from dash import Input, Output, State, html, dcc
 from core.base_method import NumericalMethod
 from core.contract import UIContract
 
@@ -39,8 +38,13 @@ def register_ode_callbacks(app):
 
         # IVP methods
         ivp_modes = {
-            "euler", "heun", "rk2", "rk4",
-            "adams_bashforth_2", "adams_bashforth_3", "adams_moulton_2"
+            "euler",
+            "heun",
+            "rk2",
+            "rk4",
+            "adams_bashforth_2",
+            "adams_bashforth_3",
+            "adams_moulton_2",
         }
 
         # System ODE
@@ -135,7 +139,9 @@ def register_ode_callbacks(app):
         # Modo sistema
         else:
             if system:
-                system_list = [line.strip() for line in system.split("\n") if line.strip()]
+                system_list = [
+                    line.strip() for line in system.split("\n") if line.strip()
+                ]
                 input_data["system"] = system_list
 
             if y0_system:
@@ -144,8 +150,13 @@ def register_ode_callbacks(app):
 
         # IVP fields
         if method in {
-            "euler", "heun", "rk2", "rk4",
-            "adams_bashforth_2", "adams_bashforth_3", "adams_moulton_2"
+            "euler",
+            "heun",
+            "rk2",
+            "rk4",
+            "adams_bashforth_2",
+            "adams_bashforth_3",
+            "adams_moulton_2",
         }:
             input_data["x0"] = x0
             input_data["y0"] = y0
@@ -184,10 +195,7 @@ def register_ode_callbacks(app):
             nm.validate_input()
             outcome = nm.execute()
         except Exception as e:
-            return html.Div(
-                className="error",
-                children=f"Error: {str(e)}"
-            )
+            return html.Div(className="error", children=f"Error: {str(e)}")
 
         # ───────────────────────────────────────────────
         # Resolver UIContract

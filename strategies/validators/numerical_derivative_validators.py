@@ -1,5 +1,6 @@
 import numbers
 import re
+
 from core.exceptions import ValidationError
 
 
@@ -27,7 +28,9 @@ class NumericalDerivativeValidator:
         # ───────────────────────────────────────────────
         mode = input_data.get("calculation_mode")
         if mode is None:
-            raise ValidationError("calculation_mode is required for NumericalDerivative.")
+            raise ValidationError(
+                "calculation_mode is required for NumericalDerivative."
+            )
 
         if mode not in self.SUPPORTED_MODES:
             raise ValidationError(f"Unsupported calculation_mode: {mode}")
@@ -64,23 +67,25 @@ class NumericalDerivativeValidator:
         if mode in ["partial_x", "partial_y"]:
             y = input_data.get("y")
             if not isinstance(y, numbers.Real):
-                raise ValidationError("y must be a real number for partial derivatives.")
+                raise ValidationError(
+                    "y must be a real number for partial derivatives."
+                )
 
         # ───────────────────────────────────────────────
         # Validate function variables depending on mode
         # ───────────────────────────────────────────────
-        #tokens = re.findall(r"[a-zA-Z]+", func)
+        # tokens = re.findall(r"[a-zA-Z]+", func)
 
-        #if mode in ["forward", "backward", "central",
+        # if mode in ["forward", "backward", "central",
         #            "second_forward", "second_central",
         #            "third_forward", "richardson"]:
         #    allowed = {"x"}
-        #elif mode == "partial_x":
+        # elif mode == "partial_x":
         #    allowed = {"x", "y"}   # f(x, y) but derivative wrt x
-        #elif mode == "partial_y":
+        # elif mode == "partial_y":
         #    allowed = {"x", "y"}   # f(x, y) but derivative wrt y
 
-        #for t in tokens:
+        # for t in tokens:
         #    if t not in allowed:
         #        raise ValidationError(
         #            f"Invalid variable '{t}' in function for mode '{mode}'. "

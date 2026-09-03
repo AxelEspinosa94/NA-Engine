@@ -1,6 +1,8 @@
-import pandas as pd
+from typing import Any, Dict
+
 import numpy as np
-from typing import Dict, Any
+import pandas as pd
+
 from core.exceptions import ValidationError
 
 
@@ -42,10 +44,14 @@ class InterpolationValidator:
                 x = df.iloc[:, 0].values
 
                 if not np.all(np.diff(x) > 0):
-                    raise ValidationError("x values must be strictly increasing for Hermite.")
+                    raise ValidationError(
+                        "x values must be strictly increasing for Hermite."
+                    )
 
                 if len(x) < 2:
-                    raise ValidationError("Hermite interpolation requires at least 2 points.")
+                    raise ValidationError(
+                        "Hermite interpolation requires at least 2 points."
+                    )
 
                 if df.isna().any().any():
                     raise ValidationError("Hermite table contains NaN values.")
@@ -53,12 +59,16 @@ class InterpolationValidator:
                 # Numeric types
                 for col in df.columns:
                     if not pd.api.types.is_numeric_dtype(df[col]):
-                        raise ValidationError(f"Column {col} must contain numeric values.")
+                        raise ValidationError(
+                            f"Column {col} must contain numeric values."
+                        )
 
             # Other methods: 2 columns
             else:
                 if df.shape[1] != 2:
-                    raise ValidationError("DataFrame must have exactly 2 columns: x and f(x).")
+                    raise ValidationError(
+                        "DataFrame must have exactly 2 columns: x and f(x)."
+                    )
 
                 if df.isnull().any().any():
                     raise ValidationError("DataFrame contains NaN values.")
@@ -77,7 +87,11 @@ class InterpolationValidator:
         # FUNCTION MODE
         # -------------------------
         if mode == "function":
-            func = input_data.get("data") if calculation_mode != "hermite" else input_data.get("function")
+            func = (
+                input_data.get("data")
+                if calculation_mode != "hermite"
+                else input_data.get("function")
+            )
             interval = input_data.get("interval")
             step = input_data.get("step")
 

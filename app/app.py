@@ -1,14 +1,15 @@
 from dash import Dash
-from .layout.base_layout import layout
-from .callbacks.theme_callbacks import register_theme_callbacks
-from .callbacks.navigation_callbacks import register_navigation_callbacks
+
+from .callbacks.docs.docs_callbacks import register_docs_callbacks
+from .callbacks.integration.integration_callbacks import register_integration_callbacks
 from .callbacks.interpolation_callbacks import register_interpolation_callbacks
-from .callbacks.integration_callbacks import register_integration_callbacks
 from .callbacks.linear_algebra_callbacks import register_linear_algebra_callbacks
-from .callbacks.numerical_derivative_callbacks import register_derivative_callbacks
+from .callbacks.navigation_callbacks import register_navigation_callbacks
 from .callbacks.non_linear_callbacks import register_nonlinear_callbacks
+from .callbacks.numerical_derivative_callbacks import register_derivative_callbacks
 from .callbacks.ode_callbacks import register_ode_callbacks
-from .callbacks.docs_callbacks import register_docs_callbacks
+from .callbacks.theme_callbacks import register_theme_callbacks
+from .layout.base_layout import layout
 
 
 def create_app():

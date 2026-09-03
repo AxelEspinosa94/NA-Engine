@@ -1,12 +1,13 @@
 import numpy as np
 import pytest
-from core.base_method import NumericalMethod
-from core.exceptions import ValidationError, ExecutionError
 
+from core.base_method import NumericalMethod
+from core.exceptions import ConstructionError
 
 # ============================================================
 # Convergencia básica
 # ============================================================
+
 
 def test_secant_basic():
     method = NumericalMethod(
@@ -25,12 +26,13 @@ def test_secant_basic():
     method.validate_input()
     result = method.execute().get("result", {})
 
-    assert abs(result["root"] - np.sqrt(2)) < 1e-6
+    assert abs(result["value"] - np.sqrt(2)) < 1e-6
 
 
 # ============================================================
 # Denominador cero → falla en ejecución
 # ============================================================
+
 
 def test_secant_zero_denominator():
     method = NumericalMethod(
@@ -53,6 +55,7 @@ def test_secant_zero_denominator():
 # ============================================================
 # Divergencia → falla en ejecución
 # ============================================================
+
 
 def test_secant_diverges():
     method = NumericalMethod(
@@ -78,6 +81,7 @@ def test_secant_diverges():
 # max_iter insuficiente → falla en ejecución
 # ============================================================
 
+
 def test_secant_max_iter_exceeded():
     method = NumericalMethod(
         method="nonlinear",
@@ -102,15 +106,14 @@ def test_secant_max_iter_exceeded():
 # Validación: falta x0 o x1
 # ============================================================
 
-def test_secant_missing_x0_x1():
-    method = NumericalMethod(
-        method="nonlinear",
-        input_data={
-            "mode": "function",
-            "function": "x**2 - 2",
-            "calculation_mode": "secant",
-        },
-    )
 
-    with pytest.raises(ValidationError):
-        method.validate_input()
+def test_secant_missing_x0_x1():
+    with pytest.raises(ConstructionError):
+        NumericalMethod(
+            method="nonlinear",
+            input_data={
+                "mode": "function",
+                "function": "x**2 - 2",
+                "calculation_mode": "secant",
+            },
+        )

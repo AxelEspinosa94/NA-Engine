@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+
 from core.exceptions import ExecutionError
 
 
@@ -17,7 +18,9 @@ class NonLinearExecutor:
         }
 
         if mode not in dispatch:
-            raise ExecutionError(f"Executor not implemented for calculation_mode '{mode}'.")
+            raise ExecutionError(
+                f"Executor not implemented for calculation_mode '{mode}'."
+            )
 
         # Run method → returns (root, iterations, x_list, y_list)
         root, iters, xs, ys = dispatch[mode](instance)
@@ -31,11 +34,13 @@ class NonLinearExecutor:
 
     def _build_output(self, instance, root, iters, xs, ys):
         # Build iteration table
-        table = pd.DataFrame({
-            "iter": list(range(1, len(xs) + 1)),
-            "x": xs,
-            "f(x)": ys,
-        })
+        table = pd.DataFrame(
+            {
+                "iter": list(range(1, len(xs) + 1)),
+                "x": xs,
+                "f(x)": ys,
+            }
+        )
 
         # Build symbolic expression
         expr = self._build_expr(instance.calculation_mode)
@@ -46,7 +51,6 @@ class NonLinearExecutor:
             "table": table,
             "x": xs,
             "y": ys,
-            "matrix": None,
             "vector": xs,
             "calculation_mode": instance.calculation_mode,
             "iterations": iters,
@@ -153,11 +157,21 @@ class NonLinearExecutor:
         xs, ys = [], []
 
         for i in range(1, max_iter + 1):
-            fx = f(x)
-            fpx = fprime(x)
+            try:
+                fx = f(x)
+                fpx = fprime(x)
+            except Exception as e:
+                raise ExecutionError(
+                    f"Newton method failed during function evaluation: {e}"
+                )
+
+            if not np.isfinite(fx):
+                raise ExecutionError("Newton method failed: f(x) is not finite.")
 
             if abs(fpx) < 1e-14 or not np.isfinite(fpx):
-                raise ExecutionError("Newton method failed: derivative is zero or invalid.")
+                raise ExecutionError(
+                    "Newton method failed: derivative is zero or invalid."
+                )
 
             x_next = x - fx / fpx
 
@@ -186,7 +200,9 @@ class NonLinearExecutor:
 
             denom = f1 - f0
             if denom == 0 or not np.isfinite(denom):
-                raise ExecutionError("Secant method failed: zero or invalid denominator.")
+                raise ExecutionError(
+                    "Secant method failed: zero or invalid denominator."
+                )
 
             x2 = x1 - f1 * (x1 - x0) / denom
 

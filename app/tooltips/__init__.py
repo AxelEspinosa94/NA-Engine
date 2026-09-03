@@ -14,5 +14,6 @@ ALL_TOOLTIPS = {
     **NUMERICAL_DERIVATIVE,
 }
 
+
 def get_tooltip(key):
     return ALL_TOOLTIPS.get(key, "")
