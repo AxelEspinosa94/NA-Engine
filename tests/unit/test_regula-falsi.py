@@ -1,12 +1,13 @@
 import numpy as np
 import pytest
-from core.base_method import NumericalMethod
-from core.exceptions import ValidationError, ExecutionError, ConstructionError
 
+from core.base_method import NumericalMethod
+from core.exceptions import ConstructionError
 
 # ============================================================
 # Convergencia básica
 # ============================================================
+
 
 def test_false_position_basic():
     method = NumericalMethod(
@@ -31,6 +32,7 @@ def test_false_position_basic():
 # No hay cambio de signo → falla en ejecución
 # ============================================================
 
+
 def test_false_position_no_sign_change():
     method = NumericalMethod(
         method="nonlinear",
@@ -52,6 +54,7 @@ def test_false_position_no_sign_change():
 # Intervalo inválido → falla en validación
 # ============================================================
 
+
 def test_false_position_invalid_interval():
     with pytest.raises(ConstructionError):
         NumericalMethod(
@@ -64,9 +67,11 @@ def test_false_position_invalid_interval():
             },
         )
 
+
 # ============================================================
 # max_iter insuficiente → falla en ejecución
 # ============================================================
+
 
 def test_false_position_max_iter_exceeded():
     method = NumericalMethod(
@@ -91,6 +96,7 @@ def test_false_position_max_iter_exceeded():
 # Función oscilante
 # ============================================================
 
+
 def test_false_position_oscillatory():
     method = NumericalMethod(
         method="nonlinear",
@@ -113,6 +119,7 @@ def test_false_position_oscillatory():
 # ============================================================
 # Función siempre positiva → falla en ejecución
 # ============================================================
+
 
 def test_false_position_always_positive():
     method = NumericalMethod(

@@ -2,12 +2,12 @@ import numpy as np
 import pytest
 
 from core.base_method import NumericalMethod
-from core.exceptions import ValidationError, ExecutionError, ConstructionError
-
+from core.exceptions import ConstructionError, ValidationError
 
 # ============================================================
 # VALIDATION TESTS
 # ============================================================
+
 
 def test_missing_calculation_mode():
     with pytest.raises(ConstructionError):
@@ -21,6 +21,7 @@ def test_missing_calculation_mode():
                 "h": 0.1,
             },
         )
+
 
 def test_invalid_function():
     with pytest.raises(ConstructionError):
@@ -36,6 +37,7 @@ def test_invalid_function():
             },
         )
 
+
 def test_invalid_x0():
     with pytest.raises(ConstructionError):
         NumericalMethod(
@@ -49,6 +51,7 @@ def test_invalid_x0():
                 "calculation_mode": "euler",
             },
         )
+
 
 def test_invalid_h():
     method = NumericalMethod(
@@ -80,6 +83,7 @@ def test_system_requires_list_of_functions():
             },
         )
 
+
 def test_shooting_requires_alpha_beta_s0():
     with pytest.raises(ConstructionError):
         NumericalMethod(
@@ -92,6 +96,7 @@ def test_shooting_requires_alpha_beta_s0():
                 "calculation_mode": "shooting",
             },
         )
+
 
 def test_finite_differences_requires_n():
     with pytest.raises(ConstructionError):
@@ -107,9 +112,11 @@ def test_finite_differences_requires_n():
             },
         )
 
+
 # ============================================================
 # EXECUTION TESTS
 # ============================================================
+
 
 def test_euler_simple():
     # y' = y, y(0)=1 → y = e^x
@@ -228,12 +235,12 @@ def test_shooting_method():
     method = NumericalMethod(
         method="ode",
         input_data={
-            "function": "0",   # y'' = 0
+            "function": "0",  # y'' = 0
             "x0": 0,
             "x_end": 1,
             "alpha": 0,
             "beta": 1,
-            "s0": 1,           # initial slope guess
+            "s0": 1,  # initial slope guess
             "h": 0.01,
             "calculation_mode": "shooting",
         },

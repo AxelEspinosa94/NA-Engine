@@ -1,5 +1,23 @@
 # NA-Engine — Architecture Overview
 
+# **Table of Contents**
+
+-   [Purpose](#1-purpose)
+-   [High-Level Flow](#2-high-level-flow)
+-   [Layer Responsibilities](#3-layer-responsibilities)
+    -   [Catalog](#31-catalog--coremethod_catalogjson)
+    -   [Class NumericalMethod](#32-numericalmethod--corebase_methodpy)
+    -   [Constructor](#33-constructor--eg-coremodulemodule)
+    -   [Validator](#34-validator--strategiesvalidatorsmodule_validatorspy)
+    -   [Executor](#35-executor--strategiesexecutorsmodule_executorspy-updated)
+    -   [Error Normalizer](#36-errornormalizer--coreerror_normalizerpy)
+    -   [Renderer](#37-renderer--corerendererpy)
+    -   [UI Contract](#38-uicontract--corecontractpy)
+    -   [Result View](#39-result_view--appcomponentsresult_viewpy)
+-   [Project Structure](#4-project-structure-relevant-paths)
+-   [Extension Guide](#5-extension-guide)
+
+
 ## 1. Purpose
 
 NA-Engine is a numerical analysis calculator built on a layered architecture that separates mathematical logic, input validation, execution, and UI rendering into independent, testable components. Each layer communicates through well-defined contracts, making it straightforward
@@ -148,33 +166,101 @@ Returns `True` or raises `ValidationError`.
 
 ---
 
-### 3.5 Executor — `strategies/executors/<module>_executors.py`
+### 3.5 Executor — `strategies/executors/<module>_executors.py` (Updated)
 
-Implements `ExecutorProtocol`:
+The Executor Layer is the **mathematical core** of NA‑Engine.  
+It receives a fully constructed and validated instance and performs the numerical computation associated with its `calculation_mode`.
+
+Executors implement `ExecutorProtocol`:
 
 ```python
 class ExecutorProtocol(Protocol):
     def run(self, instance: Any) -> Any: ...
 ```
 
-`run()` dispatches to the correct private method based on `instance.calculation_mode`:
+---
 
-```python
-def run(self, instance):
-    dispatch = {
-        "lagrange": self._run_lagrange,
-        "newton":   self._run_newton,
-        "splines":  self._run_spline,
-        "hermite":  self._run_hermite,
-    }
-    return dispatch[instance.calculation_mode](instance)
+#### **Execution Philosophy**
+
+The Executor follows three architectural principles:
+
+**1. One executor per module**
+Each numerical domain (interpolation, integration, ODE, etc.) has its own executor class:
+
+```
+InterpolationExecutor
+IntegrationExecutor
+ODEExecutor
+LinearAlgebraExecutor
+NonLinearExecutor
+NumericalDerivativeExecutor
+<NewModule>Executor
 ```
 
-Each `_run_*` method returns a dict with a consistent structure:
+This keeps algorithms isolated and prevents cross‑module coupling.
+
+**2. One `_run_<mode>()` per numerical method**
+Each numerical method is implemented as a private function:
+
+```
+_run_lagrange()
+_run_newton()
+_run_spline()
+_run_hermite()
+_run_gauss_legendre()
+_run_clenshaw_curtis()
+_run_<new-method>()
+```
+
+This ensures clarity, maintainability, and testability.
+
+**3. Dispatcher + helpers**
+Executors follow a consistent pattern:
+
+```
+run() → dispatcher → _run_<mode>() → helpers → result dict
+```
+
+This pattern is identical across all modules.
+
+---
+
+#### **Dispatcher by `calculation_mode`**
+
+`run()` selects the correct algorithm using an internal dictionary:
+
+```python
+class <Module>Executor:
+    def run(self, instance) -> Dict[str, Any]:
+        dispatch = {
+            "lagrange":          self._run_lagrange,
+            "newton":            self._run_newton,
+            "splines":           self._run_spline,
+            "hermite":           self._run_hermite,
+            "gauss_legendre":    self._run_gauss_legendre,
+            "clenshaw_curtis":   self._run_clenshaw_curtis,
+            "<new-method>":      self._run_<new-method>,
+        }
+
+        fn = dispatch.get(instance.calculation_mode)
+        if fn is None:
+            raise ExecutionError(f"Unknown calculation_mode: '{instance.calculation_mode}'")
+
+        return fn(instance)
+```
+
+Each `_run_<mode>()` is **self‑contained** and returns a structured result dict.
+
+---
+
+#### **Return Structure**
+
+Executors return a dict whose keys depend on the numerical domain.  
+For interpolation, the structure is:
 
 ```python
 {
-    "value":      float,        # interpolated value at xk
+    "value":      float,        # computed value at xk
     "expression": str,          # symbolic polynomial expression
     "table":      pd.DataFrame, # input nodes
     "x":          list[float],  # x points for plotting
@@ -183,6 +269,141 @@ Each `_run_*` method returns a dict with a consistent structure:
     "y_nodes":    list[float],  # original y nodes
 }
 ```
+
+Other modules (integration, ODE, linear algebra, etc.) define their own key sets.  
+The contract is:
+
+> **Whatever keys the executor returns, `UIContract._build_blocks()` will render them.**
+
+Executors do not need to coordinate with the UI layer.
+
+---
+
+#### **Adding a New Method — `<new-method>`**
+
+To add a new numerical method inside an existing module:
+
+**1. Implement `_run_<new-method>()`**
+
+```python
+def _run_<new-method>(self, instance):
+    # perform computation
+    return {
+        "value": result,
+        "details": {...},   # optional
+    }
+```
+
+**2. Add helper functions if needed**
+
+```python
+def _eval_<new-method>(self, ...): ...
+```
+
+**3. Register the method in the dispatcher**
+
+```python
+dispatch["<new-method>"] = self._run_<new-method>
+```
+
+**4. Add `<new-method>` to the module’s validation catalog**
+
+Inside:
+
+```
+strategies/validators/<module>/<module>_validation_catalog.json
+```
+
+Append to `supported_modes`:
+
+```json
+"supported_modes": [
+  "lagrange",
+  "newton",
+  "splines",
+  "hermite",
+  "<new-method>"
+]
+```
+
+**5. Register the executor in `method_catalog.json`**
+
+```json
+{
+  "<new-method>": {
+    "classExecutor": "strategies.executors.<module>_executors.<Module>Executor",
+    ...
+  }
+}
+```
+
+---
+
+#### **Adding a New Module — `<new-module>`**
+
+When introducing a new numerical domain:
+
+**1. Create the folder structure**
+
+```
+strategies/
+  executors/
+    <new-module>/
+      __init__.py
+      <new-module>_executors.py
+```
+
+**2. Create the executor class**
+
+```python
+class <NewModule>Executor:
+    def run(self, instance):
+        dispatch = {
+            "<new-method>": self._run_<new-method>,
+        }
+        ...
+```
+
+**3. Add validation rules**
+
+Create:
+
+```
+strategies/validators/<new-module>/
+    <new-module>_validators.py
+    <new-module>_validation_catalog.json
+```
+
+**4. Register the module in `method_catalog.json`**
+
+```json
+{
+  "<new-method>": {
+    "classConstructor": "strategies.constructors.<new-module>.<NewModule>Constructor",
+    "classInputValidator": "strategies.validators.<new-module>.<NewModule>Validator",
+    "classExecutor": "strategies.executors.<new-module>.<NewModule>Executor"
+  }
+}
+```
+
+**5. Add `<new-method>` to `SUPPORTED_MODES`**
+
+**6. Write unit tests for the new executor**
+
+---
+
+#### **Summary**
+
+The Executor Layer is:
+
+- modular  
+- scalable  
+- catalog‑driven  
+- easy to extend with `<new-method>` and `<new-module>`  
+- consistent across all numerical domains  
+- cleanly separated from validation and UI layers  
+
+It is the mathematical heart of NA‑Engine.
 
 ---
 

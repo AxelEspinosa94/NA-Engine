@@ -1,12 +1,13 @@
 import numpy as np
 import pytest
-from core.base_method import NumericalMethod
-from core.exceptions import ValidationError, ExecutionError, ConstructionError
 
+from core.base_method import NumericalMethod
+from core.exceptions import ConstructionError
 
 # ============================================================
 # Convergencia básica
 # ============================================================
+
 
 def test_secant_basic():
     method = NumericalMethod(
@@ -32,6 +33,7 @@ def test_secant_basic():
 # Denominador cero → falla en ejecución
 # ============================================================
 
+
 def test_secant_zero_denominator():
     method = NumericalMethod(
         method="nonlinear",
@@ -53,6 +55,7 @@ def test_secant_zero_denominator():
 # ============================================================
 # Divergencia → falla en ejecución
 # ============================================================
+
 
 def test_secant_diverges():
     method = NumericalMethod(
@@ -78,6 +81,7 @@ def test_secant_diverges():
 # max_iter insuficiente → falla en ejecución
 # ============================================================
 
+
 def test_secant_max_iter_exceeded():
     method = NumericalMethod(
         method="nonlinear",
@@ -101,6 +105,7 @@ def test_secant_max_iter_exceeded():
 # ============================================================
 # Validación: falta x0 o x1
 # ============================================================
+
 
 def test_secant_missing_x0_x1():
     with pytest.raises(ConstructionError):

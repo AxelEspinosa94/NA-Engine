@@ -1,12 +1,13 @@
 import pytest
-from core.error_normalizer import ErrorNormalizer
-from core.exceptions import ConstructionError, ValidationError, ExecutionError
-from core.base_method import NumericalMethod
 
+from core.base_method import NumericalMethod
+from core.error_normalizer import ErrorNormalizer
+from core.exceptions import ConstructionError, ExecutionError, ValidationError
 
 # ---------------------------------------------------------
 # 1. Unit tests for ErrorNormalizer.normalize()
 # ---------------------------------------------------------
+
 
 def test_normalize_validation_error():
     exc = ValidationError("invalid input")
@@ -58,6 +59,7 @@ def test_normalize_internal_error():
 # 2. Integration tests with NumericalMethod.execute()
 # ---------------------------------------------------------
 
+
 def test_execute_returns_normalized_construction_error():
     with pytest.raises(ConstructionError):
         NumericalMethod(
@@ -69,6 +71,7 @@ def test_execute_returns_normalized_construction_error():
                 "calculation_mode": "bisection",
             },
         )
+
 
 def test_execute_returns_normalized_execution_error():
     method = NumericalMethod(
@@ -84,7 +87,10 @@ def test_execute_returns_normalized_execution_error():
     response = method.execute()
 
     assert response["status"] == "error"
-    assert response["error_type"] == "ExecutionError" or response["error_type"] == "MathError"
+    assert (
+        response["error_type"] == "ExecutionError"
+        or response["error_type"] == "MathError"
+    )
 
 
 def test_execute_success_format():
@@ -111,6 +117,7 @@ def test_execute_success_format():
 # 3. Format validation
 # ---------------------------------------------------------
 
+
 def test_error_format_contains_required_fields():
     exc = ValidationError("bad input")
     result = ErrorNormalizer.normalize(exc, "ode", {"x0": 10})
@@ -118,7 +125,6 @@ def test_error_format_contains_required_fields():
     assert set(result.keys()) == {"status", "error_type", "message", "context"}
     assert "method" in result["context"]
     assert "input_data" in result["context"]
-
 
 
 def test_normalize_construction_error():
@@ -130,18 +136,6 @@ def test_normalize_construction_error():
     assert result["message"] == "invalid constructor state"
     assert result["context"]["method"] == "interpolation"
 
-
-def test_execute_returns_normalized_construction_error():
-    # Provoca un ConstructionError al construir el método
-    
-    with pytest.raises(ConstructionError):
-        NumericalMethod(
-            method="interpolation",
-            input_data={
-                "calculation_mode": "lagrange",
-                "points": "corrupted",  # fuerza ConstructionError
-            },
-        )
 
 def test_construction_error_is_not_validation_error():
     exc = ConstructionError("bad structure")

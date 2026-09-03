@@ -1,7 +1,8 @@
 import numpy as np
 import pytest
+
 from core.base_method import NumericalMethod
-from core.exceptions import ValidationError, ConstructionError, ExecutionError
+from core.exceptions import ConstructionError
 
 
 def test_gauss_basic_x2():
@@ -21,7 +22,7 @@ def test_gauss_basic_x2():
     )
 
     result = method.execute().get("result", {})
-    assert abs(result["value"] - 1/3) < 1e-12
+    assert abs(result["value"] - 1 / 3) < 1e-12
 
 
 def test_gauss_exp():

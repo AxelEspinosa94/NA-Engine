@@ -1,46 +1,54 @@
-# app/components/result_view.py
-from dash import html, dcc
 import plotly.graph_objects as go
-from dash import dash_table
+from dash import dash_table, dcc, html
 
 
 def build_result_view(payload: dict) -> html.Div:
     renderers = {
-        "scalar":       _render_scalar,
-        "vector":       _render_vector,
-        "matrix":       _render_matrix,
+        "scalar": _render_scalar,
+        "vector": _render_vector,
+        "matrix": _render_matrix,
         "matrix_group": _render_matrix_group,
-        "table":        _render_table,
-        "plot":         _render_plot,
-        "error":        _render_error,
-        "raw":          _render_raw,
+        "table": _render_table,
+        "plot": _render_plot,
+        "error": _render_error,
+        "raw": _render_raw,
     }
     fn = renderers.get(payload["type"], _render_raw)
     return fn(payload)
 
 
 def _render_scalar(p):
-    return html.Div(className="result-scalar", children=[
-        html.Span(p["label"],          className="result-label"),
-        html.Span(f'{p["value"]:.6g}', className="result-value"),
-    ])
+    return html.Div(
+        className="result-scalar",
+        children=[
+            html.Span(p["label"], className="result-label"),
+            html.Span(f'{p["value"]:.6g}', className="result-value"),
+        ],
+    )
 
 
 def _render_vector(p):
-    return html.Div(className="result-vector", children=[
-        html.Span(p["label"], className="result-label"),
-        html.Ul([html.Li(f"{v:.6g}") for v in p["values"]]),
-    ])
+    return html.Div(
+        className="result-vector",
+        children=[
+            html.Span(p["label"], className="result-label"),
+            html.Ul([html.Li(f"{v:.6g}") for v in p["values"]]),
+        ],
+    )
 
 
 def _render_matrix(p):
-    return html.Div(className="result-matrix", children=[
-        html.Span(p["label"], className="result-label"),
-        html.Table(html.Tbody([
-            html.Tr([html.Td(f"{v:.6g}") for v in row])
-            for row in p["values"]
-        ])),
-    ])
+    return html.Div(
+        className="result-matrix",
+        children=[
+            html.Span(p["label"], className="result-label"),
+            html.Table(
+                html.Tbody(
+                    [html.Tr([html.Td(f"{v:.6g}") for v in row]) for row in p["values"]]
+                )
+            ),
+        ],
+    )
 
 
 def _render_matrix_group(p):
@@ -54,9 +62,11 @@ def _render_matrix_group(p):
 
 
 def _render_table(p):
-    columns = [{"name": c, "id": c, "type": "numeric",
-        "format": {"specifier": ".4f"}} for c in p["columns"]]
-    data    = [dict(zip(p["columns"], row)) for row in p["rows"]]
+    columns = [
+        {"name": c, "id": c, "type": "numeric", "format": {"specifier": ".4f"}}
+        for c in p["columns"]
+    ]
+    data = [dict(zip(p["columns"], row)) for row in p["rows"]]
     return dash_table.DataTable(
         columns=columns,
         data=data,
@@ -68,12 +78,14 @@ def _render_table(p):
 
 def _render_plot(p):
     fig = go.Figure()
-    fig.add_trace(go.Scatter(
-        x=p["x"],
-        y=p["y"],
-        mode="lines",
-        name=p.get("label", "curva"),
-    ))
+    fig.add_trace(
+        go.Scatter(
+            x=p["x"],
+            y=p["y"],
+            mode="lines",
+            name=p.get("label", "curva"),
+        )
+    )
     fig.update_layout(
         margin=dict(l=20, r=20, t=30, b=20),
         xaxis_title="x",

@@ -1,12 +1,12 @@
-import numpy as np
 import pytest
-from core.base_method import NumericalMethod
-from core.exceptions import ValidationError, ConstructionError, ExecutionError
 
+from core.base_method import NumericalMethod
+from core.exceptions import ConstructionError
 
 # ============================================================
 # Convergencia
 # ============================================================
+
 
 def test_fixed_point_converges():
     """
@@ -35,6 +35,7 @@ def test_fixed_point_converges():
 # Divergencia por |g'(x0)| >= 1
 # ============================================================
 
+
 def test_fixed_point_derivative_ge_1():
     """
     g(x) = 2x → g'(x) = 2 → diverge
@@ -49,7 +50,7 @@ def test_fixed_point_derivative_ge_1():
             "calculation_mode": "fixed_point",
         },
     )
-    
+
     method.validate_input()
 
     response = method.execute()
@@ -62,6 +63,7 @@ def test_fixed_point_derivative_ge_1():
 # Divergencia por iteraciones máximas
 # ============================================================
 
+
 def test_fixed_point_max_iter_exceeded():
     """
     g(x) = cos(x) converge, pero con max_iter muy pequeño debe fallar.
@@ -71,13 +73,13 @@ def test_fixed_point_max_iter_exceeded():
         input_data={
             "mode": "function",
             "function": "cos(x) - x",
-                "g": "cos(x)",
-                "x0": 1.0,
-                "tol": 1e-12,
-                "max_iter": 2,
-                "calculation_mode": "fixed_point",
-            },
-        )
+            "g": "cos(x)",
+            "x0": 1.0,
+            "tol": 1e-12,
+            "max_iter": 2,
+            "calculation_mode": "fixed_point",
+        },
+    )
     method.validate_input()
     response = method.execute()
     assert response["status"] == "error"
@@ -87,6 +89,7 @@ def test_fixed_point_max_iter_exceeded():
 # ============================================================
 # Validación: falta g(x)
 # ============================================================
+
 
 def test_fixed_point_missing_g():
     with pytest.raises(ConstructionError):
@@ -105,6 +108,7 @@ def test_fixed_point_missing_g():
 # Validación: falta x0
 # ============================================================
 
+
 def test_fixed_point_missing_x0():
     with pytest.raises(ConstructionError):
         NumericalMethod(
@@ -121,6 +125,7 @@ def test_fixed_point_missing_x0():
 # ============================================================
 # NaN / infinito
 # ============================================================
+
 
 def test_fixed_point_nan():
     """

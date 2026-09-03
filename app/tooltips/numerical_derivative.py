@@ -3,7 +3,6 @@
 # ============================================================
 
 TOOLTIPS = {
-
     # ───────────────────────────────────────────────
     # Selector de método
     # ───────────────────────────────────────────────
@@ -16,7 +15,6 @@ TOOLTIPS = {
         "• 2da/3ra derivada: fórmulas de orden superior.\n"
         "• Parciales: ∂f/∂x y ∂f/∂y para funciones de dos variables."
     ),
-
     # ───────────────────────────────────────────────
     # Modo de entrada (siempre función)
     # ───────────────────────────────────────────────
@@ -24,7 +22,6 @@ TOOLTIPS = {
         "El módulo de derivación numérica solo trabaja con funciones "
         "analíticas f(x) o f(x, y). No requiere tablas ni archivos."
     ),
-
     # ───────────────────────────────────────────────
     # Función f(x)
     # ───────────────────────────────────────────────
@@ -36,7 +33,6 @@ TOOLTIPS = {
         "• x**3 - 4*x + 1\n\n"
         "Puedes usar funciones de Python: sin, cos, exp, log, sqrt."
     ),
-
     # ───────────────────────────────────────────────
     # Valor de x
     # ───────────────────────────────────────────────
@@ -44,7 +40,6 @@ TOOLTIPS = {
         "Punto donde deseas evaluar la derivada.\n\n"
         "Ejemplo: si f(x) = x² y x = 2, entonces f'(2) = 4."
     ),
-
     # ───────────────────────────────────────────────
     # Paso h
     # ───────────────────────────────────────────────
@@ -54,7 +49,6 @@ TOOLTIPS = {
         "• Valores demasiado pequeños pueden causar error numérico.\n\n"
         "Richardson ajusta automáticamente varios valores de h."
     ),
-
     # ───────────────────────────────────────────────
     # Valor de y (solo parciales)
     # ───────────────────────────────────────────────
@@ -62,7 +56,6 @@ TOOLTIPS = {
         "Valor de y para evaluar derivadas parciales.\n\n"
         "Ejemplo: si f(x, y) = x*y + y², puedes evaluar ∂f/∂y en (x=2, y=3)."
     ),
-
     # ───────────────────────────────────────────────
     # Botón Calcular
     # ───────────────────────────────────────────────

@@ -3,7 +3,6 @@
 # ============================================================
 
 TOOLTIPS = {
-
     # ───────────────────────────────────────────────
     # Tipo de operación
     # ───────────────────────────────────────────────
@@ -12,7 +11,6 @@ TOOLTIPS = {
         "• Operaciones con matrices: determinante, inversa, norma, etc.\n"
         "• Sistema de ecuaciones: resolver Ax = b con métodos directos o iterativos."
     ),
-
     # ───────────────────────────────────────────────
     # Método
     # ───────────────────────────────────────────────
@@ -34,7 +32,6 @@ TOOLTIPS = {
         "• Jacobi: método iterativo.\n"
         "• Gauss-Seidel: iterativo, usualmente más rápido que Jacobi."
     ),
-
     # ───────────────────────────────────────────────
     # Modo de entrada
     # ───────────────────────────────────────────────
@@ -43,7 +40,6 @@ TOOLTIPS = {
         "• Subir archivo: acepta .txt, .csv y .xlsx.\n"
         "• Tabla manual: ingresa los valores directamente en la tabla."
     ),
-
     # ───────────────────────────────────────────────
     # Upload de archivo
     # ───────────────────────────────────────────────
@@ -55,7 +51,6 @@ TOOLTIPS = {
         "• .xlsx — hoja de cálculo.\n\n"
         "El sistema detecta automáticamente si el archivo incluye el vector b."
     ),
-
     # ───────────────────────────────────────────────
     # Tabla manual — Matriz A
     # ───────────────────────────────────────────────
@@ -65,7 +60,6 @@ TOOLTIPS = {
         "• Puedes eliminar filas.\n"
         "• El tamaño de la matriz determina el tamaño del sistema Ax = b."
     ),
-
     # ───────────────────────────────────────────────
     # Vector b
     # ───────────────────────────────────────────────
@@ -75,7 +69,6 @@ TOOLTIPS = {
         "• Valores separados por espacios: ej. '1 2 3'.\n"
         "• Debe tener la misma cantidad de elementos que filas tenga A."
     ),
-
     # ───────────────────────────────────────────────
     # Botón Calcular
     # ───────────────────────────────────────────────

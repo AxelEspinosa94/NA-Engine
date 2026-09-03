@@ -2,12 +2,12 @@ import numpy as np
 import pytest
 
 from core.base_method import NumericalMethod
-from core.exceptions import ValidationError, ExecutionError, ConstructionError
-
+from core.exceptions import ConstructionError, ValidationError
 
 # ============================================================
 # VALIDATION TESTS
 # ============================================================
+
 
 def test_missing_calculation_mode():
     method = NumericalMethod(
@@ -35,6 +35,7 @@ def test_invalid_function_string():
             },
         )
 
+
 def test_invalid_x_type():
     with pytest.raises(ConstructionError):
         NumericalMethod(
@@ -47,6 +48,7 @@ def test_invalid_x_type():
             },
         )
 
+
 def test_invalid_h_type():
     with pytest.raises(ConstructionError):
         NumericalMethod(
@@ -54,10 +56,11 @@ def test_invalid_h_type():
             input_data={
                 "function": "x**2",
                 "x": 1.0,
-            "h": "nope",
-            "calculation_mode": "forward",
-        },
-    )
+                "h": "nope",
+                "calculation_mode": "forward",
+            },
+        )
+
 
 def test_negative_h():
     method = NumericalMethod(
@@ -76,7 +79,7 @@ def test_negative_h():
 
 def test_partial_requires_y():
     with pytest.raises(ConstructionError):
-        method = NumericalMethod(
+        NumericalMethod(
             method="numerical_derivative",
             input_data={
                 "function": "x*y",
@@ -85,6 +88,7 @@ def test_partial_requires_y():
                 "calculation_mode": "partial_x",
             },
         )
+
 
 def test_invalid_richardson_order():
     with pytest.raises(ConstructionError):
@@ -99,9 +103,11 @@ def test_invalid_richardson_order():
             },
         )
 
+
 # ============================================================
 # EXECUTION TESTS
 # ============================================================
+
 
 def test_forward_derivative():
     method = NumericalMethod(

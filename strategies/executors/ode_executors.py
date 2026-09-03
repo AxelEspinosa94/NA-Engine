@@ -1,4 +1,5 @@
 import numpy as np
+
 from core.exceptions import ExecutionError
 
 
@@ -131,11 +132,11 @@ class ODEExecutor:
 
         while x < x_end:
             k1 = self._eval(f, x, y)
-            k2 = self._eval(f, x + h/2, y + h*k1/2)
-            k3 = self._eval(f, x + h/2, y + h*k2/2)
-            k4 = self._eval(f, x + h, y + h*k3)
+            k2 = self._eval(f, x + h / 2, y + h * k1 / 2)
+            k3 = self._eval(f, x + h / 2, y + h * k2 / 2)
+            k4 = self._eval(f, x + h, y + h * k3)
 
-            y = y + (h/6)*(k1 + 2*k2 + 2*k3 + k4)
+            y = y + (h / 6) * (k1 + 2 * k2 + 2 * k3 + k4)
             x = x + h
 
             xs.append(x)
@@ -164,7 +165,7 @@ class ODEExecutor:
             local = {"x": x, "np": np}
             local["y"] = y_vec[idx]
             for i in range(n):
-                local[f"y{i+1}"] = y_vec[i]
+                local[f"y{i + 1}"] = y_vec[i]
             return float(eval(expr, {"__builtins__": {}}, local))
 
         xs, ys = [x0], [y.copy()]
@@ -172,11 +173,15 @@ class ODEExecutor:
 
         while x < x_end:
             k1 = np.array([eval_sys(system[i], x, y, i) for i in range(n)])
-            k2 = np.array([eval_sys(system[i], x + h/2, y + h*k1/2, i) for i in range(n)])
-            k3 = np.array([eval_sys(system[i], x + h/2, y + h*k2/2, i) for i in range(n)])
-            k4 = np.array([eval_sys(system[i], x + h, y + h*k3, i) for i in range(n)])
+            k2 = np.array(
+                [eval_sys(system[i], x + h / 2, y + h * k1 / 2, i) for i in range(n)]
+            )
+            k3 = np.array(
+                [eval_sys(system[i], x + h / 2, y + h * k2 / 2, i) for i in range(n)]
+            )
+            k4 = np.array([eval_sys(system[i], x + h, y + h * k3, i) for i in range(n)])
 
-            y = y + (h/6)*(k1 + 2*k2 + 2*k3 + k4)
+            y = y + (h / 6) * (k1 + 2 * k2 + 2 * k3 + k4)
             x = x + h
 
             xs.append(x)
@@ -197,7 +202,7 @@ class ODEExecutor:
         x0 = float(instance.x0)
         x_end = float(instance.x_end)
         alpha = float(instance.alpha)
-        beta = float(instance.beta)
+        # beta = float(instance.beta)
         s0 = float(instance.s0)
         h = float(instance.h)
 
@@ -212,17 +217,17 @@ class ODEExecutor:
                 k1y = dy
                 k1s = self._eval(f, x, y)
 
-                k2y = dy + h*k1s/2
-                k2s = self._eval(f, x + h/2, y + h*k1y/2)
+                k2y = dy + h * k1s / 2
+                k2s = self._eval(f, x + h / 2, y + h * k1y / 2)
 
-                k3y = dy + h*k2s/2
-                k3s = self._eval(f, x + h/2, y + h*k2y/2)
+                k3y = dy + h * k2s / 2
+                k3s = self._eval(f, x + h / 2, y + h * k2y / 2)
 
-                k4y = dy + h*k3s
-                k4s = self._eval(f, x + h, y + h*k3y)
+                k4y = dy + h * k3s
+                k4s = self._eval(f, x + h, y + h * k3y)
 
-                y = y + (h/6)*(k1y + 2*k2y + 2*k3y + k4y)
-                dy = dy + (h/6)*(k1s + 2*k2s + 2*k3s + k4s)
+                y = y + (h / 6) * (k1y + 2 * k2y + 2 * k3y + k4y)
+                dy = dy + (h / 6) * (k1s + 2 * k2s + 2 * k3s + k4s)
                 x = x + h
 
                 xs.append(x)
@@ -254,18 +259,18 @@ class ODEExecutor:
 
         h = (x_end - x0) / n
 
-        A = np.zeros((n-1, n-1))
-        b = np.zeros(n-1)
+        A = np.zeros((n - 1, n - 1))
+        b = np.zeros(n - 1)
 
         for i in range(1, n):
-            xi = x0 + i*h
-            A[i-1, i-1] = -2
+            xi = x0 + i * h
+            A[i - 1, i - 1] = -2
             if i > 1:
-                A[i-1, i-2] = 1
-            if i < n-1:
-                A[i-1, i] = 1
+                A[i - 1, i - 2] = 1
+            if i < n - 1:
+                A[i - 1, i] = 1
 
-            b[i-1] = h**2 * self._eval(f, xi, 0)
+            b[i - 1] = h**2 * self._eval(f, xi, 0)
 
         b[0] -= alpha
         b[-1] -= beta
@@ -273,7 +278,7 @@ class ODEExecutor:
         y_inner = np.linalg.solve(A, b)
         y = np.concatenate(([alpha], y_inner, [beta]))
 
-        xs = np.linspace(x0, x_end, n+1)
+        xs = np.linspace(x0, x_end, n + 1)
 
         return {
             "calculation_mode": "finite_differences",
@@ -307,7 +312,7 @@ class ODEExecutor:
             f_prev = self._eval(f, xs[-2], ys[-2])
             f_curr = self._eval(f, x, y)
 
-            y_next = y + h * (3*f_curr - f_prev) / 2
+            y_next = y + h * (3 * f_curr - f_prev) / 2
             x_next = x + h
 
             xs.append(x_next)
@@ -335,7 +340,7 @@ class ODEExecutor:
 
         # bootstrap with RK2
         k1 = self._eval(f, x, y)
-        k2 = self._eval(f, x + h, y + h*k1)
+        k2 = self._eval(f, x + h, y + h * k1)
         y1 = y + h * k2
         x1 = x + h
 
@@ -344,7 +349,7 @@ class ODEExecutor:
 
         # second bootstrap
         k1 = self._eval(f, x1, y1)
-        k2 = self._eval(f, x1 + h, y1 + h*k1)
+        k2 = self._eval(f, x1 + h, y1 + h * k1)
         y2 = y1 + h * k2
         x2 = x1 + h
 
@@ -358,7 +363,7 @@ class ODEExecutor:
             f_n1 = self._eval(f, xs[-2], ys[-2])
             f_n = self._eval(f, x, y)
 
-            y_next = y + h * (23*f_n - 16*f_n1 + 5*f_n2) / 12
+            y_next = y + h * (23 * f_n - 16 * f_n1 + 5 * f_n2) / 12
             x_next = x + h
 
             xs.append(x_next)
@@ -386,7 +391,7 @@ class ODEExecutor:
 
         # bootstrap with RK2
         k1 = self._eval(f, x, y)
-        k2 = self._eval(f, x + h, y + h*k1)
+        k2 = self._eval(f, x + h, y + h * k1)
         y1 = y + h * k2
         x1 = x + h
 
@@ -396,11 +401,11 @@ class ODEExecutor:
         x, y = x1, y1
 
         while x < x_end:
-            f_prev = self._eval(f, xs[-2], ys[-2])
+            # f_prev = self._eval(f, xs[-2], ys[-2])
             f_curr = self._eval(f, x, y)
 
             # Adams–Moulton 2 (implicit)
-            y_next = y + h * (f_curr + self._eval(f, x + h, y + h*f_curr)) / 2
+            y_next = y + h * (f_curr + self._eval(f, x + h, y + h * f_curr)) / 2
             x_next = x + h
 
             xs.append(x_next)

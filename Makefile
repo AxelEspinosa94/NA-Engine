@@ -63,3 +63,19 @@ release-patch-dry:
 	@echo "[DRY RUN] Would run: git tag -a $(NEXT_PATCH_TAG) -m 'Release $(NEXT_PATCH_TAG)'"
 	@echo "[DRY RUN] Would run: git push origin $(NEXT_PATCH_TAG)"
 	@echo "Dry run completed."
+
+# ============================
+# Code Formatting (Python)
+# ============================
+format:
+	$(PY) -m black core strategies app tests
+	$(PY) -m isort core strategies app tests
+
+check-format:
+	$(PY) -m black --check core strategies app tests
+	$(PY) -m isort --check-only core strategies app tests
+
+lint:
+	@echo "Running flake8..."
+	$(PY) -m flake8 app core strategies tests
+

@@ -1,4 +1,3 @@
-
 TOOLTIPS = {
     "input-function": "Ingresa la función usando sintaxis de Python. Ejemplo: x**2 + sin(x).",
     "input-x": "Punto donde se evalúa la función o la derivada.",

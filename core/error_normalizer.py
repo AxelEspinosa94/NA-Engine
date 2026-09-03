@@ -1,5 +1,4 @@
-
-from core.exceptions import ValidationError, ExecutionError, ConstructionError
+from core.exceptions import ConstructionError, ExecutionError, ValidationError
 
 
 class ErrorNormalizer:
@@ -27,8 +26,5 @@ class ErrorNormalizer:
             "status": "error",
             "error_type": error_type,
             "message": str(exception),
-            "context": {
-                "method": method_name,
-                "input_data": input_data
-            }
+            "context": {"method": method_name, "input_data": input_data},
         }
