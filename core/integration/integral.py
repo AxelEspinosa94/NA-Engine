@@ -27,6 +27,9 @@ class Integral:
             raise ConstructionError("Integration only supports mode='function'.")
 
         # Build function
+        if not self.input_data.get("function"):
+            raise ConstructionError("Function expression is required.")
+
         self.func_str = self.input_data.get("function")
 
         # Domain type (from catalog)

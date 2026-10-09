@@ -14,7 +14,7 @@ def test_romberg_1d_constructor():
             "calculation_mode": "romberg",
             "function": "x**2",
             "bounds": [0, 1],
-            "n_samples": 10,
+            "n": 10,
         }
     )
 
@@ -37,7 +37,7 @@ def test_romberg_nd_constructor():
             "calculation_mode": "romberg",
             "function": "x0**2 + x1",
             "bounds": [[0, 1], [2, 4]],
-            "n_samples": 10,
+            "n": 10,
         }
     )
 
@@ -65,7 +65,7 @@ def test_montecarlo_1d_constructor():
             "calculation_mode": "montecarlo",
             "function": "x**2",
             "bounds": [0, 1],
-            "n_samples": 100,
+            "n": 100,
         }
     )
 
@@ -89,7 +89,7 @@ def test_montecarlo_nd_constructor():
             "calculation_mode": "montecarlo",
             "function": "x0**2 + x1",
             "bounds": [[0, 1], [2, 4]],
-            "n_samples": 100,
+            "n": 100,
         }
     )
 
@@ -117,7 +117,7 @@ def test_montecarlo_3d_constructor():
                 [1, 2],
                 [2, 3],
             ],
-            "n_samples": 100,
+            "n": 100,
         }
     )
 
@@ -139,7 +139,7 @@ def test_constant_function_nd():
             "calculation_mode": "montecarlo",
             "function": "5",
             "bounds": [[0, 1], [0, 1]],
-            "n_samples": 5,
+            "n": 5,
         }
     )
 
