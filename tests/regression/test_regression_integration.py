@@ -35,19 +35,22 @@ TOL_REG = {
 }
 
 
-def make_outcome(method: str, function: str, interval: list, n: int):
+def make_outcome(method: str, function: str, interval: list):
+    n = N_REG[method]
     input_data = {
         "mode": "function",
         "function": function,
         "bounds": interval,
+        "n": n,
         "calculation_mode": method,
     }
     if method == "gauss":
         # for Gauss, n is irrelevant, but we need to set gauss_points
-        input_data.update({"n": n, "gauss_points": n})
-    else:
-        input_data.update({"n": n})
-    nm = NumericalMethod("integration", input_data)
+        input_data["gauss_points"] = n
+    nm = NumericalMethod(
+        method="integration",
+        input_data=input_data,
+    )
     nm.validate_input()
     return nm.execute()
 
