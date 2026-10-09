@@ -15,7 +15,7 @@ def test_romberg_x2():
         input_data={
             "mode": "function",
             "function": "x**2",
-            "interval": [0, 1],
+            "bounds": [0, 1],
             "n": 6,
             "calculation_mode": "romberg",
         },
@@ -34,7 +34,7 @@ def test_romberg_sin():
         input_data={
             "mode": "function",
             "function": "sin(x)",
-            "interval": [0, float(np.pi)],
+            "bounds": [0, float(np.pi)],
             "n": 6,
             "calculation_mode": "romberg",
         },
@@ -53,7 +53,7 @@ def test_romberg_exp():
         input_data={
             "mode": "function",
             "function": "exp(x)",
-            "interval": [0, 1],
+            "bounds": [0, 1],
             "n": 6,
             "calculation_mode": "romberg",
         },
@@ -73,7 +73,7 @@ def test_romberg_higher_n_stable():
         input_data={
             "mode": "function",
             "function": "x**2",
-            "interval": [0, 1],
+            "bounds": [0, 1],
             "n": 8,
             "calculation_mode": "romberg",
         },

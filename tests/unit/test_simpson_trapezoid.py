@@ -17,7 +17,7 @@ def test_trapezoid_simple_x2():
         input_data={
             "mode": "function",
             "function": "x**2",
-            "interval": [0, 1],
+            "bounds": [0, 1],
             "n": 1,  # trapecio simple requiere n = 1
             "calculation_mode": "trapezoid_simple",
         },
@@ -37,7 +37,7 @@ def test_trapezoid_simple_rejects_wrong_n():
             input_data={
                 "mode": "function",
                 "function": "x**2",
-                "interval": [0, 1],
+                "bounds": [0, 1],
                 "n": 4,
                 "calculation_mode": "trapezoid_simple",
             },
@@ -58,7 +58,7 @@ def test_trapezoid_composite_x2():
         input_data={
             "mode": "function",
             "function": "x**2",
-            "interval": [0, 1],
+            "bounds": [0, 1],
             "n": 10,
             "calculation_mode": "trapezoid_composite",
         },
@@ -83,7 +83,7 @@ def test_simpson_1_3_x2():
         input_data={
             "mode": "function",
             "function": "x**2",
-            "interval": [0, 1],
+            "bounds": [0, 1],
             "n": 6,  # n par
             "calculation_mode": "simpson_1_3",
         },
@@ -103,7 +103,7 @@ def test_simpson_1_3_rejects_odd_n():
             input_data={
                 "mode": "function",
                 "function": "x**2",
-                "interval": [0, 1],
+                "bounds": [0, 1],
                 "n": 5,
                 "calculation_mode": "simpson_1_3",
             },
@@ -125,7 +125,7 @@ def test_simpson_3_8_x2():
         input_data={
             "mode": "function",
             "function": "x**2",
-            "interval": [0, 1],
+            "bounds": [0, 1],
             "n": 6,  # múltiplo de 3
             "calculation_mode": "simpson_3_8",
         },
@@ -145,7 +145,7 @@ def test_simpson_3_8_rejects_non_multiple_of_3():
             input_data={
                 "mode": "function",
                 "function": "x**2",
-                "interval": [0, 1],
+                "bounds": [0, 1],
                 "n": 5,
                 "calculation_mode": "simpson_3_8",
             },
