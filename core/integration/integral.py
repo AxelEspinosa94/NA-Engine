@@ -1,10 +1,15 @@
-from typing import Any, Dict
+import os
 
-import numpy as np
+from sympy import symbols
 
+from app.utils.bounds_validator import validate_bounds
+from app.utils.build_function import build_function
+from app.utils.catalog_loader import load_catalog
+from app.utils.check_function import check_function_dims
+from app.utils.domain import _build_nd_domain
+from app.utils.rule_loader import load_rule
+from app.utils.table_creator import _import_creator
 from core.exceptions import ConstructionError
-
-from .builder import build_function, build_grid
 
 
 class Integral:
@@ -13,49 +18,73 @@ class Integral:
     Only supports mode='function'.
     """
 
-    def __init__(self, input_data: Dict[str, Any]):
+    def __init__(self, input_data):
+        base = os.path.dirname(__file__)
+        path = os.path.join(base, "integration_constructor_catalog.json")
+        self.catalog = load_catalog(path)
+
         self.input_data = input_data
-        self.mode = input_data.get("mode")
-        self.calculation_mode = input_data.get("calculation_mode")
+        self.mode = self.input_data.get("mode")
+        self.calculation_mode = self.input_data.get("calculation_mode")
 
         if self.mode != "function":
             raise ConstructionError("Integration only supports mode='function'.")
 
-        # Function
-        self.func_str = input_data.get("function")
-        if not isinstance(self.func_str, str):
-            raise ConstructionError("Function must be a string.")
-        if not self.func_str.strip():
-            raise ConstructionError("Function string cannot be empty.")
+        # Build function
+        self.func_str = self.input_data.get("function")
 
-        # Interval
-        interval = input_data.get("interval")
-        if not isinstance(interval, (list, tuple)) or len(interval) != 2:
-            raise ConstructionError("Function mode requires interval [a, b].")
-        try:
-            a, b = interval
-            if a >= b:
-                raise ConstructionError("Interval must satisfy a < b.")
-            if not all(isinstance(v, (int, float)) for v in interval):
-                raise ConstructionError("Interval values must be numeric.")
-        except Exception as e:
-            raise ConstructionError(f"Invalid interval format: {e}")
+        # Domain type (from catalog)
+        self.domain = self.catalog.get(self.calculation_mode, {}).get(
+            "domain"
+        )  # "1d" or "nd"
 
-        self.interval = interval
+        bounds = self.input_data.get("bounds")
 
-        # n (subintervals or Romberg depth)
-        self.n = input_data.get("n")
+        self.bounds = validate_bounds(bounds)
+
+        # n
+        self.n = self.input_data.get("n")
         if not isinstance(self.n, int) or self.n <= 0:
-            raise ConstructionError("Function mode requires positive integer n.")
+            raise ConstructionError("n must be a positive integer.")
 
-        # Build sympy function
-        self.f = build_function(self.func_str)
+        self.dim = len(self.bounds)
+        check_result = check_function_dims(self.func_str, self.dim)
+        if check_result:
+            raise ConstructionError(check_result)
 
-        # Build uniform grid for composite rules
-        a, b = self.interval
-        self.x, self.y = build_grid(self.f, self.interval, self.n)
+        # Build function with appropriate symbols: x y z ...
+        if self.dim == 1:
+            self.symbols = ["x"]
+        else:
+            self.symbols = [f"x{i}" for i in range(self.dim)]
 
-        if np.any(np.isnan(self.y)):
-            raise ConstructionError(
-                "Function evaluation produced NaN values on the interval."
+        self.f = build_function(self.func_str, self.symbols)
+
+        tb_creator_name = self.catalog.get(self.calculation_mode, {}).get(
+            "tb_creator", None
+        )
+        if tb_creator_name:
+            # tb_creator may be "module.func" or just "func" in a known module
+            self.creator = _import_creator(tb_creator_name)
+            self.x, self.y = (
+                self.creator(self.func_str, self.symbols, self.bounds, self.n)
+                if self.creator
+                else None
             )
+        else:
+            self.creator = None
+            self.x = None
+            self.y = None
+
+        if (
+            self.calculation_mode == "gauss"
+            and self.input_data.get("gauss_points", None) is None
+        ):
+            raise ConstructionError(
+                "gauss_points must be provided for gauss calculation mode."
+            )
+        elif (
+            self.calculation_mode != "gauss"
+            and self.input_data.get("gauss_points", None) is not None
+        ):
+            raise ConstructionError("Too many arguments provided")

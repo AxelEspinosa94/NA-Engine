@@ -82,7 +82,7 @@ class Renderer:
             (("Q", "R"), "matrix_group"),
             (("x", "y"), "plot"),
             (("x_nodes", "y_nodes"), "table"),
-            #            ("table", "table"),
+            ("message", "markdown"),
             ("markdown", "markdown"),
             ("expression", "markdown"),
             ("solution", "vector"),
@@ -102,7 +102,7 @@ class Renderer:
                     if renderer_type == "plot":
                         blocks.append(
                             type_dispatch["plot"](
-                                result["x"], result["y"], label="curve"
+                                result["x"], result["y"], result.get("z"), label="curve"
                             )
                         )
                         continue
@@ -277,16 +277,47 @@ class Renderer:
     # Plot Renderer
     # ============================================================
 
-    def render_plot(
-        self, x: List[Any], y: List[Any], label: str = "plot"
-    ) -> Dict[str, Any]:
-        """Render a curve defined by x and y arrays."""
+    def render_plot(self, x, y, z=None, label: str = "plot") -> Dict[str, Any]:
+        """Curve (1D) or surface (2D)."""
+        if z is None:
+            return self._plot_1d(
+                np.asarray(x, dtype=float), np.asarray(y, dtype=float), label
+            )
+        return self._plot_surface(x, y, z, label)
+
+    def _plot_1d(self, x, y, label):
         meta = RENDERER_META["plot"]
         return {
             "type": "plot",
             "label": label,
-            "x": list(map(float, x)),
-            "y": list(map(float, y)),
+            "x": x.tolist(),
+            "y": y.tolist(),
+            "caption": meta["caption"],
+            "tooltip": meta["tooltip"],
+        }
+
+    def _plot_surface(self, x, y, z, label):
+        meta = RENDERER_META["surface"]
+        X = np.asarray(x, dtype=float)
+        Y = np.asarray(y, dtype=float)
+        Z = np.asarray(z, dtype=float)
+
+        # Tu payload manda las mallas 2D de meshgrid(indexing="ij").
+        # Extraemos los ejes 1D: x0 varía por filas, x1 por columnas.
+        if X.ndim == 2:
+            X = X[:, 0]
+        if Y.ndim == 2:
+            Y = Y[0, :]
+
+        # JSON no soporta nan/inf
+        Z = np.where(np.isfinite(Z), Z, np.nan)
+
+        return {
+            "type": "surface",
+            "label": label,
+            "x": X.tolist(),
+            "y": Y.tolist(),
+            "z": Z.T.tolist(),  # Plotly espera z[fila=y][columna=x]
             "caption": meta["caption"],
             "tooltip": meta["tooltip"],
         }
