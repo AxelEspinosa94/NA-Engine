@@ -52,7 +52,6 @@ def make_outcome(method: str, function: str, interval: list, n: int):
     return nm.execute()
 
 
-
 # ────────────────────────────────────────────────────────────────
 # REGRESIÓN: funciones trigonométricas
 # ────────────────────────────────────────────────────────────────
