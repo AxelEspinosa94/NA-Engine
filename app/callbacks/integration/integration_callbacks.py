@@ -9,9 +9,9 @@ def _build_mode_area(method: str, mode: str):
     return True
 
 
-# Change it depending on how much stress the tool can handle. 
-# For example, if the tool can handle up to 10 dimensions, 
-# set MAX_DIM = 10. If it can handle up to 20 dimensions, 
+# Change it depending on how much stress the tool can handle.
+# For example, if the tool can handle up to 10 dimensions,
+# set MAX_DIM = 10. If it can handle up to 20 dimensions,
 # set MAX_DIM = 20, etc.
 MIN_DIM, MAX_DIM = 0, 10
 
