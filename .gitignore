@@ -23,6 +23,7 @@ NA-venv/
 core/base_method_legacy.py
 docs/docs-structure.md
 estructura.txt
+.wsl/
 
 # Distribution / packaging
 .Python
