@@ -1,8 +1,5 @@
 # tests/unit/core/integration/test_integral_constructor.py
 
-import pytest
-
-from core.exceptions import ConstructionError
 from core.integration.integral import Integral
 
 # ============================================================================

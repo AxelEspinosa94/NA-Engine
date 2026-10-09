@@ -1,10 +1,8 @@
 from typing import List
 
 import numpy as np
-import pandas as pd
 
 from app.utils.build_function import build_function
-from core.exceptions import ConstructionError
 
 
 def montecarloSim(

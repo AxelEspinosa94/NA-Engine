@@ -1,5 +1,3 @@
-import pytest
-
 from core.base_method import NumericalMethod
 
 # ============================================================

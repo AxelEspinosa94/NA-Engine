@@ -9,7 +9,10 @@ def _build_mode_area(method: str, mode: str):
     return True
 
 
-# Change it depending on how much stress the tool can handle. For example, if the tool can handle up to 10 dimensions, set MAX_DIM = 10. If it can handle up to 20 dimensions, set MAX_DIM = 20, etc.
+# Change it depending on how much stress the tool can handle. 
+# For example, if the tool can handle up to 10 dimensions, 
+# set MAX_DIM = 10. If it can handle up to 20 dimensions, 
+# set MAX_DIM = 20, etc.
 MIN_DIM, MAX_DIM = 0, 10
 
 
@@ -17,7 +20,7 @@ def bound_row(i: int):
     return html.Div(
         className="input-row",
         children=[
-            html.Div(f"x{i-1}", className="na-label bound-level"),
+            html.Div(f"x{i - 1}", className="na-label bound-level"),
             styled_input(
                 id={"type": "integr-a", "index": i}, type="number", placeholder="a"
             ),

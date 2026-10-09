@@ -67,7 +67,6 @@ def _build_deterministic_payload(instance, value):
             "bounds": instance.bounds,
             "n": instance.n,
             "dimension": dim,
-            "plot_type": "volume",
             "calculation_mode": instance.calculation_mode,
         }
     # =====================================================

@@ -1,7 +1,7 @@
 import pytest
 
 from core.base_method import NumericalMethod
-from core.exceptions import ConstructionError, ValidationError
+from core.exceptions import ConstructionError
 
 # ============================================================
 # MONTE CARLO 1D

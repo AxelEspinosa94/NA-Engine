@@ -1,13 +1,9 @@
 import os
 
-from sympy import symbols
-
 from app.utils.bounds_validator import validate_bounds
 from app.utils.build_function import build_function
 from app.utils.catalog_loader import load_catalog
 from app.utils.check_function import check_function_dims
-from app.utils.domain import _build_nd_domain
-from app.utils.rule_loader import load_rule
 from app.utils.table_creator import _import_creator
 from core.exceptions import ConstructionError
 
