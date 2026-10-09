@@ -172,7 +172,14 @@ def test_estructura_resultado(method):
     assert outcome["status"] == "success"
     result = outcome["result"]
     if method == "montecarlo":
-        required_keys = ["value", "std_error", "volume", "bounds", "n", "calculation_mode"]
+        required_keys = [
+            "value",
+            "std_error",
+            "volume",
+            "bounds",
+            "n",
+            "calculation_mode",
+        ]
     else:
         required_keys = ["value", "x", "y", "a", "b", "n", "calculation_mode"]
     for key in required_keys:
