@@ -35,6 +35,7 @@ Supported calculation modes:
 - `romberg`
 - `gauss` (Gauss–Legendre)
 - `clenshaw_curtis`
+- `montecarlo`
 
 All integration methods operate exclusively in:
 
@@ -69,15 +70,22 @@ The constructor:
 - Parses the string using SymPy (`sympify`)
 - Converts it to a NumPy function via `lambdify`
 
-### **2.2 Interval**
+### **2.2 Bounds**
 
-Must be:
+Bounds is a list of intervals. The tool handles 1D and ND integrals, in this understanding must be:
 
 ```
-"interval": [a, b]
+"bounds": [a, b]
 ```
 
-with `a < b`.
+with `a < b` for 1D, and
+
+```
+"bounds": [[a1, b1],...,[an,bn]]
+```
+
+with `ak < bk` for $k\in\{1,...,n\}$ for ND.
+
 
 ### **2.3 Parameter `n`**
 
@@ -90,6 +98,7 @@ Interpreted differently depending on the method:
 | Romberg | Depth of Romberg table |
 | Gauss | Ignored (uses `gauss_points`) |
 | Clenshaw–Curtis | Number of Chebyshev subintervals (must be even) |
+| Monte Carlo | Number of random samples |
 
 The constructor builds the grid:
 
@@ -98,6 +107,12 @@ x_i = a + i\frac{b-a}{n},\quad i = 0,\dots,n
 $$
 
 and evaluates:
+
+$$
+y_i = f(x_i)
+$$
+
+In the case of Monte Carlo, $x_i\sim U(b_i)$ where $b_i$ is the corresponding bound. Therefore
 
 $$
 y_i = f(x_i)
@@ -135,7 +150,7 @@ mode = "function"
 
 Must be a valid SymPy expression.
 
-### **3.4 Interval**
+### **3.4 Bounds**
 
 Must be `[a, b]` with `a < b`.
 
@@ -157,6 +172,7 @@ Must be:
 | romberg | no constraint |
 | gauss | no constraint |
 | clenshaw_curtis | `n % 2 == 0` |
+| montecarlo | no constraint |
 
 ### **3.7 Gauss‑Legendre**
 
@@ -180,6 +196,7 @@ It dispatches based on `instance.calculation_mode`:
 - Romberg  
 - Gauss–Legendre  
 - Clenshaw–Curtis  
+- Monte Carlo
 
 ### **Return Structure**
 
@@ -215,6 +232,10 @@ Uses Legendre roots and weights.
 ### **5.4 Clenshaw–Curtis Quadrature**
 
 Uses Chebyshev nodes + DCT‑I + cosine expansion.
+
+### **5.5 Monte Carlo**
+
+Uses Random Uniform Samples and result considers the calculation bias.
 
 ---
 
@@ -338,9 +359,27 @@ $$
 \int_a^b f(x)\,dx = \frac{b-a}{2}I
 $$
 
+## **6.5 Monte Carlo**
+
+For the integral:
+
+$$
+I = \int_D f(x)\, dV,
+$$
+
+the Monte Carlo estimator is:
+
+$$
+\boxed{
+I_N = V \cdot \frac{1}{N} \sum_{i=1}^N f(X_i)
+}
+$$
+
 ---
 
-# **7. Example Calculation**
+# **7. Examples**
+
+## **7.1 Example Calculation 1D**
 
 Using **Simpson 1/3**:
 
@@ -353,7 +392,7 @@ method = NumericalMethod(
         "mode": "function",
         "calculation_mode": "simpson_1_3",
         "function": "x**2",
-        "interval": [0, 2],
+        "bounds": [0, 2],
         "n": 4
     }
 )
@@ -383,6 +422,56 @@ Output:
 }
 ```
 
+## **7. Example Calculation ND**
+
+Using **Gauss**:
+
+```python
+from core.base_method import NumericalMethod
+
+method = NumericalMethod(
+        method="integration",
+        input_data={
+            "mode": "function",
+            "function": "x0**2 + x1**2",
+            "bounds": [[0, 1], [0, 1]],
+            "n": 4,
+            "gauss_points": 5,
+            "calculation_mode": "gauss",
+        },
+  )
+
+method.validate_input()
+result = method.execute()
+```
+
+Exact integral:
+
+$$
+\int_{0}^{1}\int_{0}^{1} (x_{0}^{2} + x_{1}^{2})dx_0 dx_{1} = -\frac{2}{3}
+$$
+
+Output:
+
+```json
+{
+  "status": "success",
+  "result": {
+    "value": 2.6666667,
+    "expression": "∫∫ f(x,y) dA ≈ 2/3",
+    "table": table,
+    "plot_type": "volume",
+    "x": x,
+    "y": y,
+    "z": z,
+    "bounds": [[0,1],[0,1]],
+    "n": 20,
+    "dimension": 2,
+    "calculation_mode": "simpson_1_3"
+  }
+}
+```
+
 ---
 
 # **8. Extension Guide**
@@ -392,7 +481,7 @@ Output:
 1. Add validation rules in:
 
 ```
-strategies/validators/integration/integration_validation_catalog.json
+strategies/validators/<module>/<module>_validation_catalog.json
 ```
 
 2. Add `_run_<new-method>()` to `IntegrationExecutor`.
@@ -408,7 +497,7 @@ method_catalog.json
 Example:
 
 ```json
-"<new-method>": {
+"integration": {
   "classExecutor": "strategies.executors.integration_executors.IntegrationExecutor",
   "classInputValidator": "strategies.validators.integration.IntegrationValidator",
   "classConstructor": "strategies.constructors.integration.Integral"
