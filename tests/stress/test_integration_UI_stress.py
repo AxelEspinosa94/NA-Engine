@@ -32,10 +32,14 @@ def make_outcome(method: str, function: str, interval: list, n: int):
     input_data = {
         "mode": "function",
         "function": function,
-        "interval": interval,
-        "n": n,
+        "bounds": interval,
         "calculation_mode": method,
     }
+    if method == "gauss":
+        # for Gauss, n is irrelevant, but we need to set gauss_points
+        input_data.update({"n": n,"gauss_points": n})
+    else:
+        input_data.update({"n": n})
     nm = NumericalMethod("integration", input_data)
     nm.validate_input()
     return nm.execute()
