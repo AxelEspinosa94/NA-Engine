@@ -37,7 +37,7 @@ def make_outcome(method: str, function: str, interval: list, n: int):
     }
     if method == "gauss":
         # for Gauss, n is irrelevant, but we need to set gauss_points
-        input_data.update({"n": n,"gauss_points": n})
+        input_data.update({"n": n, "gauss_points": n})
     else:
         input_data.update({"n": n})
     nm = NumericalMethod("integration", input_data)
