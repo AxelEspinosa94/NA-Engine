@@ -1,10 +1,7 @@
 # core/contract.py
 from typing import Any, Dict
 
-<<<<<<< HEAD
 import plotly.graph_objects as go
-=======
->>>>>>> main
 from dash import dcc, html
 
 from app.components.result_view import build_result_view
