@@ -1,57 +1,66 @@
+import functools
+
 import numpy as np
 
 # =========================================================
-# CLENSHAW-CURTIS
+# CLENSHAW-CURTIS (nodos y pesos 1D en [-1, 1])
+# =========================================================
+
+
+@functools.lru_cache(maxsize=None)
+def _cc_nodes_and_weights(N: int):
+    theta = np.pi * np.arange(N + 1) / N
+    t = np.cos(theta)
+
+    w = np.zeros(N + 1)
+    inner = theta[1:N]  # nodos interiores
+    v = np.ones(N - 1)
+
+    if N % 2 == 0:
+        w[0] = w[N] = 1 / (N**2 - 1)
+        k = np.arange(1, N // 2)
+        v -= (2 * np.cos(np.outer(inner, 2 * k)) / (4 * k**2 - 1)).sum(axis=1)
+        v -= np.cos(N * inner) / (N**2 - 1)
+    else:
+        w[0] = w[N] = 1 / N**2
+        k = np.arange(1, (N - 1) // 2 + 1)
+        v -= (2 * np.cos(np.outer(inner, 2 * k)) / (4 * k**2 - 1)).sum(axis=1)
+
+    w[1:N] = 2 * v / N
+    return t, w
+
+
+# =========================================================
+# CLENSHAW-CURTIS Nd (bounds = [[a_1,b_1], [a_2,b_2], ...])
 # =========================================================
 
 
 def clenshaw_curtis(instance):
     f = instance.f
-    a, b = instance.interval
+    bounds = instance.bounds
     N = instance.n
 
-    # ---------------------------------------------------------
-    # 1. Chebyshev Nodes in [-1, 1]
-    # ---------------------------------------------------------
-    theta = np.linspace(0, np.pi, N + 1)
-    t = np.cos(theta)
+    d = len(bounds)
+    N_list = [N] * d if isinstance(N, int) else N
 
-    # ---------------------------------------------------------
-    # 2. Map nodes to [a, b]
-    # ---------------------------------------------------------
-    x = (b - a) / 2 * t + (a + b) / 2
+    nodes_list = []
+    weights_list = []
+    for (a, b), Ni in zip(bounds, N_list):
+        t, w = _cc_nodes_and_weights(Ni)
+        x = (b - a) / 2 * t + (a + b) / 2  # nodos escalados a [a, b]
+        nodes_list.append(x)
+        weights_list.append((b - a) / 2 * w)  # pesos escalados
 
-    # ---------------------------------------------------------
-    # 3. Evaluate the function at the nodes
-    # ---------------------------------------------------------
-    fvals = f(x)
+    # Caso 1D: igual que tu versión original, sin meshgrid
+    if d == 1:
+        fvals = f(nodes_list[0])
+        return np.sum(weights_list[0] * fvals)
 
-    # ---------------------------------------------------------
-    # 4. DCT-I manual (wo scipy)
-    #    a_k = (2/N) * [ f0/2 + fN/2*(-1)^k + sum_{n=1..N-1} f_n cos(n*k*pi/N) ]
-    # ---------------------------------------------------------
-    k = np.arange(N + 1)
-    a_k = np.zeros(N + 1)
+    # Caso Nd: malla tensorial + evaluación vectorizada vía broadcasting
+    grids = np.meshgrid(*nodes_list, indexing="ij")
+    fvals = f(*grids)
 
-    # beginning and end values for the DCT-I formula
-    f0_half = 0.5 * fvals[0]
-    fN_half = 0.5 * fvals[-1]
+    # Producto tensorial de los pesos de cada eje -> tensor Nd de pesos
+    weight_tensor = functools.reduce(np.multiply.outer, weights_list)
 
-    for ki in k:
-        cosnk = np.cos((np.arange(1, N) * ki * np.pi) / N)
-        inner_sum = np.sum(fvals[1:N] * cosnk)
-        a_k[ki] = (2 / N) * (f0_half + fN_half * ((-1) ** ki) + inner_sum)
-
-    # ---------------------------------------------------------
-    # 5. Closed formula of Clenshaw–Curtis in [-1, 1]
-    #    I = a_0 + sum_{m=1..N/2} 2*a_{2m} / (1 - (2m)^2)
-    # ---------------------------------------------------------
-    M = N // 2
-    I_unit = a_k[0] + np.sum(
-        [2 * a_k[2 * m] / (1 - (2 * m) ** 2) for m in range(1, M + 1)]
-    )
-
-    # ---------------------------------------------------------
-    # 6. Escalate to interval [a, b]
-    # ---------------------------------------------------------
-    return (b - a) / 2 * I_unit
+    return np.sum(weight_tensor * fvals)

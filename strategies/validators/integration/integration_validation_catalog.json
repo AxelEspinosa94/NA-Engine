@@ -6,7 +6,8 @@
         "simpson_3_8",
         "romberg",
         "gauss",
-        "clenshaw_curtis"
+        "clenshaw_curtis",
+        "montecarlo"
     ],
     "trapezoid_simple": {
       "rules": "strategies.validators.integration.rules.common_rules._validate_n_for_mode"
@@ -31,5 +32,8 @@
     },
     "clenshaw_curtis": {
       "rules": "strategies.validators.integration.rules.common_rules._validate_n_for_mode"
+    },
+    "montecarlo": {
+      "rules": []
     }
 }

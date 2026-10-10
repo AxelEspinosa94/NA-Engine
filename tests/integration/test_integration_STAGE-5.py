@@ -15,6 +15,7 @@ METHODS = [
     "romberg",
     "gauss",
     "clenshaw_curtis",
+    "montecarlo",
 ]
 
 # n razonables por método para STRESS (no accuracy)
@@ -26,6 +27,7 @@ N_STRESS = {
     "romberg": 6,
     "gauss": 15,
     "clenshaw_curtis": 20,  # CC estable y rápido
+    "montecarlo": 10000,  # MC necesita muchos puntos
 }
 
 
@@ -33,10 +35,14 @@ def make_outcome(method: str, function: str, interval: list, n: int):
     input_data = {
         "mode": "function",
         "function": function,
-        "interval": interval,
+        "bounds": interval,
         "n": n,
         "calculation_mode": method,
     }
+    if method == "gauss":
+        input_data["gauss_points"] = (
+            n  # for Gauss, n is irrelevant, but we need to set gauss_points
+        )
     nm = NumericalMethod("integration", input_data)
     nm.validate_input()
     return nm.execute()
@@ -61,7 +67,9 @@ def test_volumen_stress(method):
 # ────────────────────────────────────────────────────────────────
 
 
-@pytest.mark.parametrize("method", METHODS)
+@pytest.mark.parametrize(
+    "method", [method for method in METHODS if method != "montecarlo"]
+)
 def test_determinismo(method):
     """El mismo input debe producir el mismo output."""
     n = N_STRESS[method]
@@ -163,7 +171,17 @@ def test_estructura_resultado(method):
     outcome = make_outcome(method, "x**2", [0, 1], n)
     assert outcome["status"] == "success"
     result = outcome["result"]
-    required_keys = ["value", "x", "y", "a", "b", "n", "calculation_mode"]
+    if method == "montecarlo":
+        required_keys = [
+            "value",
+            "std_error",
+            "volume",
+            "bounds",
+            "n",
+            "calculation_mode",
+        ]
+    else:
+        required_keys = ["value", "x", "y", "a", "b", "n", "calculation_mode"]
     for key in required_keys:
         assert key in result
 
@@ -178,7 +196,9 @@ def test_contract_devuelve_div(method):
     """UIContract debe devolver un html.Div válido."""
     n = N_STRESS[method]
     outcome = make_outcome(method, "x**2", [0, 1], n)
+    print(outcome)
     result = contract.resolve(method, outcome)
+    print(result)
     assert isinstance(result, html.Div)
     assert result.children
 

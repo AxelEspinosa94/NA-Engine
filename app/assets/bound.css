@@ -1,0 +1,23 @@
+/* La fila se alinea verticalmente al centro del textbox */
+.input-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Variante de na-label para la fila de bounds */
+.na-label.bound-label {
+    margin: 0;               /* quita el margin-bottom que na-label usa sobre inputs */
+    min-width: 2.5rem;       /* ancho fijo: x0, x1, ... x9 quedan alineados en columna */
+    text-align: right;
+    white-space: nowrap;
+    font-family: "Courier New", monospace;   /* opcional: que x0 se lea como variable */
+    flex: 0 0 auto;          /* no se estira ni se encoge */
+}
+
+/* Los textbox se reparten el resto del ancho */
+.input-row .styled-input,
+.input-row input {
+    flex: 1 1 0;
+    min-width: 0;
+}

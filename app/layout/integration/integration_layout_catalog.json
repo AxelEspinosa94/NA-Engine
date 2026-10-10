@@ -7,7 +7,8 @@
         "simpson_3_8",
         "romberg",
         "gauss",
-        "clenshaw_curtis"
+        "clenshaw_curtis",
+        "montecarlo"
     ],
     "component_map": {
         "method_selector": "app.layout.integration.components.integr_method.integr_method",
@@ -33,7 +34,8 @@
         {"label": "Simpson 3/8",          "value": "simpson_3_8"},
         {"label": "Romberg",              "value": "romberg"},
         {"label": "Gauss-Legendre",       "value": "gauss"},
-        {"label": "Clenshaw-Curtis",      "value": "clenshaw_curtis"}
+        {"label": "Clenshaw-Curtis",      "value": "clenshaw_curtis"},
+        {"label": "Monte Carlo",          "value": "montecarlo"}
     ],
     "input_mode_selector_options": [{"label": "Function f(x)", "value": "function"}],
     "header_contents": {
