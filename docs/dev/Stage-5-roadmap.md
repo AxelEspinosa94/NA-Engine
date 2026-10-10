@@ -76,8 +76,8 @@
 - [ ] Soporte vectorial
 
 ## **10. Nuevos métodos — Integración**
-- [ ] Clenshaw–Curtis  
-- [ ] Montecarlo  
+- [X] Clenshaw–Curtis  
+- [X] Montecarlo  
 - [ ] Cuadratura Adaptativa  
 - [ ] Romberg Avanzado  
 
@@ -107,7 +107,7 @@
 ## **14. Documentación integrada**
 - [ ] Teoría ODE  
 - [ ] Teoría No Lineales  
-- [ ] Teoría Integración  
+- [X] Teoría Integración  
 - [ ] Teoría Interpolación  
 - [ ] Ejemplos interactivos  
 - [ ] Migración a inglés

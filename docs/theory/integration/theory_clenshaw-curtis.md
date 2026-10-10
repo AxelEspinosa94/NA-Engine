@@ -5,6 +5,8 @@
 
 Clenshaw-Curtis is a method for numerical integration which is based on an expansion of the integrand in terms of Chebyshev polynomials.
 
+---
+
 # **Table of Contents**
 
 - [Overview](#overview)
@@ -12,6 +14,8 @@ Clenshaw-Curtis is a method for numerical integration which is based on an expan
 - [Clenshaw-Curtis Quadrature](#clenshaw-curtis-quadrature)
 - [Example](#example)
 - [Sources](#sources)
+
+---
 
 # **Overview**
 
@@ -33,6 +37,8 @@ In other words, an integral is the sum of the areas of a succesion of rectangles
 
 Now, by the condition we set up above, both, the lower and upper sums hold a gap with the actual value for the integral, since we have to calculate it numerically, we must apply a change of variable to converge to the solution. *Clenshaw-Curtis* bases its calculation in the substitution $x=\cos{(\theta)}$ and thus, giving us nodes in the form of the *Chebyshev polinomials*.
 
+---
+
 # **Chebyshev polynomials**
 
 Since we applied the substitution $x=\cos{(\theta)}$, we must note that the integration interval will be parametrized in $[-1, 1]$, moreover $\theta\in [0, \pi]$.
@@ -49,6 +55,8 @@ T_{3}(\cos{(\theta)})=\cos{(3\theta)}\equiv \cos{(\theta)}^{3} - 3\cos{(\theta)}
 T_{n+1}(\cos{(\theta)}) = 2\cos{(\theta)}T_{n}(\cos{(\theta)}) - T_{n-1}(\cos{(\theta)})
 \end{align}
 $$
+
+---
 
 # **Clenshaw-Curtis Quadrature**
 
@@ -199,6 +207,8 @@ $$
 w_{i}=\frac{2}{n}\left[1-\sum_{k=1}^{[n/2]}\frac{2}{4k^2-1}\cos{(\frac{2\pi ki}{n})}\right]
 $$
 
+---
+
 # Example
 
 Let $f(x)=x^2$ over the interval $[2, 5]$ and let $n=4$, which makes $n+1=5$ Clenshaw-Curtis nodes.
@@ -293,8 +303,16 @@ $$
 
 Which matches the analytical result.
 
+---
+
 # Sources
 
 - Trefethen, Lloyd N. Is Gauss Quadrature Better than Clenshaw-Curtis?. Oxford. England. 2008. From: https://people.maths.ox.ac.uk/trefethen/publication/PDF/2008_127.pdf#:~:text=We%20compare%20the%20convergence%20behavior%20of%20Gauss%20quadrature,factor-of-2%20advantage%20of%20Gauss%20quadra-ture%20is%20rarely%20realized.
 - Virginia Tech. Lecture 23: Clenshaw-Curtis Quadrature. USA. NA. From: https://personal.math.vt.edu/embree/math5466/lecture23.pdf
 - Haaser, Norman B. Análisis Matemático Curso de Introducción. Trillas. México. 1992. From: https://ia803205.us.archive.org/31/items/analisismatematicoihassersullivan/Analisis%20matematico%20I%20Hasser%20Sullivan_text.pdf
+
+---
+
+# End of Document
+
+---

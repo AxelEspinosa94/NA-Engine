@@ -6,7 +6,8 @@
         "simpson_3_8",
         "romberg",
         "gauss",
-        "clenshaw_curtis"
+        "clenshaw_curtis",
+        "montecarlo"
     ],
     "trapezoid_simple": {
       "executor": "strategies.executors.integration.methods.simpson_trap.integrate_rule"
@@ -28,5 +29,8 @@
     },
     "clenshaw_curtis": {
       "executor": "strategies.executors.integration.methods.clenshaw_curtis.clenshaw_curtis"
+    },
+    "montecarlo": {
+      "executor": "strategies.executors.integration.methods.montecarlo.montecarlo"
     }
 }

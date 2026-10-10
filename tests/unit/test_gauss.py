@@ -14,7 +14,7 @@ def test_gauss_basic_x2():
         input_data={
             "mode": "function",
             "function": "x**2",
-            "interval": [0, 1],
+            "bounds": [0, 1],
             "n": 4,  # irrelevant for Gauss, but required by base class
             "gauss_points": 5,
             "calculation_mode": "gauss",
@@ -34,7 +34,7 @@ def test_gauss_exp():
         input_data={
             "mode": "function",
             "function": "exp(x)",
-            "interval": [0, 1],
+            "bounds": [0, 1],
             "n": 4,
             "gauss_points": 6,
             "calculation_mode": "gauss",
@@ -55,7 +55,7 @@ def test_gauss_sin():
         input_data={
             "mode": "function",
             "function": "sin(x)",
-            "interval": [0, float(np.pi)],
+            "bounds": [0, float(np.pi)],
             "n": 4,
             "gauss_points": 6,
             "calculation_mode": "gauss",
@@ -78,7 +78,7 @@ def test_gauss_stress():
             input_data={
                 "mode": "function",
                 "function": "exp(x)",
-                "interval": [0, 1],
+                "bounds": [0, 1],
                 "n": 4,
                 "gauss_points": n_points,
                 "calculation_mode": "gauss",

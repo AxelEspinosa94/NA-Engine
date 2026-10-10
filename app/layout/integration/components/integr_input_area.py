@@ -1,4 +1,4 @@
-from dash import html
+from dash import dcc, html
 
 from app.tooltips import get_tooltip
 from core.ui.styled_components import styled_input
@@ -32,6 +32,29 @@ def integr_input_area():
                         type="text",
                         placeholder="ex: sin(x) + x**2",
                     ),
+<<<<<<< HEAD
+                    # dentro de integr_input_area(), reemplazando el bloque de a / b:
+                    html.Label("Domain (one row per variable)"),
+                    html.Div(id="integr-bounds-rows", children=[]),
+                    html.Div(
+                        className="input-row",
+                        children=[
+                            html.Button(
+                                "+ dimension",
+                                className="btn btn-secondary",
+                                id="integr-add-dim",
+                                n_clicks=0,
+                            ),
+                            html.Button(
+                                "− dimension",
+                                className="btn btn-secondary",
+                                id="integr-remove-dim",
+                                n_clicks=0,
+                            ),
+                        ],
+                    ),
+                    dcc.Store(id="integr-dim", data=1),
+=======
                     html.Label("Interval [a, b]"),
                     html.Div(
                         className="input-row",
@@ -54,6 +77,7 @@ def integr_input_area():
                             styled_input(id="integr-b", type="number", placeholder="b"),
                         ],
                     ),
+>>>>>>> main
                     html.Div(
                         className="label-with-tooltip",
                         children=[

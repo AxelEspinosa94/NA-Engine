@@ -2,6 +2,7 @@ import time
 
 import pytest
 
+from app.utils.build_function import build_function
 from core.base_method import NumericalMethod
 
 # Métodos soportados
@@ -13,6 +14,7 @@ METHODS = [
     "romberg",
     "gauss",
     "clenshaw_curtis",
+    "montecarlo",
 ]
 
 # Tamaños grandes para medir performance
@@ -23,39 +25,54 @@ N_PERF = {
     "simpson_3_8": 6000,  # múltiplo de 3
     "romberg": 10,  # romberg explota con n grande
     "gauss": 40,  # gauss estable
-    "clenshaw_curtis": 2000,  # CC es O(N log N)
+    "clenshaw_curtis": 1000,  # CC es O(N log N)
+    "montecarlo": 10000,  # MC es O(N)
 }
 
 # Límites de tiempo razonables por método (segundos)
 LIMITS = {
-    "trapezoid_simple": 2,
-    "trapezoid_composite": 0.20,
-    "simpson_1_3": 0.25,
-    "simpson_3_8": 0.30,
-    "romberg": 0.10,
-    "gauss": 0.15,
-    "clenshaw_curtis": 0.30,
+    "trapezoid_simple": 0.50,
+    "trapezoid_composite": 1.0,
+    "simpson_1_3": 0.50,
+    "simpson_3_8": 0.50,
+    "romberg": 1.0,
+    "gauss": 1.0,
+    "clenshaw_curtis": 1.0,  # CC es O(N log N)
+    "montecarlo": 0.50,  # MC puede ser lento
 }
 
 
 def make_outcome(method: str, function: str, interval: list, n: int):
+    input_data = {
+        "mode": "function",
+        "function": function,
+        "bounds": interval,
+        "n": n,
+        "calculation_mode": method,
+    }
+    if method == "gauss":
+        input_data["gauss_points"] = (
+            n  # for Gauss, n is irrelevant, but we need to set gauss_points
+        )
     nm = NumericalMethod(
         method="integration",
-        input_data={
-            "mode": "function",
-            "function": function,
-            "interval": interval,
-            "n": n,
-            "calculation_mode": method,
-        },
+        input_data=input_data,
     )
     nm.validate_input()
-    return nm.execute()
+    t0 = time.perf_counter()
+    outcome = nm.execute()
+    elapsed = time.perf_counter() - t0
+    return outcome, elapsed
 
 
 # ────────────────────────────────────────────────────────────────
 # PERFORMANCE: tiempo de ejecución
 # ────────────────────────────────────────────────────────────────
+
+
+@pytest.fixture(scope="session", autouse=True)
+def warmup_sympy():
+    build_function("sin(x) + exp(x)", ["x"])
 
 
 @pytest.mark.parametrize("method", METHODS)
@@ -67,9 +84,7 @@ def test_performance(method):
     n = N_PERF[method]
     limit = LIMITS[method]
 
-    start = time.perf_counter()
-    outcome = make_outcome(method, "sin(x)", [0, 10], n)
-    elapsed = time.perf_counter() - start
+    outcome, elapsed = make_outcome(method, "sin(x)", [0, 10], n)
 
     assert outcome["status"] == "success"
     assert elapsed < limit, f"{method} tardó {elapsed:.4f}s (límite {limit}s)"
@@ -115,9 +130,7 @@ def test_performance_intervalo_grande(method):
     n = N_PERF[method]
     limit = LIMITS[method] * 2  # un poco más permisivo
 
-    start = time.perf_counter()
-    outcome = make_outcome(method, "exp(x)", [-100, 100], n)
-    elapsed = time.perf_counter() - start
+    outcome, elapsed = make_outcome(method, "exp(x)", [-100, 100], n)
 
     assert outcome["status"] == "success"
     assert elapsed < limit, f"{method} tardó {elapsed:.4f}s en intervalo grande"

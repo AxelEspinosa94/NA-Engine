@@ -164,6 +164,24 @@ Use **10–15 points** for stress tests.
 
 ---
 
+### ### **Clenshaw–Curtis**
+
+| Property | Recommendation |
+|---------|----------------|
+| Stress points | **20–40** |
+| Reason | Cost grows linearly and the transform is efficient |
+| Notes | Spectral accuracy; extremely stable; even‑N required |
+
+---
+
+### ### **Monte Carlo**
+
+| Property | Recommendation |
+|---------|----------------|
+| Stress simulations | **10,000–100,000** |
+| Reason | Increasing values of $N$ yields statistical convergence |
+| Notes | Stochastic method; convergence proportional to $N^{-1/2}$; naturally supports ND domains |,
+
 ## **Stress Test Categories**
 
 The stress suite includes the following categories:
