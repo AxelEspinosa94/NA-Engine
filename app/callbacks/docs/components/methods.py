@@ -21,6 +21,7 @@ def load_methods(module: str):
             {"label": "Romberg", "value": "romberg"},
             {"label": "Gauss-Legendre", "value": "gauss-legendre"},
             {"label": "Clenshaw-Curtis", "value": "clenshaw-curtis"},
+            {"label": "Monte Carlo", "value": "monte-carlo"},
         ],
         "interpolation": [
             {"label": "Lagrange", "value": "lagrange"},

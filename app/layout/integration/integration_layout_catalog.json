@@ -34,12 +34,8 @@
         {"label": "Simpson 3/8",          "value": "simpson_3_8"},
         {"label": "Romberg",              "value": "romberg"},
         {"label": "Gauss-Legendre",       "value": "gauss"},
-<<<<<<< HEAD
         {"label": "Clenshaw-Curtis",      "value": "clenshaw_curtis"},
         {"label": "Monte Carlo",          "value": "montecarlo"}
-=======
-        {"label": "Clenshaw-Curtis",      "value": "clenshaw_curtis"}
->>>>>>> main
     ],
     "input_mode_selector_options": [{"label": "Function f(x)", "value": "function"}],
     "header_contents": {
