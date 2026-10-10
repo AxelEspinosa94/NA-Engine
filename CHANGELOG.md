@@ -2,6 +2,38 @@
 
 ---
 
+## NA-Engine v0.3.0 — Stage 5 Minor 3: Integral N-Dimensional Extension + Monte Carlo addition in Integration Module
+**Release date:** 2026-10-10
+
+### Added
+- Extended Trapezoid, Simpson, Romberg, Gauss-Legendre and Clenshaw-Curtis to the calculation of multivariable functions
+  - $x_{i}$ use of variables added when integrating
+  - Extended interval attribute to bounds (set of intervals) for calculation
+  - $\mathcal{R}^{2}$ and $\mathcal{R}^{3}$ plots renderization
+- New Monte Carlo integration method added to the Integration module that follows current architecture.
+
+### Improved
+- Extended Calculation to multiple dimensions
+- Renderer compatibility improved for $\mathcal{R}^{2}$ and $\mathcal{R}^{3}$ functions.
+
+### Notes
+This minor release completes the third phase of Stage 5, focusing on UI/UX modernization through catalog-driven architecture.
+Upcoming work will target:
+
+- Adaptative Simpson & Gauss Quadratures
+- Advanced Romberg Integration module
+- Interpolation refactor to the catalog-based layouts
+- Numerical Derivative refactor to the catalog-based layouts
+- Full migration of ODE/BVP modules to catalog-based layouts
+- Export tools (PDF, LaTeX, CSV)
+- Full i18n migration (English/Spanish)
+- Stage 5: Advanced numerical methods (RKF45, Adams–Bashforth, Clenshaw–Curtis extensions)
+- Stage 5: Non linear refactor + New Methods
+- Stage 6: Linear Algebra refactor to the catalog-base aproach
+
+
+---
+
 ## NA-Engine v0.2.0 — Stage 5 Minor 2: Integral, Documentation and About Refactoring into Catalog-based approach + Clenshaw-Curtis Quadrature addition in Integration Module
 **Release date:** 2026-09-02
 
