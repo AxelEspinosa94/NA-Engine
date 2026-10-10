@@ -1,7 +1,10 @@
 # core/contract.py
 from typing import Any, Dict
 
+<<<<<<< HEAD
 import plotly.graph_objects as go
+=======
+>>>>>>> main
 from dash import dcc, html
 
 from app.components.result_view import build_result_view
@@ -115,6 +118,7 @@ class UIContract:
             ]
         )
 
+<<<<<<< HEAD
     def _block_surface(self, payload: Dict[str, Any]) -> html.Div:
         caption = payload.get("caption", "Superficie")
         tooltip = payload.get("tooltip", "")
@@ -153,6 +157,8 @@ class UIContract:
             ]
         )
 
+=======
+>>>>>>> main
     # ------------------------------------------------------------------
     # Builders de bloques individuales
     # ------------------------------------------------------------------

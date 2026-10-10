@@ -32,6 +32,7 @@ def integr_input_area():
                         type="text",
                         placeholder="ex: sin(x) + x**2",
                     ),
+<<<<<<< HEAD
                     # dentro de integr_input_area(), reemplazando el bloque de a / b:
                     html.Label("Domain (one row per variable)"),
                     html.Div(id="integr-bounds-rows", children=[]),
@@ -53,6 +54,30 @@ def integr_input_area():
                         ],
                     ),
                     dcc.Store(id="integr-dim", data=1),
+=======
+                    html.Label("Interval [a, b]"),
+                    html.Div(
+                        className="input-row",
+                        children=[
+                            html.Div(
+                                className="label-with-tooltip",
+                                children=[
+                                    html.Div("a", className="na-label"),
+                                    Tooltip(get_tooltip("integr-a")).render(),
+                                ],
+                            ),
+                            styled_input(id="integr-a", type="number", placeholder="a"),
+                            html.Div(
+                                className="label-with-tooltip",
+                                children=[
+                                    html.Div("b", className="na-label"),
+                                    Tooltip(get_tooltip("integr-b")).render(),
+                                ],
+                            ),
+                            styled_input(id="integr-b", type="number", placeholder="b"),
+                        ],
+                    ),
+>>>>>>> main
                     html.Div(
                         className="label-with-tooltip",
                         children=[
