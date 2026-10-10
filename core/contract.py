@@ -118,7 +118,6 @@ class UIContract:
             ]
         )
 
-<<<<<<< HEAD
     def _block_surface(self, payload: Dict[str, Any]) -> html.Div:
         caption = payload.get("caption", "Superficie")
         tooltip = payload.get("tooltip", "")
@@ -157,8 +156,6 @@ class UIContract:
             ]
         )
 
-=======
->>>>>>> main
     # ------------------------------------------------------------------
     # Builders de bloques individuales
     # ------------------------------------------------------------------
