@@ -28,7 +28,7 @@ class MethodRegistry:
             raise CatalogLoadError(f"Catalog file not found at: {catalog_path}")
 
         try:
-            with open(catalog_path, "r") as f:
+            with open(catalog_path, "r", encoding="utf-8") as f:
                 cls._catalog_cache = json.load(f)
         except Exception as e:
             raise CatalogLoadError("Failed to load method catalog JSON.") from e

@@ -6,7 +6,7 @@ from app.utils.build_function import build_function
 
 
 def montecarloSim(
-    func_str: str, symbols: List[str], bounds: List, n_samples: int, rng=None
+    func_str: str, symbols: List[str], bounds: List, n_samples: int, seed: int = None
 ):
     """
     Create a DataFrame with columns X_0..X_{d-1} and f(X).
@@ -14,8 +14,10 @@ def montecarloSim(
     - func_str: string representation of the function
     - n_samples: number of iid uniform samples
     """
-    if rng is None:
+    if seed is None:
         rng = np.random.default_rng()
+    else:
+        rng = np.random.default_rng(seed)
 
     d = len(bounds)
     # Vectorizado: un solo call a rng.uniform con low/high por eje,

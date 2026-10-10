@@ -7,6 +7,8 @@ from app.utils.check_function import check_function_dims
 from app.utils.table_creator import _import_creator
 from core.exceptions import ConstructionError
 
+SEED = 12345  # default seed for reproducibility
+
 
 class Integral:
     """
@@ -51,6 +53,12 @@ class Integral:
         if check_result:
             raise ConstructionError(check_result)
 
+        if self.calculation_mode == "montecarlo":
+            self.seed = self.input_data.get("seed", SEED)
+            if self.seed:
+                if not isinstance(self.seed, int):
+                    raise ConstructionError("Seed must be an integer.")
+
         # Build function with appropriate symbols: x y z ...
         if self.dim == 1:
             self.symbols = ["x"]
@@ -62,14 +70,21 @@ class Integral:
         tb_creator_name = self.catalog.get(self.calculation_mode, {}).get(
             "tb_creator", None
         )
+
         if tb_creator_name:
             # tb_creator may be "module.func" or just "func" in a known module
             self.creator = _import_creator(tb_creator_name)
-            self.x, self.y = (
-                self.creator(self.func_str, self.symbols, self.bounds, self.n)
-                if self.creator
-                else None
-            )
+            if self.calculation_mode == "montecarlo":
+                args = (
+                    self.func_str,
+                    self.symbols,
+                    self.bounds,
+                    self.n,
+                    self.seed,
+                )
+            else:
+                args = (self.func_str, self.symbols, self.bounds, self.n)
+            self.x, self.y = self.creator(*args) if self.creator else None
         else:
             self.creator = None
             self.x = None
