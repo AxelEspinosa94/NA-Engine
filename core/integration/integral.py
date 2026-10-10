@@ -7,6 +7,8 @@ from app.utils.check_function import check_function_dims
 from app.utils.table_creator import _import_creator
 from core.exceptions import ConstructionError
 
+from .builder import build_function, build_grid
+
 
 class Integral:
     """
