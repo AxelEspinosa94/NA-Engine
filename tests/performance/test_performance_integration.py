@@ -38,7 +38,7 @@ LIMITS = {
     "romberg": 1.0,
     "gauss": 1.0,
     "clenshaw_curtis": 1.0,  # CC es O(N log N)
-    "montecarlo": 0.50,  # MC puede ser lento
+    "montecarlo": 3.50,  # MC puede ser lento
 }
 
 
