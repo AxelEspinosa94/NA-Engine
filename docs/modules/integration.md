@@ -66,7 +66,7 @@ The Integration Module uses a **single input mode**:
 The user provides:
 
 - `f(x)` — Python‑style function (`sin(x) + x**2`)
-- `a, b` — integration interval
+- `bounds` — list of intervals of the form $[a,b]$
 - `n` — number of subintervals or refinement level
 
 The system:
@@ -282,6 +282,54 @@ Even on an 8 GB RAM machine, Romberg becomes **CPU‑bound**, not memory‑bound
 - Very high $N$ ($\geq 50$) is rarely needed; diminishing returns after $\approx 40$  
 - Clenshaw-Curtis is ideal for UI because the DCT‑I is stable and predictable  
 - Clenshaw-CurtisC is ideal for stress tests because the cost grows linearly and the transform is efficient  
+
+### ### **Monte Carlo**
+
+| Property | Recommendation |
+|---------|----------------|
+| UI simulations | **1,000–10,000** |
+| Stress simulations | **10,000–100,000** |
+| Notes | Stochastic method; convergence proportional to $N^{-1/2}$; naturally supports ND domains |
+
+---
+
+#### **Monte Carlo Practical Guidance**
+
+- Accuracy improves as **$O(N^{-1/2})$**, meaning that reducing the error by a factor of 10 requires approximately 100 times more samples.
+- Unlike deterministic quadratures, increasing $N$ yields **statistical convergence**, not polynomial or spectral convergence.
+- Monte Carlo performs particularly well when the dimension of the problem increases; the convergence rate does not depend directly on the dimensionality of the domain.
+- The parameter **$n$** represents the number of random simulations (samples), not the number of subintervals.
+- Results are **not deterministic**. Two executions with the same input may produce slightly different values unless a fixed random seed is used.
+- For one-dimensional smooth functions, deterministic methods such as Simpson, Gauss-Legendre, Romberg, or Clenshaw-Curtis will usually achieve higher accuracy with fewer evaluations.
+- Monte Carlo becomes increasingly attractive for multidimensional domains because implementation complexity does not grow significantly with dimension.
+- Very small values of $N$ (< 500) may produce large statistical fluctuations.
+- Values between **1,000 and 10,000 samples** generally provide a good balance between speed and accuracy for UI interaction.
+- Stress tests may use **10,000–100,000 samples** depending on execution-time constraints.
+- The classical uncertainty estimate is:
+
+  $$
+  I_N \approx
+  V \langle f \rangle
+  \pm
+  V\sqrt{
+      \frac{
+          \langle f^2 \rangle
+          -
+          \langle f \rangle^2
+      }{N}
+  }
+  $$
+
+  providing an estimate of the statistical error of the simulation.
+- Monte Carlo is ideal for ND integration because the estimator remains
+
+  $$
+  I_N =
+  V\frac{1}{N}
+  \sum_{i=1}^{N}f(X_i),
+  $$
+
+  where $V$ is the domain volume and $X_i$ are uniformly distributed samples in the integration domain.
 
 ---
 

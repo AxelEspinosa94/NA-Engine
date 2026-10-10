@@ -1,6 +1,7 @@
 # core/contract.py
 from typing import Any, Dict
 
+import plotly.graph_objects as go
 from dash import dcc, html
 
 from app.components.result_view import build_result_view
@@ -49,6 +50,8 @@ class UIContract:
                 blocks.append(self._block_table(block))
             elif block_type == "plot":
                 blocks.append(self._block_plot(block))
+            elif block_type == "surface":
+                blocks.append(self._block_surface(block))
             elif block_type == "vector":
                 blocks.append(self._block_solution(block))
             elif block_type == "matrix_expression":
@@ -97,6 +100,44 @@ class UIContract:
             xaxis_title="x",
             yaxis_title="P(x)",
             legend=dict(orientation="h", y=-0.2),
+        )
+
+        return html.Div(
+            [
+                html.Div(
+                    className="label-with-tooltip",
+                    children=[
+                        dcc.Markdown(caption, className="result-explanation"),
+                        Tooltip(tooltip).render() if tooltip else None,
+                    ],
+                ),
+                dcc.Graph(figure=fig, className="result-plot"),
+            ]
+        )
+
+    def _block_surface(self, payload: Dict[str, Any]) -> html.Div:
+        caption = payload.get("caption", "Superficie")
+        tooltip = payload.get("tooltip", "")
+
+        fig = go.Figure(
+            go.Surface(
+                x=payload["x"],
+                y=payload["y"],
+                z=payload["z"],  # ya viene transpuesta desde el renderer
+                colorscale="Viridis",
+                colorbar=dict(title="f"),
+            )
+        )
+
+        fig.update_layout(
+            template="plotly_dark",
+            title=payload.get("label", ""),
+            margin=dict(l=0, r=0, t=40, b=0),
+            scene=dict(
+                xaxis_title="x0",
+                yaxis_title="x1",
+                zaxis_title="f(x0, x1)",
+            ),
         )
 
         return html.Div(

@@ -23,6 +23,10 @@ RENDERER_META = {
         "caption": "### Tabla de resultados",
         "tooltip": "Tabla con columnas y filas generada por el método.",
     },
+    "surface": {
+        "caption": "### Superficie 3D",
+        "tooltip": "Superficie 3D generada a partir de los valores x, y y z.",
+    },
     "markdown": {
         "caption": "### Expresión",
         "tooltip": "Contenido en formato Markdown.",

@@ -18,16 +18,16 @@ def test_clenshaw_constructor_rejects_missing_function():
             method="integration",
             input_data={
                 "mode": "function",
-                "interval": [0, 1],
+                "bounds": [0, 1],
                 "n": 10,
                 "calculation_mode": "clenshaw_curtis",
             },
         )
 
 
-def test_clenshaw_constructor_rejects_bad_interval():
+def test_clenshaw_constructor_rejects_bad_bounds():
     """
-    Constructor must reject malformed interval.
+    Constructor must reject malformed bounds.
     """
     with pytest.raises(ConstructionError):
         NumericalMethod(
@@ -35,7 +35,7 @@ def test_clenshaw_constructor_rejects_bad_interval():
             input_data={
                 "mode": "function",
                 "function": "x**2",
-                "interval": [1],  # malformed
+                "bounds": [1],  # malformed
                 "n": 10,
                 "calculation_mode": "clenshaw_curtis",
             },
@@ -52,7 +52,7 @@ def test_clenshaw_constructor_rejects_non_numeric_n():
             input_data={
                 "mode": "function",
                 "function": "x**2",
-                "interval": [0, 1],
+                "bounds": [0, 1],
                 "n": "hola",
                 "calculation_mode": "clenshaw_curtis",
             },
@@ -69,7 +69,7 @@ def test_clenshaw_rejects_negative_n():
             input_data={
                 "mode": "function",
                 "function": "x**2",
-                "interval": [0, 1],
+                "bounds": [0, 1],
                 "n": -2,
                 "calculation_mode": "clenshaw_curtis",
             },
@@ -91,7 +91,7 @@ def test_clenshaw_rejects_odd_n():
             input_data={
                 "mode": "function",
                 "function": "x**2",
-                "interval": [0, 1],
+                "bounds": [0, 1],
                 "n": 5,  # odd → invalid
                 "calculation_mode": "clenshaw_curtis",
             },
@@ -113,7 +113,7 @@ def test_clenshaw_x2_0_1():
         input_data={
             "mode": "function",
             "function": "x**2",
-            "interval": [0, 1],
+            "bounds": [0, 1],
             "n": 10,  # even
             "calculation_mode": "clenshaw_curtis",
         },
@@ -133,7 +133,7 @@ def test_clenshaw_x3_0_1():
         input_data={
             "mode": "function",
             "function": "x**3",
-            "interval": [0, 1],
+            "bounds": [0, 1],
             "n": 12,
             "calculation_mode": "clenshaw_curtis",
         },
@@ -160,7 +160,7 @@ def test_clenshaw_exp_0_1():
         input_data={
             "mode": "function",
             "function": "exp(x)",
-            "interval": [0, 1],
+            "bounds": [0, 1],
             "n": 20,
             "calculation_mode": "clenshaw_curtis",
         },
@@ -179,7 +179,7 @@ def test_clenshaw_sin_0_pi():
         input_data={
             "mode": "function",
             "function": "sin(x)",
-            "interval": [0, np.pi],
+            "bounds": [0, np.pi],
             "n": 20,
             "calculation_mode": "clenshaw_curtis",
         },
@@ -203,7 +203,7 @@ def test_clenshaw_constant_function():
         input_data={
             "mode": "function",
             "function": "5",
-            "interval": [0, 1],
+            "bounds": [0, 1],
             "n": 8,
             "calculation_mode": "clenshaw_curtis",
         },
@@ -222,7 +222,7 @@ def test_clenshaw_linear_function():
         input_data={
             "mode": "function",
             "function": "x",
-            "interval": [0, 1],
+            "bounds": [0, 1],
             "n": 8,
             "calculation_mode": "clenshaw_curtis",
         },

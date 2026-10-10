@@ -1,4 +1,4 @@
-from dash import html
+from dash import dcc, html
 
 from app.tooltips import get_tooltip
 from core.ui.styled_components import styled_input
@@ -32,28 +32,27 @@ def integr_input_area():
                         type="text",
                         placeholder="ex: sin(x) + x**2",
                     ),
-                    html.Label("Interval [a, b]"),
+                    # dentro de integr_input_area(), reemplazando el bloque de a / b:
+                    html.Label("Domain (one row per variable)"),
+                    html.Div(id="integr-bounds-rows", children=[]),
                     html.Div(
                         className="input-row",
                         children=[
-                            html.Div(
-                                className="label-with-tooltip",
-                                children=[
-                                    html.Div("a", className="na-label"),
-                                    Tooltip(get_tooltip("integr-a")).render(),
-                                ],
+                            html.Button(
+                                "+ dimension",
+                                className="btn btn-secondary",
+                                id="integr-add-dim",
+                                n_clicks=0,
                             ),
-                            styled_input(id="integr-a", type="number", placeholder="a"),
-                            html.Div(
-                                className="label-with-tooltip",
-                                children=[
-                                    html.Div("b", className="na-label"),
-                                    Tooltip(get_tooltip("integr-b")).render(),
-                                ],
+                            html.Button(
+                                "− dimension",
+                                className="btn btn-secondary",
+                                id="integr-remove-dim",
+                                n_clicks=0,
                             ),
-                            styled_input(id="integr-b", type="number", placeholder="b"),
                         ],
                     ),
+                    dcc.Store(id="integr-dim", data=1),
                     html.Div(
                         className="label-with-tooltip",
                         children=[
