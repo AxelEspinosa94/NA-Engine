@@ -213,6 +213,15 @@ Validate:
 
 # Release Notes
 
+## v0.3.0 — Stage 5 Minor 3: Integral N-Dimensional Extension + Monte Carlo addition in Integration Module
+
+### Added
+- Extended Trapezoid, Simpson, Romberg, Gauss-Legendre and Clenshaw-Curtis to the calculation of multivariable functions
+  - $x_{i}$ use of variables added when integrating
+  - Extended interval attribute to bounds (set of intervals) for calculation
+  - $\mathcal{R}^{2}$ and $\mathcal{R}^{3}$ plots renderization
+- New Monte Carlo integration method added to the Integration module that follows current architecture.
+
 ### v0.2.0 — Stage 5 Minor 2: Integral, Documentation and About Refactoring into Catalog-based approach + Clenshaw-Curtis Quadrature addition in Integration Module
 - Catalog-based UI for Integration, Documentation, and About modules
 - New Clenshaw–Curtis Quadrature method
